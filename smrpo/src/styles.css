@@ -1,0 +1,100 @@
+/* You can add global styles to this file, and also import other style files */
+
+html,
+body {
+	height: 100%;
+	margin: 0;
+	padding: 0;
+}
+
+body {
+	background-color: #ffffff;
+	min-height: 100vh;
+}
+
+.login-wrapper {
+	display: flex;
+	height: 100vh;
+	position: relative;
+	justify-content: center;
+}
+
+.box {
+	/* bring your own prefixes */
+	align-self: center;
+	opacity: 50;
+	float: center;
+	padding: 60px 50px 40px 50px;
+	width: 100%;
+	height: 50%;
+	background-color: #ffffff;
+	border-radius: 5px;
+	max-width: 330px;
+	color: black;
+}
+
+.box.back {
+	transform: scale(.95);
+	-webkit-transform: scale(.95);
+	-ms-transform: scale(.95);
+	top: -20px;
+	opacity: .8;
+	z-index: -1;
+}
+
+.inputfields {
+	border-width: 0.5px;
+	border-style: solid;
+	padding: 5px 5px 5px 5px;
+	color: #000000;
+}
+
+.login-wrapper .example-form {
+	min-width: 100%;
+	max-width: 300px;
+	width: 100%;
+}
+
+.login-wrapper .example-full-width,
+.login-wrapper .btn-block {
+	width: 100%;
+}
+
+.login-wrapper mat-card-header {
+	text-align: center;
+	width: 100%;
+	display: block;
+	font-weight: 700;
+}
+
+.login-wrapper mat-card-header mat-card-title {
+	font-size: 30px;
+	margin: 0;
+}
+
+.login-wrapper .mat-card {
+	padding: 40px 70px 50px;
+}
+
+.login-wrapper .mat-stroked-button {
+	border: 1px solid currentColor;
+	line-height: 54px;
+	background: #23286d;
+    width: 50%;
+    display: block;
+    margin-left: auto;
+    margin-right: auto;
+}
+
+.login-wrapper .mat-form-field-appearance-legacy .mat-form-field-infix {
+	padding: 0.8375em 0;
+	color: black
+}
+
+.mat-form-field-label {
+	color: gray !important;
+}
+
+.mat-form-field-underline {
+	background-color: gray !important;
+}
