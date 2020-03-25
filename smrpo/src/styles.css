@@ -98,3 +98,7 @@ body {
 .mat-form-field-underline {
 	background-color: gray !important;
 }
+
+a {
+    cursor: pointer;
+}
