@@ -1,0 +1,37 @@
+<div class="login-wrapper" fxLayout="row" fxLayoutAlign="center center " >
+  <mat-card class="box-newProject" layout-align="center center" >
+    <mat-card-header>
+      <mat-card-title>New project</mat-card-title>
+    </mat-card-header>
+
+    <form class="example-form">
+
+      <mat-card-content>
+        <form [formGroup]="myForm" class="example-form">
+          <mat-form-field class="example-full-width " matNativeControl required>
+            <input class="inputfields" matInput placeholder="Project name">
+          </mat-form-field>
+
+          <div formArrayName="teamMembers">
+            <div *ngFor="let teamMember of myForm.controls.teamMembers['controls']; let i=index" class="panel panel-default">
+              <app-addMemberToProject></app-addMemberToProject>
+              <button mat-stroked-button color="accent" class="btn-right " (click)="removeMember(i)">
+                 <!--<span id="btn-remove" class="glyphicon glyphicon-remove"></span>-->
+                <!--X-->
+                <span class="mat-button-wrapper"> X </span>
+              </button>
+            </div>
+          </div>
+
+          <div>
+            <button mat-stroked-button color="accent" class="btn-block-newProject" (click)="addMember()">Add team member</button>
+          </div>
+
+        </form>
+      </mat-card-content>
+
+      <button mat-stroked-button color="accent" class="btn-block-newProject">Start new project</button>
+
+    </form>
+  </mat-card>
+</div>

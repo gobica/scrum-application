@@ -4,6 +4,8 @@ import { NgModule } from '@angular/core';
 import { AppRoutingModule } from './app-routing.module';
 import { AppComponent } from './app.component';
 import { RegisterComponent } from './components/register/register.component';
+import { AddProjectComponent } from './components/addProject/addProject.component';
+import { AddMemberToProjectComponent } from './components/addProject/addProject.component';
 import { NoopAnimationsModule } from '@angular/platform-browser/animations';
 
 
@@ -19,7 +21,9 @@ import { FormsModule, ReactiveFormsModule } from '@angular/forms';
 @NgModule({
   declarations: [
     AppComponent,
-    RegisterComponent
+    RegisterComponent,
+    AddProjectComponent,
+    AddMemberToProjectComponent
   ],
   imports: [
     BrowserModule,
