@@ -1,0 +1,26 @@
+<mat-form-field class="example-twoWithButton-width " matNativeControl required>
+  <input class="inputfields" matInput placeholder="Participating user">
+</mat-form-field>
+
+<!--<mat-form-field class="example-full-width ">-->
+  <!--<mat-label>Team role</mat-label>-->
+  <!--<mat-select>-->
+    <!--<mat-option *ngFor="let team of teamRoles" [value]="team.value">-->
+      <!--<option class="valuefields"> {{team.viewValue}} </option>-->
+    <!--</mat-option>-->
+  <!--</mat-select>-->
+<!--</mat-form-field>-->
+
+<mat-form-field class="example-twoWithButton-width ">
+  <mat-label>Team roles</mat-label>
+
+  <mat-select matNativeControl required>
+    <mat-option>None</mat-option>
+    <mat-option value="product-manager-0">Product manager</mat-option>
+    <mat-option value="methodology-administrator-1">Methodology administrator</mat-option>
+    <mat-option value="team-member-2">Team member</mat-option>
+  </mat-select>
+</mat-form-field>
+
+
+

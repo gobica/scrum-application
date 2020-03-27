@@ -4,6 +4,8 @@ import { NgModule } from '@angular/core';
 import { AppRoutingModule } from './app-routing.module';
 import { AppComponent } from './app.component';
 import { RegisterComponent } from './components/register/register.component';
+import { AddProjectComponent } from './components/addProject/addProject.component';
+import { AddMemberToProjectComponent } from './components/addProject/addProject.component';
 import { NoopAnimationsModule } from '@angular/platform-browser/animations';
 
 /* HTTP CLIENT material */
@@ -24,6 +26,9 @@ import { ErrorInterceptor } from './helpers/error.interceptors';
 @NgModule({
   declarations: [
     AppComponent,
+    RegisterComponent,
+    AddProjectComponent,
+    AddMemberToProjectComponent,
     RegisterComponent,
     AlertComponent,
    // LoginComponent,
