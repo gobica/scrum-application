@@ -6,6 +6,9 @@ import { AppComponent } from './app.component';
 import { RegisterComponent } from './components/register/register.component';
 import { AddProjectComponent } from './components/addProject/addProject.component';
 import { AddMemberToProjectComponent } from './components/addProject/addProject.component';
+import { SearchProjectComponent } from './components/editProject/editProject.component';
+import { EditProjectComponent } from './components/editProject/editProject.component';
+import { HomeComponent } from './components/home/home.component';
 import { NoopAnimationsModule } from '@angular/platform-browser/animations';
 
 /* HTTP CLIENT material */
@@ -29,10 +32,13 @@ import { ErrorInterceptor } from './helpers/error.interceptors';
     RegisterComponent,
     AddProjectComponent,
     AddMemberToProjectComponent,
-    RegisterComponent,
+    SearchProjectComponent,
+    EditProjectComponent,
+    HomeComponent,
+    // RegisterComponent,
     AlertComponent,
    // LoginComponent,
-    AlertComponent
+   //  AlertComponent
   ],
   imports: [
     BrowserModule,

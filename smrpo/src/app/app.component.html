@@ -1,11 +1,21 @@
-<nav>
-  <a routerLink="/register" routerLinkActive="active"> Register </a>
-  <a routerLink="/addProject" routerLinkActive="active"> New project </a>
-</nav>
-<div>
-  <!--<app-register></app-register>-->
-  <!--<app-addProject></app-addProject>-->
-</div>
+<mat-toolbar>
+  <span class="example-fill-remaining-space"><a routerLink="/" routerLinkActive="active"> SMRPO 5 </a></span>
+  <span class="example-fill-remaining-space"><a routerLink="/register" routerLinkActive="active"> Register </a></span>
+  <span class="example-fill-remaining-space"><a routerLink="/addProject" routerLinkActive="active"> New project </a></span>
+  <span class="example-fill-remaining-space"><a routerLink="/searchProject" routerLinkActive="active"> Edit project </a></span>
+</mat-toolbar>
+
+
+
+<!--<nav>-->
+  <!--<a routerLink="/register" routerLinkActive="active"> Register </a>-->
+  <!--<a routerLink="/addProject" routerLinkActive="active"> New project </a>-->
+  <!--<a routerLink="/searchProject" routerLinkActive="active"> Edit project </a>-->
+<!--</nav>-->
+<!--<div>-->
+  <!--&lt;!&ndash;<app-register></app-register>&ndash;&gt;-->
+  <!--&lt;!&ndash;<app-addProject></app-addProject>&ndash;&gt;-->
+<!--</div>-->
 
 <router-outlet></router-outlet>
 
