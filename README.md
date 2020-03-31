@@ -12,7 +12,8 @@
 `$ code .`  
 
 
-  "build": "webpack --mode production",
-    "start": "webpack-dev-server --mode development --open"
-
 good crash course for Angular: https://www.youtube.com/watch?v=Fdf5aTYRW0E&t=962s
+
+when running localy:
+!!!! WHEN LOGGING CHECK IF USER IS  IN DATABASE !!!!
+you can clear cache on chrome://settings/siteData

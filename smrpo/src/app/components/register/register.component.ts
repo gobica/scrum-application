@@ -5,7 +5,6 @@ import { FormBuilder, FormGroup, Validators } from '@angular/forms';
 import { User } from '../../models/user'
 import { first } from 'rxjs/operators';
 
-import { Register } from '../../models/Register';
 import { AlertService,  } from '../../services/alert.service';
 import { UserService } from '../../services/user.service';
 import { AuthenticationService } from  '../../services/authentication.service';
@@ -31,9 +30,9 @@ export class RegisterComponent implements OnInit {
         private alertService: AlertService
     ) {
         // redirect to home if already logged in
-        if (this.authenticationService.currentUserValue) {
-            this.router.navigate(['/']);
-        }
+        //if (this.authenticationService.currentUserValue) {
+       //     this.router.navigate(['/']);
+       // }
     }
 
     ngOnInit() {
@@ -41,7 +40,10 @@ export class RegisterComponent implements OnInit {
             firstName: ['', Validators.required],
             lastName: ['', Validators.required],
             email: ['', Validators.required],
-            password: ['', [Validators.required, Validators.minLength(6)]]
+            password: ['', [Validators.required, Validators.minLength(6)]], 
+            globalRole: ['', Validators.required],
+
+
         });
     }
 
@@ -65,7 +67,7 @@ export class RegisterComponent implements OnInit {
             .subscribe(
                 data => {
                     this.alertService.success('Registration successful', true);
-                    //this.router.navigate(['/login']);
+                    this.router.navigate(['/']);
                 },
                 error => {
                     this.alertService.error(error);

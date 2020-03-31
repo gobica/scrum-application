@@ -2,13 +2,19 @@
   <div class="navbar-nav">
   
   <a class="nav-item nav-link" routerLink="/">Dashboard</a>
+  <a class="nav-item nav-link" routerLink="/register">Register users</a>
+  <a class="nav-item nav-link" routerLink="/addProject">New project</a>
+  <a class="nav-item nav-link" routerLink="/searchProject">Edit project</a>
   <a class="nav-item nav-link" (click)="logout()">Logout</a>
-
- <!-- <a routerLink="/register" routerLinkActive="active"> Register </a> -->
-<!--  <a routerLink="/addProject" routerLinkActive="active"> New project </a> -->
+  
   </div>
 </nav>
 
-<div class="container">
-  <router-outlet></router-outlet>
-</div>
+  <div class="container">
+      <div class="row">
+          <div class="col-sm-6 offset-sm-3">
+              <alert></alert>
+              <router-outlet></router-outlet>
+          </div>
+      </div>
+  </div>

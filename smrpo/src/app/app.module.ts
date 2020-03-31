@@ -6,8 +6,11 @@ import { AppComponent } from './app.component';
 import { RegisterComponent } from './components/register/register.component';
 import { AddProjectComponent } from './components/addProject/addProject.component';
 import { AddMemberToProjectComponent } from './components/addProject/addProject.component';
+import { SearchProjectComponent } from './components/editProject/editProject.component';
+import { EditProjectComponent } from './components/editProject/editProject.component';
+import { HomeComponent } from './components/home/home.component';
 import { NoopAnimationsModule } from '@angular/platform-browser/animations';
-
+import { JwtModule } from '@auth0/angular-jwt';
 /* HTTP CLIENT material */
 import { HttpClientModule, HTTP_INTERCEPTORS } from '@angular/common/http';
 //import { DataService} from './services/user.service'
@@ -20,6 +23,7 @@ import { FormsModule, ReactiveFormsModule } from '@angular/forms';
 import { AlertComponent} from './components/alert/alert.component';
 import { LoginComponent } from './components/login/login.component';
 import { JwtInterceptor } from './helpers/jwt.interceptor';
+import { environment } from 'src/environments/environment';
 
 import { ErrorInterceptor } from './helpers/error.interceptors';
 import { DashboardComponent } from './components/dashboard/dashboard.component';
@@ -30,11 +34,16 @@ import { DashboardComponent } from './components/dashboard/dashboard.component';
     RegisterComponent,
     AddProjectComponent,
     AddMemberToProjectComponent,
-    RegisterComponent,
+    SearchProjectComponent,
+    EditProjectComponent,
+    HomeComponent,
+    // RegisterComponent,
     AlertComponent,
     LoginComponent,
     AlertComponent,
     DashboardComponent
+   // LoginComponent,
+   //  AlertComponent
   ],
   imports: [
     BrowserModule,
@@ -44,7 +53,15 @@ import { DashboardComponent } from './components/dashboard/dashboard.component';
     ReactiveFormsModule,
     BrowserAnimationsModule,
     AngularMaterialModule,
-    HttpClientModule
+    HttpClientModule,
+    JwtModule.forRoot({
+      config: {
+        tokenGetter: function  tokenGetter() {
+             return     localStorage.getItem('access_token');},
+        whitelistedDomains: [environment.apiUrl],
+        blacklistedRoutes: [environment.apiUrl + '/login']
+      }
+    })
   ],
   providers: [
     { provide: HTTP_INTERCEPTORS, useClass: JwtInterceptor, multi: true },

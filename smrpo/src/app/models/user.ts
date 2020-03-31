@@ -5,7 +5,7 @@ export class User {
     lastName: string; 
     password: string;
     globalRole: string;
-    token: string;
+    token?: string;
 
   }
   

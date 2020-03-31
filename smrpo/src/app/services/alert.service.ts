@@ -22,6 +22,7 @@ export class AlertService {
         });
     }
 
+
     getAlert(): Observable<any> {
         return this.subject.asObservable();
     }

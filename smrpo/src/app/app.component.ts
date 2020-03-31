@@ -3,7 +3,6 @@ import { Router } from '@angular/router';
 
 import { AuthenticationService } from './services/authentication.service';
 import { User } from './models/user';
-import { environment } from './../environments/environment';
 
 //import './_content/app.less';
 
@@ -16,8 +15,6 @@ import { environment } from './../environments/environment';
 export class AppComponent {
 
   currentUser: User;
-  name:string = 'Pozdrav';
-  title_string = 'smrpo';
 
   constructor(
       private router: Router,
