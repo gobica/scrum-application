@@ -18,10 +18,11 @@ import { BrowserAnimationsModule } from '@angular/platform-browser/animations';
 import { AngularMaterialModule } from './models/angular-material.module';
 import { FormsModule, ReactiveFormsModule } from '@angular/forms';
 import { AlertComponent} from './components/alert/alert.component';
-//import { LoginComponent } from './components/login/login.component';
+import { LoginComponent } from './components/login/login.component';
 import { JwtInterceptor } from './helpers/jwt.interceptor';
 
 import { ErrorInterceptor } from './helpers/error.interceptors';
+import { DashboardComponent } from './components/dashboard/dashboard.component';
 
 @NgModule({
   declarations: [
@@ -31,8 +32,9 @@ import { ErrorInterceptor } from './helpers/error.interceptors';
     AddMemberToProjectComponent,
     RegisterComponent,
     AlertComponent,
-   // LoginComponent,
-    AlertComponent
+    LoginComponent,
+    AlertComponent,
+    DashboardComponent
   ],
   imports: [
     BrowserModule,

@@ -1,11 +1,14 @@
-<nav>
-  <a routerLink="/register" routerLinkActive="active"> Register </a>
-  <a routerLink="/addProject" routerLinkActive="active"> New project </a>
+<nav class="navbar navbar-expand navbar-dark bg-dark" *ngIf="currentUser">
+  <div class="navbar-nav">
+  
+  <a class="nav-item nav-link" routerLink="/">Dashboard</a>
+  <a class="nav-item nav-link" (click)="logout()">Logout</a>
+
+ <!-- <a routerLink="/register" routerLinkActive="active"> Register </a> -->
+<!--  <a routerLink="/addProject" routerLinkActive="active"> New project </a> -->
+  </div>
 </nav>
-<div>
-  <!--<app-register></app-register>-->
-  <!--<app-addProject></app-addProject>-->
+
+<div class="container">
+  <router-outlet></router-outlet>
 </div>
-
-<router-outlet></router-outlet>
-

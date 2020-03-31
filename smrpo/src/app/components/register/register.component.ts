@@ -2,7 +2,6 @@ import { Component, OnInit } from '@angular/core';
 import { Router } from '@angular/router';
 import { FormBuilder, FormGroup, Validators } from '@angular/forms';
 //import { DataService } from '../../services/user.service';
-import { postData, respData} from '../../objects/postdataObj';
 import { User } from '../../models/user'
 import { first } from 'rxjs/operators';
 
@@ -10,6 +9,7 @@ import { Register } from '../../models/Register';
 import { AlertService,  } from '../../services/alert.service';
 import { UserService } from '../../services/user.service';
 import { AuthenticationService } from  '../../services/authentication.service';
+import { environment } from '../../../environments/environment';
 
 
 @Component({

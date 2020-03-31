@@ -3,6 +3,7 @@ import { Router } from '@angular/router';
 
 import { AuthenticationService } from './services/authentication.service';
 import { User } from './models/user';
+import { environment } from './../environments/environment';
 
 //import './_content/app.less';
 
@@ -24,10 +25,10 @@ export class AppComponent {
   ) {
       this.authenticationService.currentUser.subscribe(x => this.currentUser = x);
   }
-/*
+
   logout() {
       this.authenticationService.logout();
       this.router.navigate(['/login']);
   }
-  */
+  
 }

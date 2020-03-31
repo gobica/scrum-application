@@ -1,11 +1,13 @@
 import { Injectable } from '@angular/core';
 import { HttpClient, HttpHeaders,HttpErrorResponse } from '@angular/common/http';
-import { postData, respData} from '../objects/postdataObj';
 import { User } from '../models/user'
+import { environment } from 'src/environments/environment';
 
 @Injectable()
 export class UserService {
-  postUrl: string = "http://localhost:3000/api/register";
+  postUrl: string = "";
+  getUsersUrl: string = "";
+
   
   httpOptions = {
     headers: new HttpHeaders({
@@ -13,19 +15,24 @@ export class UserService {
       'Authorization': 'my-auth-token'
     })
   };
-  constructor(private httpClient : HttpClient) { }
+  constructor(private httpClient : HttpClient) {
+
+    this.postUrl =  environment.apiUrl + '/register';
+    this.getUsersUrl = environment.apiUrl + '/user' ;
+  
+   }
 
   register (user: User) {
     return this.httpClient.post(this.postUrl, user, this.httpOptions);
-    //return this.httpClient.post<postData>(this.postUrl, postD, this.httpOptions);
-    /*return this.httpClient.post<postData>(this.postUrl, postD, this.httpOptions)
-      .pipe(
-        catchError(err => {
-          return of(null);
-        })
-      );
-      */
+       
   }
-
-
+  delete(id: number) {
+    return this.httpClient.delete(this.getUsersUrl + `/${id}`);
+}
+  getUser(id: number) {
+    return this.httpClient.get(this.getUsersUrl + `/${id}`);
+  }
+  getAll() {
+    return this.httpClient.get<User[]>(this.getUsersUrl);
+}
 }
