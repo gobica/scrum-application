@@ -13,8 +13,9 @@ import { NoopAnimationsModule } from '@angular/platform-browser/animations';
 import { JwtModule } from '@auth0/angular-jwt';
 /* HTTP CLIENT material */
 import { HttpClientModule, HTTP_INTERCEPTORS } from '@angular/common/http';
-//import { DataService} from './services/user.service'
-import { UserService} from './services/user.service'
+// import { DataService} from './services/user.service';
+import { UserService} from './services/user.service';
+
 /* Angular material */
 import { BrowserAnimationsModule } from '@angular/platform-browser/animations';
 import { AngularMaterialModule } from './models/angular-material.module';
@@ -71,7 +72,7 @@ import { EditUsersComponent } from './components/edit-users/edit-users.component
     { provide: HTTP_INTERCEPTORS, useClass: ErrorInterceptor, multi: true },
     UserService
   ],
-  bootstrap: [AppComponent], 
+  bootstrap: [AppComponent],
 
 
 })

@@ -57,7 +57,10 @@ a {
 	color: black;
   min-height: 30px;
   margin-top: 5%;
+}
 
+.project-wrapper {
+	width: 70vh;
 }
 
 .box.back {

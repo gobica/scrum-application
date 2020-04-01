@@ -2,6 +2,13 @@ import { Component, OnInit } from '@angular/core';
 import { FormGroup, FormArray, FormBuilder, Validators } from '@angular/forms';
 import { AddProject } from '../../models/AddProject';
 import { AddMemberToProject } from '../../models/AddMemberToProject';
+// import {first} from 'rxjs/operators';
+// import {ActivatedRoute, Router} from '@angular/router';
+// import {Http, Response} from '@angular/http';
+import { HttpClient } from '@angular/common/http';
+import {environment} from '../../../environments/environment';
+import {first} from 'rxjs/operators';
+import { AlertService } from '../../services/alert.service';
 
 
 // interface TeamRoles {
@@ -15,7 +22,18 @@ import { AddMemberToProject } from '../../models/AddMemberToProject';
   styleUrls: ['./addProject.component.css']
 })
 export class AddProjectComponent implements OnInit {
-  addProjects:AddProject[];
+  addProjects: AddProject[];
+  public projectForm: FormGroup;
+  postUrl: string = '';
+  loading = false;
+  submitted = false;
+
+  // loading = false;
+  // submitted = false;
+  // returnUrl: string;
+  // private apiUrl = './api/project';
+  // d: any = {};
+
   // Roles: any = ['Admin', 'Author', 'Reader'];
 
   // teamRoles: TeamRoles[] = [
@@ -24,37 +42,92 @@ export class AddProjectComponent implements OnInit {
   //   {value: 'team-member-2', viewValue: 'Team member'}
   // ];
 
-  countMembers: number = 3;
+  // countMembers: number = 3;
 
   public myForm: FormGroup;
-  constructor(private _fb: FormBuilder) { }
+  constructor(
+    private _fb: FormBuilder,
+    private http: HttpClient,
+    private alertService: AlertService
+    // private route: ActivatedRoute,
+    // private router: Router,
+  ) {
+    this.postUrl =  environment.apiUrl + '/project';
+
+  }
 
   ngOnInit() {
     this.myForm = this._fb.group({
-    FrontEnd: ['',],
+    ProjectName: ['', ],
     teamMembers: this._fb.array([
     this.initTeamMembers(),
     ])
+    });
+    this.projectForm = this._fb.group({
+        projekt: this.myForm,
     });
   }
 
   initTeamMembers() {
     return this._fb.group({
+      MemberName: ['', ],
     });
   }
 
   addMember() {
-    const control = <FormArray>this.myForm.controls['teamMembers'];
-    // console.log("Click:", control);
-    // console.log(this.myForm.controls.teamMembers['controls']);
+    const control = this.myForm.controls.teamMembers as FormArray;
     control.push(this.initTeamMembers());
-    // this.countMembers++
-    // console.log("Click:", this.countMembers);
   }
 
   removeMember(i: number) {
-    const control = <FormArray>this.myForm.controls['teamMembers'];
+    const control = this.myForm.controls.teamMembers as FormArray;
     control.removeAt(i);
+  }
+  get f() {
+    return this.projectForm.controls;
+  }
+  onSubmit() {
+    this.submitted = true;
+    // console.log('----++++');
+    // console.log(this.f.projekt.value);
+    // console.log(this.f.projekt.value.teamMembers);
+
+    // reset alerts on submit
+    this.alertService.clear();
+    this.loading = true;
+
+    const name = this.f.projekt.value.ProjectName;
+    const description = 'New project.';
+    // const users = ['ime2.priimek2@gmail.com', 'ime.priimek@gmail.com'];
+
+    const a = this.http.post<any>(this.postUrl, { name, description}).pipe(first())
+            .subscribe(
+                data => {
+                    console.log(data);
+                    // this.router.navigate([this.returnUrl]);
+                },
+                error => {
+                    this.alertService.error(error);
+                    this.loading = false;
+                });
+
+    // console.log(a);
+    // console.log('----++++');
+
+
+
+    // this.d = this.http.get(this.apiUrl).map((res: Response) => res.json());
+    // this.d = this.router.navigate([this.apiUrl]);
+    // console.log('----++++', this.d);
+
+  //       this.submitted = true;
+  //
+  //
+  //
+  //       this.loading = true;
+  //
+  //       // this.router.navigate('/api/project');
+  //
   }
 
 }
@@ -64,7 +137,7 @@ export class AddProjectComponent implements OnInit {
   templateUrl: './addMemberToProject.component.html'
 })
 export class AddMemberToProjectComponent implements OnInit {
-  addMemberToProject:AddMemberToProject[];
+  addMemberToProject: AddMemberToProject[];
   constructor() { }
 
   ngOnInit(): void {
@@ -73,48 +146,3 @@ export class AddMemberToProjectComponent implements OnInit {
 
 
 }
-
-
-// @Component({
-//   selector: 'app-toolbar',
-//   template: '<button (click)="addComponentClick.emit()">Add Text component</button>'
-// })
-// export class ToolbarComponent {
-//   @Output() addComponentClick = new EventEmitter();
-//    constructor() { }
-// }
-//
-// @Component({
-//    selector: 'app-view',
-//    template: `<div class="container">
-// <app-toolbar (addComponentClick)="onAddComponentClick()"></app-toolbar>
-// <div app-type="section" id="SECTION1" [active]="true"></div>
-// <div app-type="section" id="SECTION2"></div>
-// </div>`
-// })
-// export class ViewComponent implements AfterViewInit, OnInit {
-//   @ViewChildren(SectionComponent) sections: QueryList<SectionComponent>;
-//   activeSections: SectionComponent[];
-//   textComponentFactory: ComponentFactory<TextComponent>;
-//
-//   constructor(private componentFactoryResolver: ComponentFactoryResolver) {  }
-//
-//   ngOnInit() {
-//     this.textComponentFactory = this.componentFactoryResolver.resolveComponentFactory(TextComponent);
-//   }
-//
-//   ngAfterViewInit() {
-//     this.activeSections = this.sections.reduce((result, section, index) => {
-//       if(section.active) {
-//         result.push(section);
-//       }
-//       return result;
-//     }, []);
-//   }
-//
-//    onAddComponentClick() {
-//     this.activeSections.forEach((section) => {
-//       section.viewContainerRef.createComponent(this.textComponentFactory);
-//     });
-//    }
-// }
