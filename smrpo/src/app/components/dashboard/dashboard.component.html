@@ -1,24 +1,60 @@
 <div >
-
-
+<br>
+<br>
 <h1>Hi {{currentUser.firstName}}!</h1> You are an {{currentUser.globalRole}}!
 
-
 <div *ngIf="ifAdmin">
+<br>
+
 <h3>All registered users:</h3>
+    <div class="card-body">
+      <div id="table" class="table-editable">
+        <table class="table table-bordered table-responsive-md table-striped text-center">
+          <tr>
+                <th class="text-center">First Name</th>
+                <th class="text-center">Last name</th>
+                <th class="text-center">Email</th>
+                <th class="text-center">password</th>
+                <th class="text-center">globalRole</th>
+          </tr>
+          <tr  *ngFor="let user of users; let i = index">
+                <td *ngIf="!checkIfSame(user)">
+                <span  contenteditable="true"  (keyup)="changeValue(i, user.id, 'firstName', $event)" (blur)="updateList(i, 'firstName', $event)" contenteditable="true">{{user.firstName}}</span>
+                </td>
+                <td *ngIf="!checkIfSame(user)">
+                    <span contenteditable="true" (keyup)="changeValue(i,  user.id, 'lastName', $event)" (blur)="updateList(i, 'lastName', $event)">{{user.lastName}}</span>
+                </td>
+                <td *ngIf="!checkIfSame(user)">
+                    <span contenteditable="true" (keyup)="changeValue(i,  user.id, 'email', $event)" (blur)="updateList(i, 'email', $event)">{{user.email}}</span>
+                </td>
+                <td *ngIf="!checkIfSame(user)">
+                    <span contenteditable="true" (keyup)="changeValue(i,  user.id, 'password', $event)" (blur)="updateList(i, 'password', $event)">*</span>
+                </td>
+                <td *ngIf="!checkIfSame(user)">
+                    <span contenteditable="true" (keyup)="changeValue(i,  user.id, 'globalRole', $event)" (blur)="updateList(i, 'globalRole', $event)">{{user.globalRole}}</span>
+                </td>
+                <td *ngIf="!checkIfSame(user)">
+                    <span class="table-delete">
+                    <button type="button" mdbBtn color="danger" rounded="true" size="sm" class="my-0" (click)="updateUser(user)" >Save</button>
+                </span>
+                </td>
+                <td *ngIf="!checkIfSame(user)">
+                    
+                <span class="table-remove">
+                    <button type="button" mdbBtn color="danger" rounded="true" size="sm" class="my-0" (click)="deleteUser(user.id)" (click)="remove(i)">Remove</button>
+                </span>
+                </td>
 
-<ul>
-    <li *ngFor="let user of users">
-        {{user.firstName}},  {{user.lastName}} 
-        <!--        - <a (click)="deleteUser(user.id)" class="text-danger">Delete</a> -->
-        - <a (click)="openDialog(user.id)">Edit user</a> 
-    </li>
-</ul>
+          </tr>
+        </table>
+      </div>
+    </div>
 </div>
-<!--
 
-<ng-template let-data>
-    Hello, {{currentUser.firstName}}
-  </ng-template>
-  <button class="mat-raised-button" (click)="openDialog()">OPEN DIALOG</button>
--->
+</div>
+
+
+
+
+
+

@@ -26,6 +26,13 @@ export class UserService {
       );
        
   }
+
+    updateUser (user: User) {
+      var id = user.id; 
+      console.log ("tok je id;", id)
+      return this.httpClient.put(this.getUsersUrl + `/${id}`, user);
+
+    }
   delete(id: number) {
     return this.httpClient.delete(this.getUsersUrl + `/${id}`);
   }

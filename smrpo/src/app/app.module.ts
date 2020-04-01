@@ -27,6 +27,7 @@ import { environment } from 'src/environments/environment';
 import { ErrorInterceptor } from './helpers/error.interceptors';
 import { DashboardComponent } from './components/dashboard/dashboard.component';
 import { EditUserDialogComponent } from './components/edit-user-dialog/edit-user-dialog.component';
+import { EditUsersComponent } from './components/edit-users/edit-users.component';
 
 @NgModule({
   declarations: [
@@ -42,7 +43,8 @@ import { EditUserDialogComponent } from './components/edit-user-dialog/edit-user
     LoginComponent,
     AlertComponent,
     DashboardComponent,
-    EditUserDialogComponent
+    EditUserDialogComponent,
+    EditUsersComponent
    // LoginComponent,
    //  AlertComponent
   ],
