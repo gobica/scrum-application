@@ -4,6 +4,8 @@ import { UserService } from '../../services/user.service';
 import { AuthenticationService } from  '../../services/authentication.service';
 import { first } from 'rxjs/operators';
 import { ThrowStmt } from '@angular/compiler';
+import {MatDialog, MatDialogConfig } from '@angular/material/dialog';
+import {EditUserDialogComponent} from '../edit-user-dialog/edit-user-dialog.component'
 
 @Component({
   selector: 'app-dashboard',
@@ -14,15 +16,16 @@ export class DashboardComponent implements OnInit {
   currentUser: User;
   users = [];
   ifAdmin; 
+  user;
 
   constructor( 
     private authenticationService: AuthenticationService,
     private userService: UserService,
+    private matDialog: MatDialog
 
     ) {
 
       this.currentUser = this.authenticationService.currentUserValueFromToken;
-      console.log("to je user", this.currentUser)
 
      }
 
@@ -41,7 +44,21 @@ private loadAllUsers() {
   this.userService.getAll()
       .pipe(first())
       .subscribe(users => this.users = users);
+}
 
+getUserByID (id: number) {
+  this.userService.getUser(id)
+    .pipe(first())
+    .subscribe(user => this.user = user); 
+
+}
+
+openDialog(userObject: User) {
+
+  const dialogConfig = new MatDialogConfig();
+  dialogConfig.data = userObject;
+  this.matDialog.open(EditUserDialogComponent, dialogConfig);
+  //this.matDialog.open(EditUserDialogComponent, dialogConfig);
 }
 
 

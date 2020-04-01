@@ -10,22 +10,28 @@ a {
     cursor: pointer;
 }
 
+.container {
+	height: 100vh;
+	width: 100vh;
+}
 .login-wrapper {
 	display: flex;
-	height: 100vh;
+	height: 80vh;
 	width: 50vh;
-	position: absolute;
+	position: relative;
 	justify-content: center;
+	z-index: 2;
 }
+
 
 .alert_massage {
-	margin-top: 10vh;
-	height: 5vh;
-	width: 100%;
-	text-align: center;
-
+    position:fixed; 
+	margin-top: 10vh; 
+	margin-bottom: -10vh;
+    left: 0px; 
+    width: 100%;
+    z-index:9999; 
 }
-
 .box {
 	/* bring your own prefixes */
 	align-self: center;

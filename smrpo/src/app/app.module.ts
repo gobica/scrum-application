@@ -15,7 +15,6 @@ import { JwtModule } from '@auth0/angular-jwt';
 import { HttpClientModule, HTTP_INTERCEPTORS } from '@angular/common/http';
 //import { DataService} from './services/user.service'
 import { UserService} from './services/user.service'
-
 /* Angular material */
 import { BrowserAnimationsModule } from '@angular/platform-browser/animations';
 import { AngularMaterialModule } from './models/angular-material.module';
@@ -27,6 +26,7 @@ import { environment } from 'src/environments/environment';
 
 import { ErrorInterceptor } from './helpers/error.interceptors';
 import { DashboardComponent } from './components/dashboard/dashboard.component';
+import { EditUserDialogComponent } from './components/edit-user-dialog/edit-user-dialog.component';
 
 @NgModule({
   declarations: [
@@ -41,7 +41,8 @@ import { DashboardComponent } from './components/dashboard/dashboard.component';
     AlertComponent,
     LoginComponent,
     AlertComponent,
-    DashboardComponent
+    DashboardComponent,
+    EditUserDialogComponent
    // LoginComponent,
    //  AlertComponent
   ],
@@ -68,7 +69,8 @@ import { DashboardComponent } from './components/dashboard/dashboard.component';
     { provide: HTTP_INTERCEPTORS, useClass: ErrorInterceptor, multi: true },
     UserService
   ],
-  bootstrap: [AppComponent]
+  bootstrap: [AppComponent], 
+
 
 })
 export class AppModule { }
