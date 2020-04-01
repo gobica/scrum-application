@@ -3,7 +3,7 @@ import { User } from '../../models/user'
 import { UserService } from '../../services/user.service';
 import { AuthenticationService } from  '../../services/authentication.service';
 import { first } from 'rxjs/operators';
-import * as jwt_decode from "jwt-decode";
+import { ThrowStmt } from '@angular/compiler';
 
 @Component({
   selector: 'app-dashboard',
@@ -13,22 +13,22 @@ import * as jwt_decode from "jwt-decode";
 export class DashboardComponent implements OnInit {
   currentUser: User;
   users = [];
-
+  ifAdmin; 
 
   constructor( 
     private authenticationService: AuthenticationService,
-    private userService: UserService
-    ) {
-      let tempUser = this.authenticationService.currentUserValue;
-       this.currentUser = this.getDecodedAccessToken(tempUser.token); // decode token
-      console.log(this.currentUser)
+    private userService: UserService,
 
+    ) {
+
+      this.currentUser = this.authenticationService.currentUserValueFromToken;
+      console.log("to je user", this.currentUser)
 
      }
 
   ngOnInit(): void {
-    this.loadAllUsers();
-    
+    this.ifAdmin = this.authenticationService.isAdmin(); 
+    if (this.ifAdmin) this.loadAllUsers();
   }
 
   deleteUser(id: number) {
@@ -44,13 +44,5 @@ private loadAllUsers() {
 
 }
 
-getDecodedAccessToken(token: string): any {
-  try{
-      return jwt_decode(token);
-  }
-  catch(Error){
-      return null;
-  }
-}
 
 }

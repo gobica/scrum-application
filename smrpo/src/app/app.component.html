@@ -1,8 +1,13 @@
 <nav class="navbar navbar-expand navbar-dark bg-dark" *ngIf="currentUser">
   <div class="navbar-nav">
-  
+
+
+    <div *ngIf="ifAdmin">
+      <a class="nav-item nav-link" routerLink="/register">Register users</a>
+  </div>
+
   <a class="nav-item nav-link" routerLink="/">Dashboard</a>
-  <a class="nav-item nav-link" routerLink="/register">Register users</a>
+<!--  <a class="nav-item nav-link" routerLink="/register">Register users</a> -->
   <a class="nav-item nav-link" routerLink="/addProject">New project</a>
   <a class="nav-item nav-link" routerLink="/searchProject">Edit project</a>
   <a class="nav-item nav-link" (click)="logout()">Logout</a>

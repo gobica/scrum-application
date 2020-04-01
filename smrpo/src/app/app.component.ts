@@ -15,12 +15,16 @@ import { User } from './models/user';
 export class AppComponent {
 
   currentUser: User;
+  ifAdmin;
 
   constructor(
       private router: Router,
-      private authenticationService: AuthenticationService
+      private authenticationService: AuthenticationService,
+      
+      
   ) {
       this.authenticationService.currentUser.subscribe(x => this.currentUser = x);
+      this.ifAdmin = this.authenticationService.isAdmin(); 
   }
 
   logout() {

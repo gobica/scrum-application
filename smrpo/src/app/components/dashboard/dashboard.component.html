@@ -1,13 +1,14 @@
 <h1>Hi {{currentUser.firstName}}!</h1> You are an {{currentUser.globalRole}}!
 
+
 <!---
 <div ng-if="!currentUser.lastLogin}">
     Last login: {{currentUser.lastLogin * 1000 | date:'yyyy-MM-dd HH:mm '}} 
 </div>
 -->
 
-
-
+<div *ngIf="ifAdmin">
+    <a class="nav-item nav-link" routerLink="/register">Register users</a>
 <h3>All registered users:</h3>
 
 <ul>
@@ -16,3 +17,4 @@
         - <a (click)="deleteUser(user.id)" class="text-danger">Delete</a>
     </li>
 </ul>
+</div>
