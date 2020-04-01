@@ -9,18 +9,19 @@ body {
 a {
     cursor: pointer;
 }
-
 .container {
 	height: 100vh;
 	width: 100vh;
 }
 .login-wrapper {
 	display: flex;
-	height: 80vh;
+	margin-top: 20vh;
+	max-height: 60vh;
 	width: 50vh;
-	position: relative;
+	max-width: 50vh;
+	position: absolute;
 	justify-content: center;
-	z-index: 2;
+	align-items: center;
 }
 
 

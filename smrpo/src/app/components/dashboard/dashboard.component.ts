@@ -34,8 +34,6 @@ export class DashboardComponent implements OnInit {
     this.ifAdmin = this.authenticationService.isAdmin(); 
     if (this.ifAdmin) this.loadAllUsers();
 
-
-    
   }
 
   deleteUser(id: number) {

@@ -14,7 +14,7 @@ import { User } from './models/user';
 export class AppComponent {
 
   currentUser: User;
-  ifAdmin;
+  ifAdmin = true;
 
   constructor(
       private router: Router,
