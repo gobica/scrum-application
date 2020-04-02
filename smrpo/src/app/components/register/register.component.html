@@ -1,11 +1,9 @@
-<div class="login-wrapper" >
-  <mat-card class="box" layout-align="center center" >
+  <mat-card class="box" >
     <mat-card-header>
       <mat-card-title>Register</mat-card-title>
     </mat-card-header>
 
 <form [formGroup]="registerForm" (ngSubmit)="onSubmit()" class="example-form">
-
   <mat-card-content>
     <mat-form-field class="example-full-width ">
     <div class="form-group">
@@ -15,6 +13,8 @@
         </div>
     </div>
   </mat-form-field>
+  <br>
+
   <mat-form-field class="example-full-width ">
     <div class="form-group">
         <input  matInput placeholder="Last Name" type="text" formControlName="lastName"  [ngClass]="{ 'is-invalid': submitted && f.lastName.errors }" />
@@ -23,6 +23,8 @@
         </div>
     </div>
   </mat-form-field>
+  <br>
+
 
   <mat-form-field class="example-full-width ">
     <div class="form-group">
@@ -34,6 +36,8 @@
         </div>
     </div>
   </mat-form-field>
+  <br>
+
 
   <mat-form-field class="example-full-width ">
     <div class="form-group">
@@ -44,6 +48,8 @@
         </div>
     </div>
   </mat-form-field>
+  <br>
+
   <mat-form-field class="example-full-width ">
     <div class="form-group">
       
@@ -62,6 +68,8 @@
   <div class="form-group">
     <button [disabled]="loading" mat-stroked-button color="accent" class="btn-block">Register</button>
       </div>
+
+      
+      
 </form>
 </mat-card>
-</div>

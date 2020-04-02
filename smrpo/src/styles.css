@@ -33,18 +33,28 @@ a {
     width: 100%;
     z-index:9999; 
 }
+
+.mat-card-header{
+	text-align: center;
+	align-items: center;
+	justify-content: center;
+}
+
+
 .box {
+	margin-top: 5vh;
 	/* bring your own prefixes */
-	align-self: center;
+	justify-content: center;
+	align-items: center;
 	opacity: 50;
-	float: center;
 	padding: 60px 50px 40px 50px;
-	width: 100%;
 	background-color: #ffffff;
 	border-radius: 5px;
-	max-width: 500px;
-	color: black;
-
+	color: black;	
+	display: flex;
+	width: 100%;
+	max-width: 80vh;
+	text-align: center;
 }
 
 .box-newProject {

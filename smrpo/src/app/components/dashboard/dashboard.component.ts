@@ -19,7 +19,8 @@ export class DashboardComponent implements OnInit {
   currentUser: User;
   users = [];
   ifAdmin; 
-  user;
+  user ;
+
 
   constructor( 
     private authenticationService: AuthenticationService,
