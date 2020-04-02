@@ -6,20 +6,52 @@
 
     <form [formGroup]="projectForm"  class="example-form">
 
+
+
       <mat-card-content>
+
+        <mat-form-field class="example-full-width " >
+          <input class="inputfields" matInput placeholder="Project name" formControlName="projectName" required>
+        </mat-form-field>
+
         <form [formGroup]="myForm" class="example-form">
-          <mat-form-field class="example-full-width " matNativeControl required>
-            <input class="inputfields" matInput placeholder="Project name" formControlName="ProjectName">
-          </mat-form-field>
+
 
           <div formArrayName="teamMembers">
-            <div *ngFor="let teamMember of myForm.controls.teamMembers['controls']; let i=index" class="panel panel-default">
-              <app-addMemberToProject></app-addMemberToProject>
-              <button mat-stroked-button color="accent" class="btn-right " (click)="removeMember(i)">
-                 <!--<span id="btn-remove" class="glyphicon glyphicon-remove"></span>-->
-                <!--X-->
-                <span class="mat-button-wrapper"> X </span>
-              </button>
+            <div *ngFor="let teamMember of myForm.controls.teamMembers['controls']; let i=index" class="panel panel-default" >
+
+                <div [formGroup]="teamMember">
+
+                <mat-form-field class="example-twoWithButton-width " required >
+                  <input class="inputfields" matInput placeholder="Member email" formControlName="memberName" required>
+
+                </mat-form-field>
+
+
+                <mat-form-field class="example-twoWithButton-width ">
+                  <mat-label>Team roles</mat-label>
+
+                  <mat-select matNativeControl required formControlName="selectedRole">
+                    <mat-option>None</mat-option>
+                    <mat-option value="product-manager-0">Product owner</mat-option>
+                    <mat-option value="methodology-administrator-1">Methodology master</mat-option>
+                    <mat-option value="team-member-2">Team member</mat-option>
+                  </mat-select>
+                </mat-form-field>
+
+
+
+              <!--<app-addMemberToProject [group]="myForm"></app-addMemberToProject>-->
+
+
+
+
+                <button mat-stroked-button color="accent" class="btn-right " (click)="removeMember(i)">
+                   <!--<span id="btn-remove" class="glyphicon glyphicon-remove"></span>-->
+                  <!--X-->
+                  <span class="mat-button-wrapper"> X </span>
+                </button>
+              </div>
             </div>
           </div>
 

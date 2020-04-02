@@ -18,7 +18,7 @@ a {
 	margin-top: 20vh;
 	max-height: 60vh;
 	width: 50vh;
-	max-width: 50vh;
+	max-width: 80vh;
 	position: absolute;
 	justify-content: center;
 	align-items: center;
@@ -60,7 +60,7 @@ a {
 .box-newProject {
 	align-self: flex-start;
 	opacity: 50;
-	padding: 60px 50px 40px 50px;
+	/*padding: 60px 50px 40px 50px;*/
 	width: 100%;
 	background-color: #ffffff;
 	border-radius: 5px;
@@ -71,7 +71,8 @@ a {
 }
 
 .project-wrapper {
-	width: 70vh;
+	width: 100vh !important;
+  padding: 10px 20px 10px !important;
 }
 
 .box.back {

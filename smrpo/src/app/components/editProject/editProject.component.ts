@@ -20,19 +20,30 @@ export class EditProjectComponent implements OnInit {
   editProjects:EditProject[];
 
   public myForm: FormGroup;
+  public projectForm: FormGroup;
   constructor(private _fb: FormBuilder) { }
 
   ngOnInit() {
     this.myForm = this._fb.group({
-    FrontEnd: ['',],
-    teamMembers: this._fb.array([
-    this.initTeamMembers(),
-    ])
+
+      teamMembers: this._fb.array([
+      this.initTeamMembers(),
+      //   this.member = this._fb.group({
+      //     memberName: ['',  Validators.required],
+      //     selectedRole: ['',  Validators.required],
+      //   }),
+      ])
+    });
+    this.projectForm = this._fb.group({
+        projectName: ['',  Validators.required],
+        projekt: this.myForm,
     });
   }
 
   initTeamMembers() {
     return this._fb.group({
+      memberName: ['',  Validators.required],
+      selectedRole: ['',  Validators.required],
     });
   }
 

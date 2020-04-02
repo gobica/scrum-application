@@ -1,5 +1,5 @@
-import { Component, OnInit } from '@angular/core';
-import { FormGroup, FormArray, FormBuilder, Validators } from '@angular/forms';
+import { Component, OnInit, Input, NgModule } from '@angular/core';
+import { FormGroup, FormArray, FormBuilder, Validators, ValidationErrors } from '@angular/forms';
 import { AddProject } from '../../models/AddProject';
 import { AddMemberToProject } from '../../models/AddMemberToProject';
 // import {first} from 'rxjs/operators';
@@ -9,12 +9,16 @@ import { HttpClient } from '@angular/common/http';
 import {environment} from '../../../environments/environment';
 import {first} from 'rxjs/operators';
 import { AlertService } from '../../services/alert.service';
+import {group} from '@angular/animations';
+// import { ValidationErrorsComponent } from '../validation-errors/validation-errors.component';
 
 
 // interface TeamRoles {
 //   value: string;
 //   viewValue: string;
 // }
+
+
 
 @Component({
   selector: 'app-addProject',
@@ -24,53 +28,57 @@ import { AlertService } from '../../services/alert.service';
 export class AddProjectComponent implements OnInit {
   addProjects: AddProject[];
   public projectForm: FormGroup;
-  postUrl: string = '';
+  postUrlProject: string = '';
+  postUrlRole: string = '';
+  postUrlUser: string = '';
   loading = false;
   submitted = false;
+  selectedRole;
+  // error: ValidationErrorsComponent;
 
-  // loading = false;
-  // submitted = false;
-  // returnUrl: string;
-  // private apiUrl = './api/project';
-  // d: any = {};
-
-  // Roles: any = ['Admin', 'Author', 'Reader'];
-
-  // teamRoles: TeamRoles[] = [
-  //   {value: 'product-manager-0', viewValue: 'Product manager'},
-  //   {value: 'methodology-administrator-1', viewValue: 'Methodology administrator'},
-  //   {value: 'team-member-2', viewValue: 'Team member'}
-  // ];
-
-  // countMembers: number = 3;
+  // public group: FormGroup;
+  // public member_form : group;
 
   public myForm: FormGroup;
+  // public member: FormGroup;
   constructor(
     private _fb: FormBuilder,
     private http: HttpClient,
     private alertService: AlertService
-    // private route: ActivatedRoute,
-    // private router: Router,
   ) {
-    this.postUrl =  environment.apiUrl + '/project';
+    this.postUrlProject =  environment.apiUrl + '/project';
+    this.postUrlRole =  environment.apiUrl + '/project/role';
+    this.postUrlUser =  environment.apiUrl + '/user';
 
   }
 
   ngOnInit() {
     this.myForm = this._fb.group({
-    ProjectName: ['', ],
-    teamMembers: this._fb.array([
-    this.initTeamMembers(),
-    ])
+
+      teamMembers: this._fb.array([
+      this.initTeamMembers(),
+      //   this.member = this._fb.group({
+      //     memberName: ['',  Validators.required],
+      //     selectedRole: ['',  Validators.required],
+      //   }),
+      ])
     });
     this.projectForm = this._fb.group({
+        projectName: ['',  Validators.required],
         projekt: this.myForm,
     });
   }
 
   initTeamMembers() {
+    // this.group = this._fb.group({
+    //   memberName: ['', ],
+    //   selectedRole: ['', ],
+    // });
+    // return this.group;
+
     return this._fb.group({
-      MemberName: ['', ],
+      memberName: ['',  Validators.required],
+      selectedRole: ['',  Validators.required],
     });
   }
 
@@ -88,49 +96,199 @@ export class AddProjectComponent implements OnInit {
   }
   onSubmit() {
     this.submitted = true;
-    // console.log('----++++');
-    // console.log(this.f.projekt.value);
-    // console.log(this.f.projekt.value.teamMembers);
-
     // reset alerts on submit
     this.alertService.clear();
     this.loading = true;
 
-    const name = this.f.projekt.value.ProjectName;
-    const description = 'New project.';
-    // const users = ['ime2.priimek2@gmail.com', 'ime.priimek@gmail.com'];
+    // console.log('----++++');
+    // console.log(this.f.projekt.value);
+    // console.log(this.f.projekt.value.teamMembers);
+    //
 
-    const a = this.http.post<any>(this.postUrl, { name, description}).pipe(first())
-            .subscribe(
-                data => {
+    this.http.get<any>(this.postUrlUser).pipe(first()) // vrne vse uporabnike v bazi
+      .subscribe(
+          data => {
+              // console.log(data);
+              // this.router.navigate([this.returnUrl]);
+              localStorage.setItem('users', JSON.stringify(data));
+              return data;
+          },
+          error => {
+              this.alertService.error(error);
+              this.loading = false;
+          });
+    const uporabniki = JSON.parse(localStorage.getItem('users'));
+
+    // console.log(uporabniki);
+
+    const users = [];
+
+    this.f.projekt.value.teamMembers.forEach(member => { // poisce id uporabnikov na podlagi podanih mailov
+      // console.log(member);
+      const email = member.memberName;
+
+      if (email !== undefined && email !== '' && email !== null) {
+
+        let idUpo = '';
+        const idUporabnika = uporabniki.forEach(u => {
+          if (email === u.email) {
+            idUpo = u.id;
+            return idUpo;
+          }
+        });
+
+        if (idUpo !== '') {
+          // console.log('ID2: ', idUpo);
+          // { "id": 3, "localRole": "Projektni vodja" }
+          if (member.selectedRole !== '') {
+            users.push({id: idUpo, localRole: member.selectedRole});  // doda uporabnika v array userjev z idjem in ulogo
+          } else {
+            this.alertService.clear();
+            this.alertService.error('Role not selected');
+            this.submitted = false;
+            this.loading = false;
+          }
+        } else {
+          // console.log('Uporabnik je prazen...');
+          this.alertService.clear();
+          this.alertService.error('The team member is not in the database');
+          this.submitted = false;
+          this.loading = false;
+        }
+      } else {
+        this.alertService.clear();
+        this.alertService.error('Enter the team member email');
+        this.submitted = false;
+        this.loading = false;
+      }
+    });
+
+    // console.log(users);
+
+
+    // preverjanje podvajanja clanov v skupini
+    let jePodvajanjeUporabnikov = false;
+    users.forEach((u1, index1) => {
+       users.forEach((u2, index2) => {
+         if (u1.id === u2.id && index1 !== index2) {
+           jePodvajanjeUporabnikov = true;
+         }
+       });
+    });
+
+
+    let soVseVloge = true;
+    const soVloge = [0, 0, 0];
+    const roles = ['product-manager-0', 'methodology-administrator-1', 'team-member-2'];
+
+    users.forEach(v => {
+      if (v.localRole === roles[0]) {
+        soVloge[0] += 1;
+      }
+      if (v.localRole === roles[1]) {
+        soVloge[1] += 1;
+      }
+      if (v.localRole === roles[2]) {
+        soVloge[2] += 1;
+      }
+    });
+    soVloge.forEach( v => {
+      if (v === 0) {
+        soVseVloge = false;
+      }
+    });
+
+
+    const name = this.f.projectName.value;
+    const description = 'New project.';
+
+
+    this.http.get<any>(this.postUrlProject).pipe(first()) // vrne vse projekte --> ali projekt ze obstaja
+      .subscribe(
+          data => {
+              // console.log(data);
+              // this.router.navigate([this.returnUrl]);
+              localStorage.setItem('projects', JSON.stringify(data));
+              return data;
+          },
+          error => {
+              this.alertService.error(error);
+              this.loading = false;
+          });
+    const projekti = JSON.parse(localStorage.getItem('projects'));
+    // console.log(projekti);
+
+
+    let obstajaZeProjekt = false;
+    projekti.forEach(p => {
+      if (p.name === name) {
+        obstajaZeProjekt = true;
+      }
+    });
+    // console.log('ßßß', obstajaZeProjekt);
+
+
+
+    // console.log(name);
+
+    // console.log(users.length, this.f.projekt.value.teamMembers.length);
+    if (name !== undefined && name !== '' && name !== null) {
+
+      if (obstajaZeProjekt === false) {
+        if (users.length === this.f.projekt.value.teamMembers.length) {
+          if (jePodvajanjeUporabnikov === false) {
+            if (soVseVloge === true) {
+
+              this.http.post<any>(this.postUrlProject, {name, description, users}).pipe(first())
+                .subscribe(
+                  data => {
                     console.log(data);
                     // this.router.navigate([this.returnUrl]);
-                },
-                error => {
+                  },
+                  error => {
                     this.alertService.error(error);
                     this.loading = false;
-                });
+                  });
+              this.alertService.success('New project created');
+            } else {
+              this.alertService.error('Project must have product owner, methodology master and team member');
+              this.submitted = false;
+              this.loading = false;
+            }
+          } else {
+            this.alertService.error('A member may not be enrolled twice or more');
+            this.submitted = false;
+            this.loading = false;
+          }
+        } else {
+          // this.alertService.error('Enter a correct team member email!');
+          this.submitted = false;
+          this.loading = false;
+        }
 
+      } else {
+          this.alertService.error('A project with this name already exists');
+          this.submitted = false;
+          this.loading = false;
+      }
+    } else {
+      this.alertService.error('Enter a project name');
+      this.loading = false;
+    }
     // console.log(a);
     // console.log('----++++');
 
 
 
-    // this.d = this.http.get(this.apiUrl).map((res: Response) => res.json());
-    // this.d = this.router.navigate([this.apiUrl]);
-    // console.log('----++++', this.d);
 
-  //       this.submitted = true;
-  //
-  //
-  //
-  //       this.loading = true;
-  //
-  //       // this.router.navigate('/api/project');
-  //
   }
 
 }
+
+// @NgModule({
+//    imports: [ValidationErrorsComponent],
+//
+// })
 
 @Component({
   selector: 'app-addMemberToProject',
@@ -138,8 +296,12 @@ export class AddProjectComponent implements OnInit {
 })
 export class AddMemberToProjectComponent implements OnInit {
   addMemberToProject: AddMemberToProject[];
+  // public myForm: FormGroup;
+  public group: FormGroup;
+  // public member_form : group;
   constructor() { }
-
+  memberName;
+  selectedRole;
   ngOnInit(): void {
 
   }
