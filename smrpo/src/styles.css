@@ -72,7 +72,8 @@ a {
 
 .project-wrapper {
 	width: 100vh !important;
-  padding: 10px 20px 10px !important;
+  margin-top: 5px;
+  /*padding: 0px 20px 10px !important;*/
 }
 
 .box.back {
@@ -137,6 +138,10 @@ a {
   margin: 0px;
   padding: 0px;
   float: right;
+}
+
+.cdk-textarea-autosize {
+  height: 60px !important;
 }
 
 .btn-block-newProject {

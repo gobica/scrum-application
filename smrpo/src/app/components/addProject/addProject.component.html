@@ -14,6 +14,10 @@
           <input class="inputfields" matInput placeholder="Project name" formControlName="projectName" required>
         </mat-form-field>
 
+        <mat-form-field class="example-full-width " >
+          <textarea class="cdk-textarea-autosize" matInput placeholder="Project description" formControlName="projectDescription"></textarea>
+        </mat-form-field>
+
         <form [formGroup]="myForm" class="example-form">
 
 
@@ -33,17 +37,11 @@
 
                   <mat-select matNativeControl required formControlName="selectedRole">
                     <mat-option>None</mat-option>
-                    <mat-option value="product-manager-0">Product owner</mat-option>
-                    <mat-option value="methodology-administrator-1">Methodology master</mat-option>
-                    <mat-option value="team-member-2">Team member</mat-option>
+                    <mat-option value="Product owner">Product owner</mat-option>
+                    <mat-option value="Scrum master">Scrum master</mat-option>
+                    <mat-option value="Team member">Team member</mat-option>
                   </mat-select>
                 </mat-form-field>
-
-
-
-              <!--<app-addMemberToProject [group]="myForm"></app-addMemberToProject>-->
-
-
 
 
                 <button mat-stroked-button color="accent" class="btn-right " (click)="removeMember(i)">
@@ -56,7 +54,7 @@
           </div>
 
           <div>
-            <button mat-stroked-button color="accent" class="btn-block-newProject" (click)="addMember()">Add team member</button>
+            <button mat-stroked-button color="accent" class="btn-block-newProject" (click)="addMember()">Add project member</button>
           </div>
 
         </form>

@@ -1,7 +1,6 @@
 import { Component, OnInit, Input, NgModule } from '@angular/core';
 import { FormGroup, FormArray, FormBuilder, Validators, ValidationErrors } from '@angular/forms';
 import { AddProject } from '../../models/AddProject';
-import { AddMemberToProject } from '../../models/AddMemberToProject';
 // import {first} from 'rxjs/operators';
 // import {ActivatedRoute, Router} from '@angular/router';
 // import {Http, Response} from '@angular/http';
@@ -26,21 +25,18 @@ import {group} from '@angular/animations';
   styleUrls: ['./addProject.component.css']
 })
 export class AddProjectComponent implements OnInit {
-  addProjects: AddProject[];
-  public projectForm: FormGroup;
+
   postUrlProject: string = '';
   postUrlRole: string = '';
   postUrlUser: string = '';
   loading = false;
   submitted = false;
   selectedRole;
-  // error: ValidationErrorsComponent;
-
-  // public group: FormGroup;
-  // public member_form : group;
 
   public myForm: FormGroup;
-  // public member: FormGroup;
+  addProjects: AddProject[];
+  public projectForm: FormGroup;
+
   constructor(
     private _fb: FormBuilder,
     private http: HttpClient,
@@ -49,7 +45,6 @@ export class AddProjectComponent implements OnInit {
     this.postUrlProject =  environment.apiUrl + '/project';
     this.postUrlRole =  environment.apiUrl + '/project/role';
     this.postUrlUser =  environment.apiUrl + '/user';
-
   }
 
   ngOnInit() {
@@ -57,25 +52,117 @@ export class AddProjectComponent implements OnInit {
 
       teamMembers: this._fb.array([
       this.initTeamMembers(),
-      //   this.member = this._fb.group({
-      //     memberName: ['',  Validators.required],
-      //     selectedRole: ['',  Validators.required],
-      //   }),
       ])
     });
     this.projectForm = this._fb.group({
-        projectName: ['',  Validators.required],
-        projekt: this.myForm,
+      projectName: ['',  Validators.required],
+      projectDescription: ['', ],
+      projekt: this.myForm,
     });
+
+    this.getAllUsers();
+
+    this.getAllProjects();
+
+    this.getAllRoles();
+  }
+
+  getAllUsers() {
+    this.http.get<any>(this.postUrlUser).pipe(first()) // vrne vse uporabnike v bazi
+    .subscribe(
+      data => {
+          // console.log(data);
+          localStorage.setItem('users', JSON.stringify(''));
+          localStorage.setItem('users', JSON.stringify(data));
+          return data;
+      },
+      error => {
+          this.alertService.error(error);
+          this.loading = false;
+      }
+    );
+  }
+
+  getAllProjects() {
+    this.http.get<any>(this.postUrlProject).pipe(first()) // vrne vse projekte --> ali projekt ze obstaja
+    .subscribe(
+      data => {
+          // console.log(data);
+          localStorage.setItem('projects', JSON.stringify(''));
+          localStorage.setItem('projects', JSON.stringify(data));
+          return data;
+      },
+      error => {
+          // this.alertService.error(error);
+          this.loading = false;
+      }
+    );
+  }
+
+  async getAllRoles() {
+
+    await this.http.get<any>(this.postUrlRole).pipe(first()) // vrne vse vloge
+    .subscribe(
+      data => {
+          // console.log(data);
+          localStorage.setItem('roles', JSON.stringify(''));
+          localStorage.setItem('roles', JSON.stringify(data));
+          return data;
+      },
+      error => {
+          localStorage.setItem('roles', JSON.stringify(''));
+          // vloge = '';
+          if (error === 'Not Found') { // v primeru, da je tabela prazna vnese vrednosti vlog (inicializira)
+            this.setAllRoles();
+          } else {
+            this.alertService.error(error);
+          }
+          this.loading = false;
+      }
+    );
+  }
+
+  async setAllRoles() {
+    // console.log('Nove vloge');
+    let name = 'Product owner';
+    await this.http.post<any>(this.postUrlRole, {name}).pipe(first())
+    .subscribe(
+      data => {
+        console.log(data);
+      },
+      error => {
+        this.alertService.error(error);
+        this.loading = false;
+      }
+    );
+
+    name = 'Scrum master';
+    await this.http.post<any>(this.postUrlRole, {name}).pipe(first())
+    .subscribe(
+      data => {
+        console.log(data);
+      },
+      error => {
+        this.alertService.error(error);
+        this.loading = false;
+      }
+    );
+
+    name = 'Team member';
+    await this.http.post<any>(this.postUrlRole, {name}).pipe(first())
+    .subscribe(
+      data => {
+        console.log(data);
+      },
+      error => {
+        this.alertService.error(error);
+        this.loading = false;
+      }
+    );
+    // localStorage.setItem('roles', JSON.stringify(data));
   }
 
   initTeamMembers() {
-    // this.group = this._fb.group({
-    //   memberName: ['', ],
-    //   selectedRole: ['', ],
-    // });
-    // return this.group;
-
     return this._fb.group({
       memberName: ['',  Validators.required],
       selectedRole: ['',  Validators.required],
@@ -94,35 +181,9 @@ export class AddProjectComponent implements OnInit {
   get f() {
     return this.projectForm.controls;
   }
-  onSubmit() {
-    this.submitted = true;
-    // reset alerts on submit
-    this.alertService.clear();
-    this.loading = true;
 
-    // console.log('----++++');
-    // console.log(this.f.projekt.value);
-    // console.log(this.f.projekt.value.teamMembers);
-    //
-
-    this.http.get<any>(this.postUrlUser).pipe(first()) // vrne vse uporabnike v bazi
-      .subscribe(
-          data => {
-              // console.log(data);
-              // this.router.navigate([this.returnUrl]);
-              localStorage.setItem('users', JSON.stringify(data));
-              return data;
-          },
-          error => {
-              this.alertService.error(error);
-              this.loading = false;
-          });
-    const uporabniki = JSON.parse(localStorage.getItem('users'));
-
-    // console.log(uporabniki);
-
+  returnEnteredUsers(uporabniki) {
     const users = [];
-
     this.f.projekt.value.teamMembers.forEach(member => { // poisce id uporabnikov na podlagi podanih mailov
       // console.log(member);
       const email = member.memberName;
@@ -130,7 +191,7 @@ export class AddProjectComponent implements OnInit {
       if (email !== undefined && email !== '' && email !== null) {
 
         let idUpo = '';
-        const idUporabnika = uporabniki.forEach(u => {
+        uporabniki.forEach(u => {
           if (email === u.email) {
             idUpo = u.id;
             return idUpo;
@@ -138,10 +199,9 @@ export class AddProjectComponent implements OnInit {
         });
 
         if (idUpo !== '') {
-          // console.log('ID2: ', idUpo);
-          // { "id": 3, "localRole": "Projektni vodja" }
           if (member.selectedRole !== '') {
-            users.push({id: idUpo, localRole: member.selectedRole});  // doda uporabnika v array userjev z idjem in ulogo
+            // { "id": 3, "localRole": "Projektni vodja" }
+            users.push({id: idUpo, localRole: member.selectedRole});  // doda uporabnika v array userjev z idjem in vlogo
           } else {
             this.alertService.clear();
             this.alertService.error('Role not selected');
@@ -149,7 +209,6 @@ export class AddProjectComponent implements OnInit {
             this.loading = false;
           }
         } else {
-          // console.log('Uporabnik je prazen...');
           this.alertService.clear();
           this.alertService.error('The team member is not in the database');
           this.submitted = false;
@@ -162,11 +221,10 @@ export class AddProjectComponent implements OnInit {
         this.loading = false;
       }
     });
+    return users;
+  }
 
-    // console.log(users);
-
-
-    // preverjanje podvajanja clanov v skupini
+  userDuplicates(users) {
     let jePodvajanjeUporabnikov = false;
     users.forEach((u1, index1) => {
        users.forEach((u2, index2) => {
@@ -175,83 +233,107 @@ export class AddProjectComponent implements OnInit {
          }
        });
     });
+    return jePodvajanjeUporabnikov;
+  }
 
-
-    let soVseVloge = true;
-    const soVloge = [0, 0, 0];
-    const roles = ['product-manager-0', 'methodology-administrator-1', 'team-member-2'];
-
-    users.forEach(v => {
-      if (v.localRole === roles[0]) {
-        soVloge[0] += 1;
-      }
-      if (v.localRole === roles[1]) {
-        soVloge[1] += 1;
-      }
-      if (v.localRole === roles[2]) {
-        soVloge[2] += 1;
-      }
-    });
-    soVloge.forEach( v => {
-      if (v === 0) {
-        soVseVloge = false;
-      }
-    });
-
-
-    const name = this.f.projectName.value;
-    const description = 'New project.';
-
-
-    this.http.get<any>(this.postUrlProject).pipe(first()) // vrne vse projekte --> ali projekt ze obstaja
-      .subscribe(
-          data => {
-              // console.log(data);
-              // this.router.navigate([this.returnUrl]);
-              localStorage.setItem('projects', JSON.stringify(data));
-              return data;
-          },
-          error => {
-              this.alertService.error(error);
-              this.loading = false;
-          });
-    const projekti = JSON.parse(localStorage.getItem('projects'));
-    // console.log(projekti);
-
-
+  projectDuplicates(projekti, name) {
     let obstajaZeProjekt = false;
     projekti.forEach(p => {
       if (p.name === name) {
         obstajaZeProjekt = true;
       }
     });
+    // console.log(obstajaZeProjekt);
+    return obstajaZeProjekt;
+  }
+
+  onSubmit() {
+    this.submitted = true;
+    // reset alerts on submit
+    this.alertService.clear();
+    this.loading = true;
+
+    const uporabniki = JSON.parse(localStorage.getItem('users'));
+    // console.log(uporabniki);
+
+
+    const users = this.returnEnteredUsers(uporabniki);
+    // console.log(users);
+
+    const jePodvajanjeUporabnikov = this.userDuplicates(users); // preverjanje podvajanja clanov v skupini
+
+
+
+    const vloge = JSON.parse(localStorage.getItem('roles')); // (0: Product owner, 1: Scrum master, 2: Team member)
+    // console.log(vloge[0].name);
+
+    let productOwnerNumber = 0;
+    users.forEach(v => {
+      if (v.localRole === vloge[0].name) { // Product owner
+        productOwnerNumber += 1;
+      }
+    });
+    // console.log(productOwnerNumber);
+
+    let scrumMasterNumber = 0;
+    users.forEach(v => {
+      if (v.localRole === vloge[1].name) { // Scrum master
+        scrumMasterNumber += 1;
+      }
+    });
+    // console.log(scrumMasterNumber);
+
+
+
+
+    const name = this.f.projectName.value;
+    const description = this.f.projectDescription.value;
+    // console.log(description);
+
+
+
+    const projekti = JSON.parse(localStorage.getItem('projects'));
+    // console.log(projekti);
+
+
+    const obstajaZeProjekt = this.projectDuplicates(projekti, name);
     // console.log('ßßß', obstajaZeProjekt);
 
 
 
-    // console.log(name);
-
-    // console.log(users.length, this.f.projekt.value.teamMembers.length);
     if (name !== undefined && name !== '' && name !== null) {
 
       if (obstajaZeProjekt === false) {
         if (users.length === this.f.projekt.value.teamMembers.length) {
           if (jePodvajanjeUporabnikov === false) {
-            if (soVseVloge === true) {
-
-              this.http.post<any>(this.postUrlProject, {name, description, users}).pipe(first())
-                .subscribe(
-                  data => {
-                    console.log(data);
-                    // this.router.navigate([this.returnUrl]);
-                  },
-                  error => {
-                    this.alertService.error(error);
-                    this.loading = false;
-                  });
-              this.alertService.success('New project created');
+            if (productOwnerNumber === 1) {
+              if (scrumMasterNumber === 1) {
+                this.http.post<any>(this.postUrlProject, {name, description, users}).pipe(first())
+                  .subscribe(
+                    data => {
+                      console.log(data);
+                      // this.router.navigate([this.returnUrl]);
+                    },
+                    error => {
+                      this.alertService.error(error);
+                      this.loading = false;
+                    });
+                this.alertService.success('New project created');
+              } else {
+                if (scrumMasterNumber < 1) {
+                  this.alertService.error('Enter a scrum master');
+                } else {
+                  this.alertService.error('There can be exactly one scrum master');
+                }
+                this.submitted = false;
+                this.loading = false;
+              }
             } else {
-              this.alertService.error('Project must have product owner, methodology master and team member');
+              if (productOwnerNumber < 1) {
+                this.alertService.error('Enter a product owner');
+              } else {
+                this.alertService.error('There can be exactly one product owner');
+              }
               this.submitted = false;
               this.loading = false;
             }
@@ -282,29 +364,5 @@ export class AddProjectComponent implements OnInit {
 
 
   }
-
-}
-
-// @NgModule({
-//    imports: [ValidationErrorsComponent],
-//
-// })
-
-@Component({
-  selector: 'app-addMemberToProject',
-  templateUrl: './addMemberToProject.component.html'
-})
-export class AddMemberToProjectComponent implements OnInit {
-  addMemberToProject: AddMemberToProject[];
-  // public myForm: FormGroup;
-  public group: FormGroup;
-  // public member_form : group;
-  constructor() { }
-  memberName;
-  selectedRole;
-  ngOnInit(): void {
-
-  }
-
 
 }
