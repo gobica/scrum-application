@@ -12,6 +12,7 @@ export class AuthenticationService {
     postUrl: string = "";
     private currentUserSubject: BehaviorSubject<User>;
     public currentUser: Observable<User>;
+    private globalRole;
 
     constructor(private http: HttpClient) {
         this.currentUserSubject = new BehaviorSubject<User>(JSON.parse(localStorage.getItem('currentUser')));
@@ -23,8 +24,8 @@ export class AuthenticationService {
         return this.currentUserSubject.value;
     }
     public get currentUserValueFromToken() : User {
-    
-        let tempUser = this.currentUserValue;
+      
+        let tempUser = this.currentUserSubject.value;
         return this.getDecodedAccessToken(tempUser.token); // decode token
   
     }
@@ -44,21 +45,21 @@ export class AuthenticationService {
         // remove user from local storage and set current user to null
         localStorage.removeItem('currentUser');
         this.currentUserSubject.next(null);
+
     }
 
-
+/*
     isAdmin () {
-        let tempUser = this.currentUserValueFromToken;
-        console.log(tempUser.globalRole);
-        if (tempUser.globalRole == "admin") {
+        if (this.globalRole == "admin") {
           console.log("true");
           return true;
         }
         else {
-          console.log("tle bi mogl bit false");
           return false;
       }
+      
       }
+      */
     getDecodedAccessToken(token: string): any {
         try{
             return jwt_decode(token);
@@ -67,5 +68,23 @@ export class AuthenticationService {
             return null;
         }
       }
+
+    getTokenExpirationDate(exp: number): Date {
+    console.log(exp);
+
+    if (exp === undefined) return null;
+
+    const date = new Date(0); 
+    date.setUTCSeconds(exp);
+    return date;
+  }
+
+  isTokenExpired(token?: string): boolean {
+    if(!this.currentUser) return true;
+    console.log(this.currentUserValue.exp);
+    const date = this.getTokenExpirationDate(this.currentUserValueFromToken.exp);
+    if(date === undefined) return false;
+    return !(date.valueOf() > new Date().valueOf());
+  }
     
 }

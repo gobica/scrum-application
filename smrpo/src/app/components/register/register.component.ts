@@ -9,7 +9,7 @@ import { AlertService,  } from '../../services/alert.service';
 import { UserService } from '../../services/user.service';
 import { AuthenticationService } from  '../../services/authentication.service';
 import { environment } from '../../../environments/environment';
-
+import {MustMatch} from '../../helpers/must-match.validator'
 
 @Component({
   selector: 'app-register',
@@ -30,7 +30,7 @@ export class RegisterComponent implements OnInit {
         private alertService: AlertService
     ) {
         // redirect to home if already logged in
-        if (this.authenticationService.isAdmin() == false) {
+        if (this.authenticationService.currentUserValueFromToken.globalRole == 'user') {
              this.router.navigate(['/']);
 
         }
@@ -40,11 +40,16 @@ export class RegisterComponent implements OnInit {
 
     ngOnInit() {
         this.registerForm = this.formBuilder.group({
+            username: ['', Validators.required],
             firstName: ['', Validators.required],
             lastName: ['', Validators.required],
             email: ['', Validators.required],
             password: ['', [Validators.required, Validators.minLength(6)]], 
             globalRole: ['', Validators.required],
+            confirmPassword: ['', Validators.required],
+
+        }, {
+            validator: MustMatch('password', 'confirmPassword')
         });
     }
 

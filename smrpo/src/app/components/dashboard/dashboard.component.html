@@ -1,11 +1,14 @@
 <div >
 <br>
 <br>
-<h1>Hi {{currentUser.lastName}} {{currentUser.firstName}}!</h1> You are an {{currentUser.globalRole}}!
-<p>email: {{currentUser.email}}</p>
-<p   *ngIf="currentUser.lastLogin != null">Last login: {{currentUser.lastLogin * 1000 | date:'yyyy-MM-dd HH:mm'}}</p>
+<h1>Hi {{currentUserValue.lastName}} {{currentUserValue.firstName}}!</h1> You are an {{currentUserValue.globalRole}}!
+<p>email: {{currentUserValue.email}}</p>
+<p>username: {{currentUserValue.username}}</p>
 
-<div *ngIf="ifAdmin">
+<p   *ngIf="currentUserValue.lastLogin != null">Last login: {{currentUserValue.lastLogin * 1000 | date:'yyyy-MM-dd HH:mm'}}</p>
+
+<div *ngIf="currentUserValue.globalRole == 'admin' && isDataLoaded ">
+
 <br>
 
 <h3>All registered users:</h3>
@@ -13,6 +16,7 @@
       <div id="table" class="table-editable">
         <table class="table table-bordered table-responsive-md table-striped text-center">
           <tr>
+               <th class="text-center">Username</th>
                 <th class="text-center">First Name</th>
                 <th class="text-center">Last name</th>
                 <th class="text-center">Email</th>

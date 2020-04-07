@@ -16,10 +16,10 @@ import { AlertService,  } from '../../services/alert.service';
 export class DashboardComponent implements OnInit {
   loading = false;
   editField: string;
-  currentUser: User;
+  currentUserValue: User;
   users = [];
-  ifAdmin; 
-  user ;
+  user;
+  isDataLoaded ;
 
 
   constructor( 
@@ -28,12 +28,15 @@ export class DashboardComponent implements OnInit {
     private matDialog: MatDialog,
     private alertService: AlertService
     ) {
-      this.currentUser = this.authenticationService.currentUserValueFromToken;
+      this.currentUserValue = this.authenticationService.currentUserValueFromToken;
+      console.log("current user v dashboard", this.currentUserValue);
+
      }
 
   ngOnInit(): void {
-    this.ifAdmin = this.authenticationService.isAdmin(); 
-    if (this.ifAdmin) this.loadAllUsers();
+    if (this.currentUserValue.globalRole == 'admin') this.loadAllUsers();
+    this.isDataLoaded = true; 
+  
 
   }
 
@@ -43,8 +46,7 @@ export class DashboardComponent implements OnInit {
         .subscribe(() => this.loadAllUsers());
 }
 checkIfSame (user: User ) {
-  if (this.currentUser.id == user.id) {
-    console.log("Ista sta");
+  if (this.currentUserValue.id == user.id) {
     return true; 
   }  
   return false; 
@@ -52,7 +54,6 @@ checkIfSame (user: User ) {
 updateUser(user: User) {
   
   this.loading = true;
-  console.log("do tle pride");
   this.userService.updateUser(user)
       .pipe(first())
       .subscribe(
@@ -66,7 +67,7 @@ updateUser(user: User) {
 }
 
 
-private loadAllUsers() {
+ private loadAllUsers() {
   this.userService.getAll()
       .pipe(first())
       .subscribe(users => this.users = users);
@@ -90,7 +91,6 @@ openDialog(userObject: User) {
 updateList(i: number, property: string, event: any) {
   const editField = event.target.textContent;
   this.users[i][property] = editField;
-  console.log("updejtet)")
 }
 
 remove(i: any) {
@@ -99,13 +99,7 @@ remove(i: any) {
 
 }
 
-add() {
-  //if (this.awaitingPersonList.length > 0) {
-  //  const person = this.awaitingPersonList[0];
-  //  this.users.push(user);
-   // this.awaitingPersonList.splice(0, 1);
-  
-}
+
 
 changeValue(i: number,userId:number, property: string, event: any) {
   this.editField = event.target.textContent;

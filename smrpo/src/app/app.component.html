@@ -1,26 +1,34 @@
-<nav class="navbar navbar-expand navbar-dark bg-dark" *ngIf="currentUser">
-  <div class="navbar-nav">
+<nav *ngIf="currentUser && dataLoaded" class="navbar navbar-expand-lg navbar-light bg-light">
+  <div class="container-fluid">
+
+    <ul class="nav navbar-nav navbar-right">
+      <li ><a class="nav-item nav-link" routerLink="/">Dashboard</a> </li>
+      <li *ngIf="authenticationService.currentUserValueFromToken.globalRole == 'admin'"><a class="nav-item nav-link" routerLink="/register">Register users</a></li> 
+      <li><a class="nav-item nav-link" routerLink="/addProject">New project</a> </li>
+      <li><a class="nav-item nav-link" routerLink="/searchProject">Edit project</a> </li>
+    </ul>
+
+    <ul class="nav navbar-nav navbar-right">
+      
+      
+      <div class="userdata">
+      <li class="nav-item ">  Logged in as {{authenticationService.currentUserValueFromToken.username}} </li>
+      <li   class="nav-item " *ngIf="authenticationService.currentUserValueFromToken.lastLogin != null">Last login: {{authenticationService.currentUserValueFromToken.lastLogin * 1000 | date:'yyyy-MM-dd HH:mm'}}</li>
+        <li class="nav-item " *ngIf="authenticationService.currentUserValueFromToken.lastLogin == null"> first login. </li>
+        <li><a class="nav-item nav-link nopadding   " (click)="logout()">Logout</a> </li>
 
 
-    <div *ngIf="ifAdmin">
-      <a class="nav-item nav-link" routerLink="/register">Register users</a>
-  </div>
-
-  <a class="nav-item nav-link" routerLink="/">Dashboard</a>
-<!--  <a class="nav-item nav-link" routerLink="/register">Register users</a> -->
-  <a class="nav-item nav-link" routerLink="/addProject">New project</a>
-  <a class="nav-item nav-link" routerLink="/searchProject">Edit project</a>
-  <a class="nav-item nav-link" (click)="logout()">Logout</a>
-  
-  
+      </div>
+    </ul>
   </div>
 </nav>
 
-  <div class="container">
-      <div class="row">
-          <div class="col-sm-6 offset-sm-3">
-              <alert></alert>
-              <router-outlet></router-outlet>
-          </div>
+
+<div class="container">
+  <div class="row">
+      <div class="col-sm-6 offset-sm-3">
+          <alert></alert>
+          <router-outlet></router-outlet>
       </div>
   </div>
+</div>

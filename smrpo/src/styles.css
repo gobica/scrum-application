@@ -9,10 +9,20 @@ body {
 a {
     cursor: pointer;
 }
-.container {
-	height: 100vh;
-	width: 100vh;
+.userdata {
+	padding: 1vh;
 }
+
+.logout {
+	padding-left: 0px;
+	
+}
+
+.nopadding {
+	padding: 0 !important;
+	margin: 0 !important;
+ }
+
 .login-wrapper {
 	display: flex;
 	margin-top: 20vh;
@@ -193,6 +203,3 @@ a {
   flex: 1 1 auto;
 }
 
-a {
-    cursor: pointer;
-}

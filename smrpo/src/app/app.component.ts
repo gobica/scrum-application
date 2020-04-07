@@ -3,7 +3,6 @@ import { Router } from '@angular/router';
 import { AuthenticationService } from './services/authentication.service';
 import { User } from './models/user';
 
-//import './_content/app.less';
 
 @Component({
   selector: 'app-root',
@@ -12,28 +11,33 @@ import { User } from './models/user';
 })
 
 export class AppComponent {
-
   currentUser: User;
-  ifAdmin = true;
+  currentUserValue: User;
+  dataLoaded = false; 
 
   constructor(
       private router: Router,
-      private authenticationService: AuthenticationService,
-      
-      
+      public authenticationService: AuthenticationService,  
   ) {
       this.authenticationService.currentUser.subscribe(x => this.currentUser = x);
-      if (this.authenticationService.currentUserValue) {
-        this.ifAdmin = this.authenticationService.isAdmin(); 
+      //this.currentUser  = this.authenticationService.currentUserValue;
+      //console.log ("CURRENTUSER", this.currentUser);
+      this.dataLoaded = true; 
+
+      if (this.currentUser) {
+       //  this.ifAdmin = this.authenticationService.isAdmin(); 
+       this.currentUserValue = authenticationService.currentUserValueFromToken;
+       this.dataLoaded = true; 
+       console.log("loggedin" );
+
       }
   }
 
   logout() {
       this.authenticationService.logout();
       this.router.navigate(['/login']);
-  }
-  
+      console.log("loggedout")
 
-  
-  
+  }
 }
+
