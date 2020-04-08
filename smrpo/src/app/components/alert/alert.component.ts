@@ -1,6 +1,6 @@
 import { Component, OnInit, OnDestroy,  ViewChild, ElementRef } from '@angular/core';
 import { Subscription } from 'rxjs';
-import { Base, inject } from 'angular-util';
+
 import { AlertService } from '../../services/alert.service';
 
 @Component({ selector: 'alert', templateUrl: 'alert.component.html' })

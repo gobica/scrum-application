@@ -12,6 +12,7 @@ import {group} from '@angular/animations';
 import {Router} from '@angular/router';
 // import { ValidationErrorsComponent } from '../validation-errors/validation-errors.component';
 // import { WindowRef } from './WindowRef';
+import { AuthenticationService } from  '../../services/authentication.service';
 
 
 
@@ -36,9 +37,17 @@ export class AddProjectComponent implements OnInit {
     private http: HttpClient,
     private alertService: AlertService,
     private router: Router,
+    private authenticationService: AuthenticationService,
+
   ) {
     this.postUrlProject =  environment.apiUrl + '/project';
     this.postUrlUser =  environment.apiUrl + '/user';
+    
+     // redirect to home if already logged in
+     if (this.authenticationService.currentUserValueFromToken.globalRole == 'user') {
+      this.router.navigate(['/']);
+     }
+
   }
 
   ngOnInit() {
