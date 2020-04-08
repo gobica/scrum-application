@@ -8,9 +8,9 @@
 
     <mat-form-field class="example-full-width ">
     <div class="form-group">
-        <input  matInput placeholder="Username" type="text" formControlName="username" [ngClass]="{ 'is-invalid': submitted && f.firstName.errors }" />
+        <input  matInput placeholder="Username" type="text" formControlName="username" [ngClass]="{ 'is-invalid': submitted && f.username.errors }" />
         <div *ngIf="submitted && f.username.errors" class="invalid-feedback">
-            <div *ngIf="f.firstName.errors.required">Username is required</div>
+            <div *ngIf="f.username.errors.required">Username is required</div>
         </div>
     </div>
   </mat-form-field>

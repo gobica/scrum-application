@@ -35,14 +35,7 @@ a {
 }
 
 
-.alert_massage {
-    position:fixed; 
-	margin-top: 10vh; 
-	margin-bottom: -10vh;
-    left: 0px; 
-    width: 100%;
-    z-index:9999; 
-}
+
 
 .mat-card-header{
 	text-align: center;

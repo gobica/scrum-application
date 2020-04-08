@@ -84,7 +84,11 @@ export class AuthenticationService {
     console.log(this.currentUserValue.exp);
     const date = this.getTokenExpirationDate(this.currentUserValueFromToken.exp);
     if(date === undefined) return false;
-    return !(date.valueOf() > new Date().valueOf());
+    //return !(date.valueOf() > new Date().valueOf());
+    if (date.valueOf() > new Date().valueOf()) return false; 
+    else {
+      this.logout();
+      return true;} 
   }
     
 }
