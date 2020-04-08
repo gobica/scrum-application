@@ -6,13 +6,24 @@
 
     <form [formGroup]="projectForm"  class="example-form">
 
+
+
       <mat-card-content>
 
         <mat-form-field class="example-full-width " >
           <input class="inputfields" matInput placeholder="Project name" formControlName="projectName" required>
-          <!--<mat-error *ngIf="myForm.get('projectName').status === 'INVALID'">-->
-            <!--<validation-errors [errors]="myForm.get('projectName').errors"></validation-errors>-->
-          <!--</mat-error>-->
+        </mat-form-field>
+
+        <mat-form-field class="example-full-width " >
+          <textarea class="cdk-textarea-autosize" matInput placeholder="Project description" formControlName="projectDescription"></textarea>
+        </mat-form-field>
+
+        <mat-form-field class="example-full-width " >
+          <input class="inputfields" matInput placeholder="Product owner" formControlName="productOwner" required>
+        </mat-form-field>
+
+        <mat-form-field class="example-full-width " >
+          <input class="inputfields" matInput placeholder="Scrum master" formControlName="scrumMaster" required>
         </mat-form-field>
 
         <form [formGroup]="myForm" class="example-form">
@@ -23,22 +34,22 @@
 
                 <div [formGroup]="teamMember">
 
-                <mat-form-field class="example-twoWithButton-width " required >
-                  <input class="inputfields" matInput placeholder="Member email" formControlName="memberName" required>
+                <mat-form-field class="example-oneWithButton-width " required >
+                  <input class="inputfields" matInput placeholder="Team member" formControlName="memberName">
 
                 </mat-form-field>
 
 
-                <mat-form-field class="example-twoWithButton-width ">
-                  <mat-label>Team roles</mat-label>
+                <!--<mat-form-field class="example-twoWithButton-width ">-->
+                  <!--<mat-label>Team roles</mat-label>-->
 
-                  <mat-select matNativeControl required formControlName="selectedRole">
-                    <mat-option>None</mat-option>
-                    <mat-option value="product-manager-0">Product owner</mat-option>
-                    <mat-option value="methodology-administrator-1">Methodology master</mat-option>
-                    <mat-option value="team-member-2">Team member</mat-option>
-                  </mat-select>
-                </mat-form-field>
+                  <!--<mat-select matNativeControl required formControlName="selectedRole">-->
+                    <!--<mat-option>None</mat-option>-->
+                    <!--<mat-option value="Product owner">Product owner</mat-option>-->
+                    <!--<mat-option value="Scrum master">Scrum master</mat-option>-->
+                    <!--<mat-option value="Team member">Team member</mat-option>-->
+                  <!--</mat-select>-->
+                <!--</mat-form-field>-->
 
 
                 <button mat-stroked-button color="accent" class="btn-right " (click)="removeMember(i)">
@@ -57,11 +68,78 @@
         </form>
       </mat-card-content>
 
-      <button mat-stroked-button color="accent" class="btn-block-newProject" >Save changes</button>
+      <button mat-stroked-button color="accent" class="btn-block-newProject" (click)="onSubmit()">Save changes</button>
 
     </form>
   </mat-card>
 </div>
+
+
+
+<!--<div class="login-wrapper project-wrapper" fxLayout="row" fxLayoutAlign="center center " >-->
+  <!--<mat-card class="box-newProject" layout-align="center center" >-->
+    <!--<mat-card-header>-->
+      <!--<mat-card-title>Edit project</mat-card-title>-->
+    <!--</mat-card-header>-->
+
+    <!--<form [formGroup]="projectForm"  class="example-form">-->
+
+      <!--<mat-card-content>-->
+
+        <!--<mat-form-field class="example-full-width " >-->
+          <!--<input class="inputfields" matInput placeholder="Project name" formControlName="projectName" required>-->
+          <!--&lt;!&ndash;<mat-error *ngIf="myForm.get('projectName').status === 'INVALID'">&ndash;&gt;-->
+            <!--&lt;!&ndash;<validation-errors [errors]="myForm.get('projectName').errors"></validation-errors>&ndash;&gt;-->
+          <!--&lt;!&ndash;</mat-error>&ndash;&gt;-->
+        <!--</mat-form-field>-->
+
+        <!--<form [formGroup]="myForm" class="example-form">-->
+
+
+          <!--<div formArrayName="teamMembers">-->
+            <!--<div *ngFor="let teamMember of myForm.controls.teamMembers['controls']; let i=index" class="panel panel-default" >-->
+
+                <!--<div [formGroup]="teamMember">-->
+
+                <!--<mat-form-field class="example-twoWithButton-width " required >-->
+                  <!--<input class="inputfields" matInput placeholder="Member email" formControlName="memberName" required>-->
+
+                <!--</mat-form-field>-->
+
+
+                <!--<mat-form-field class="example-twoWithButton-width ">-->
+                  <!--<mat-label>Team roles</mat-label>-->
+
+                  <!--<mat-select matNativeControl required formControlName="selectedRole">-->
+                    <!--<mat-option>None</mat-option>-->
+                    <!--<mat-option value="product-manager-0">Product owner</mat-option>-->
+                    <!--<mat-option value="methodology-administrator-1">Methodology master</mat-option>-->
+                    <!--<mat-option value="team-member-2">Team member</mat-option>-->
+                  <!--</mat-select>-->
+                <!--</mat-form-field>-->
+
+
+                <!--<button mat-stroked-button color="accent" class="btn-right " (click)="removeMember(i)">-->
+                   <!--&lt;!&ndash;<span id="btn-remove" class="glyphicon glyphicon-remove"></span>&ndash;&gt;-->
+                  <!--&lt;!&ndash;X&ndash;&gt;-->
+                  <!--<span class="mat-button-wrapper"> X </span>-->
+                <!--</button>-->
+              <!--</div>-->
+            <!--</div>-->
+          <!--</div>-->
+
+          <!--<div>-->
+            <!--<button mat-stroked-button color="accent" class="btn-block-newProject" (click)="addMember()">Add team member</button>-->
+          <!--</div>-->
+
+        <!--</form>-->
+      <!--</mat-card-content>-->
+
+      <!--<button mat-stroked-button color="accent" class="btn-block-newProject" >Save changes</button>-->
+
+    <!--</form>-->
+  <!--</mat-card>-->
+<!--</div>-->
 
 
 
