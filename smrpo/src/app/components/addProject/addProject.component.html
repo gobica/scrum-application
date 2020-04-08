@@ -18,6 +18,14 @@
           <textarea class="cdk-textarea-autosize" matInput placeholder="Project description" formControlName="projectDescription"></textarea>
         </mat-form-field>
 
+        <mat-form-field class="example-full-width " >
+          <input class="inputfields" matInput placeholder="Product owner" formControlName="productOwner" required>
+        </mat-form-field>
+
+        <mat-form-field class="example-full-width " >
+          <input class="inputfields" matInput placeholder="Scrum master" formControlName="scrumMaster" required>
+        </mat-form-field>
+
         <form [formGroup]="myForm" class="example-form">
 
 
@@ -26,22 +34,22 @@
 
                 <div [formGroup]="teamMember">
 
-                <mat-form-field class="example-twoWithButton-width " required >
-                  <input class="inputfields" matInput placeholder="Member email" formControlName="memberName" required>
+                <mat-form-field class="example-oneWithButton-width " required >
+                  <input class="inputfields" matInput placeholder="Team member" formControlName="memberName">
 
                 </mat-form-field>
 
 
-                <mat-form-field class="example-twoWithButton-width ">
-                  <mat-label>Team roles</mat-label>
+                <!--<mat-form-field class="example-twoWithButton-width ">-->
+                  <!--<mat-label>Team roles</mat-label>-->
 
-                  <mat-select matNativeControl required formControlName="selectedRole">
-                    <mat-option>None</mat-option>
-                    <mat-option value="Product owner">Product owner</mat-option>
-                    <mat-option value="Scrum master">Scrum master</mat-option>
-                    <mat-option value="Team member">Team member</mat-option>
-                  </mat-select>
-                </mat-form-field>
+                  <!--<mat-select matNativeControl required formControlName="selectedRole">-->
+                    <!--<mat-option>None</mat-option>-->
+                    <!--<mat-option value="Product owner">Product owner</mat-option>-->
+                    <!--<mat-option value="Scrum master">Scrum master</mat-option>-->
+                    <!--<mat-option value="Team member">Team member</mat-option>-->
+                  <!--</mat-select>-->
+                <!--</mat-form-field>-->
 
 
                 <button mat-stroked-button color="accent" class="btn-right " (click)="removeMember(i)">
@@ -54,7 +62,7 @@
           </div>
 
           <div>
-            <button mat-stroked-button color="accent" class="btn-block-newProject" (click)="addMember()">Add project member</button>
+            <button mat-stroked-button color="accent" class="btn-block-newProject" (click)="addMember()">Add team member</button>
           </div>
 
         </form>

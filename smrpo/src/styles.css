@@ -115,6 +115,12 @@ a {
   padding-right: 6px;
 }
 
+.example-oneWithButton-width {
+	width: 88%;
+  padding-right: 6px;
+  display: inline-block !important;
+}
+
 .example-twoWithButton-width {
 	width: 44%;
   padding-right: 6px;

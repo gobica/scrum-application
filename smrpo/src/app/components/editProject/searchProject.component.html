@@ -1,22 +1,74 @@
-<div class="login-wrapper project-wrapper" fxLayout="row" fxLayoutAlign="center center " >
-  <mat-card class="box-newProject" layout-align="center center" >
-    <mat-card-header>
-      <mat-card-title>Search project for editing</mat-card-title>
-    </mat-card-header>
+<!--<div class="login-wrapper project-wrapper" fxLayout="row" fxLayoutAlign="center center " >-->
+  <!--<mat-card class="box-newProject" layout-align="center center" >-->
+    <!--<mat-card-header>-->
+      <!--<mat-card-title>Search project for editing</mat-card-title>-->
+    <!--</mat-card-header>-->
 
-    <form class="example-form">
+    <!--<form class="example-form">-->
 
-      <mat-card-content>
+      <!--<mat-card-content>-->
+        <!--<form class="example-form">-->
+          <!--&lt;!&ndash;<mdb-icon fas icon="search" aria-hidden="true"></mdb-icon>&ndash;&gt;-->
+          <!--<mat-form-field class="example-full-width " matNativeControl required>-->
+            <!--<input class="inputfields" matInput placeholder="Enter the project ID">-->
+          <!--</mat-form-field>-->
+        <!--</form>-->
+      <!--</mat-card-content>-->
+
+      <!--<button mat-stroked-button color="accent" class="btn-block-newProject" (click)="btnSearch();">Search project</button>-->
+
+    <!--</form>-->
+  <!--</mat-card>-->
+<!--</div>-->
+
+<div class="title" >Project list</div>
+
+<div *ngFor="let project of projects; let i=index" class="panel panel-default" >
+  <div id = "project {{i}}" fxLayout="row" >
+    <div class="login-wrapper show-project-wrapper" fxLayout="row" flex>
+      <mat-card class="box-showProject" >
+        <mat-card-header>
+          <mat-card-title>{{project.name}}</mat-card-title>
+        </mat-card-header>
+
         <form class="example-form">
-          <!--<mdb-icon fas icon="search" aria-hidden="true"></mdb-icon>-->
-          <mat-form-field class="example-full-width " matNativeControl required>
-            <input class="inputfields" matInput placeholder="Enter the project ID">
-          </mat-form-field>
+
+          <mat-card-content>
+            <form class="example-form">
+              <div *ngIf="project.description != ''">
+                <h3><u>Description:</u></h3>
+
+                <p>{{project.description}}</p>
+              </div>
+              <h3><u>Project members:</u></h3>
+              <li><b>Product owner</b>: {{project.productOwner.username}}</li>
+
+              <li><b>Scrum master</b>: {{project.scrumMaster.username}}</li>
+
+              <div *ngIf="project.users != ''">
+                <li><b>Team members:</b></li>
+                <ul>
+                  <div *ngFor="let member of project.users; let i=index">
+
+                      <li>{{member.username}}</li>
+
+                  </div>
+                </ul>
+              </div>
+
+              <!--<mdb-icon fas icon="search" aria-hidden="true"></mdb-icon>-->
+              <!--<mat-form-field class="example-full-width " matNativeControl required>-->
+                <!--<input class="inputfields" matInput placeholder="Enter the project ID">-->
+              <!--</mat-form-field>-->
+            </form>
+          </mat-card-content>
+
+          <button mat-stroked-button color="accent" class="btn-block-newProject" (click)="btnEditProject(project.id);">Edit project</button>
+
         </form>
-      </mat-card-content>
-
-      <button mat-stroked-button color="accent" class="btn-block-newProject" (click)="btnSearch();">Search project</button>
-
-    </form>
-  </mat-card>
+      </mat-card>
+    </div>
+    <!--<button mat-stroked-button color="accent" class="btn-block-newProject" (click)="btnSearch();">Edit project</button>-->
+  </div>
 </div>
+
