@@ -7,6 +7,8 @@ import {first} from 'rxjs/operators';
 import {HttpClient} from '@angular/common/http';
 import {environment} from '../../../environments/environment';
 import {AlertService} from '../../services/alert.service';
+import _ from 'lodash';
+
 
 
 
@@ -24,9 +26,13 @@ export class EditProjectComponent implements OnInit {
   editProjects:EditProject[];
 
   postUrlProjectById: string = '';
+  postUrlProject: string = '';
+  postUrlUsers: string = '';
 
   loading = false;
   submitted = false;
+
+  stariUporabniki = [];
 
   // projekt: {};
 
@@ -38,10 +44,13 @@ export class EditProjectComponent implements OnInit {
     private route: ActivatedRoute,
     private http: HttpClient,
     private alertService: AlertService,
+    private router: Router,
 
   ) {
 
     this.postUrlProjectById =  environment.apiUrl + '/project/';
+    this.postUrlProject =  environment.apiUrl + '/project';
+    this.postUrlUsers = '/user/';
   }
 
   getProjectData(projektID) {
@@ -107,6 +116,10 @@ export class EditProjectComponent implements OnInit {
         this.getProjectData(projektID);
     });
 
+
+    // this.stariUporabniki = JSON.parse(localStorage.getItem('users'));
+    // console.log('--', this.stariUporabniki);
+
   }
 
   setTeamMembers(projekt) {
@@ -114,6 +127,31 @@ export class EditProjectComponent implements OnInit {
     projekt.users.forEach(u => {
       control.push(this.getTeamMembers(u.username));
     });
+
+    this.stariUporabniki = [];
+    projekt.users.forEach(u => {
+      this.stariUporabniki.push({id: u.id});  // doda uporabnika v array userjev z idjem
+    });
+    // console.log('Stari:', this.stariUporabniki);
+
+    this.http.get<any>(this.postUrlProject)
+    // .toPromise();
+    .pipe(first()) // vrne vse projekte --> ali projekt ze obstaja
+    .subscribe(
+      data => {
+          console.log(data);
+          localStorage.setItem('projects', JSON.stringify(''));
+          localStorage.setItem('projects', JSON.stringify(data));
+          return data;
+      },
+      error => {
+          if (error === 'Not found') {
+            this.alertService.error('No project yet');
+          } else {
+            this.alertService.error(error);
+          }
+          this.loading = false;
+      });
   }
 
   getTeamMembers(member) {
@@ -193,10 +231,11 @@ export class EditProjectComponent implements OnInit {
   }
 
   projectDuplicates(projekti, name) {
+    const projektID = JSON.parse(localStorage.getItem('projektId'));
     let obstajaZeProjekt = false;
     if (projekti !== '') {
       projekti.forEach(p => {
-        if (p.name === name) {
+        if (p.name === name && p.id != projektID) {
           obstajaZeProjekt = true;
         }
       });
@@ -205,7 +244,93 @@ export class EditProjectComponent implements OnInit {
     return obstajaZeProjekt;
   }
 
-  onSubmit() {
+  async addDeleteUsers(users, projektID) {
+    this.stariUporabniki.sort((a, b) => (a.id > b.id) ? 1 : -1);
+    // console.log(this.stariUporabniki);
+    users.sort((a, b) => (a.id > b.id) ? 1 : -1);
+    // console.log(users);
+
+
+    let staIsta = true;
+    let index = 0;
+    users.forEach(u => {
+      if(!(_.isEqual(u, this.stariUporabniki[index]))) {
+        staIsta = false;
+      }
+      index += 1;
+    });
+
+    // je bil zbrisan
+    let deleted = [];
+    this.stariUporabniki.forEach(u1 => {
+      let jeDobljen = users.find(u2 => u2.id === u1.id);
+      if(jeDobljen === undefined) {
+        deleted.push(u1);
+      }
+    });
+    // console.log('D:', deleted);
+
+    // je bil dodan
+    let added = [];
+    users.forEach(u1 => {
+      let jeDobljen = this.stariUporabniki.find(u2 => u2.id === u1.id);
+      if(jeDobljen === undefined) {
+        added.push(u1);
+      }
+    });
+    // console.log('A:', added);
+
+    // if(this.stariUporabniki.length === users.length && staIsta === true) {
+    //   console.log("Uporabniki niso bili spremenjeni");
+    // } else {
+    //   console.log("Uporabniki so bili spremenjeni");
+    // }
+    // console.log('-------------------');
+
+
+    await added.forEach(async a  => {
+      // console.log('A:',a);
+      const idProject = projektID;
+      const idUser = a.id;
+      await this.http.post<any>((this.postUrlProjectById + idProject +  this.postUrlUsers + idUser), {})
+      .pipe(first())
+      .subscribe(
+        data => {
+          // console.log("***", data);
+          // console.log(users);
+        },
+        error => {
+          // this.alertService.error(error);
+          this.loading = false;
+        });
+      // .toPromise();
+      // console.log(nekaj);
+    });
+
+    // console.log('HOLAAAA');
+
+    await deleted.forEach(async d => {
+      // console.log('D:', d);
+      const idProject = projektID;
+      const idUser = d.id;
+      await this.http.delete<any>((this.postUrlProjectById + idProject + this.postUrlUsers + idUser))
+      // .toPromise();
+      .pipe(first())
+      .subscribe(
+        data => {
+          // console.log("***", data);
+          // console.log(users);
+          return data;
+        },
+        error => {
+          // this.alertService.error("Ni slo :(");
+          // this.alertService.error(error);
+          this.loading = false;
+        });
+    });
+  }
+
+  async onSubmit() {
     this.submitted = true;
     // reset alerts on submit
     this.alertService.clear();
@@ -267,21 +392,49 @@ export class EditProjectComponent implements OnInit {
                 if (users.length === this.f.projekt.value.teamMembers.length) {
                   if (jePodvajanjeUporabnikov === false) {
                     const projektID = JSON.parse(localStorage.getItem('projektId'));
-                    this.http.put<any>(this.postUrlProjectById + projektID, {name, description, idProductOwner, idScrumMaster}).pipe(first())
-                      .subscribe(
-                        data => {
-                          console.log(data);
-                          // this.router.navigate([this.returnUrl]);
-                          // this.router.navigateByUrl('/searchProject');
-                          // this.window.scrollTo(0, 0);
+                    // console.log('+++', users);
+                    // localStorage.setItem('projects', JSON.stringify(''));
+
+                    // console.log('-------------------');
+                    // console.log(this.stariUporabniki);
+                    // console.log(users);
+
+                    await this.http.put<any>(this.postUrlProjectById + projektID, {name, description, idProductOwner, idScrumMaster})
+                      // .toPromise();
+                    .pipe(first())
+                    .subscribe(
+                      data => {
+                        // console.log(data);
+                        // console.log(users);
+                        this.addDeleteUsers(users, projektID);
+                      },
+                      error => {
+                        this.alertService.error(error);
+                        this.loading = false;
+                      });
 
 
-                        },
-                        error => {
-                          this.alertService.error(error);
-                          this.loading = false;
-                        });
-                    this.alertService.success('Project updated');
+                    // this.router.navigateByUrl('/editProject/' + projektID);
+                    await this.alertService.success('Project updated');
+
+                    // await this.http.get<any>(this.postUrlProject)
+                    // // .toPromise();
+                    // .pipe(first()) // vrne vse projekte --> ali projekt ze obstaja
+                    // .subscribe(
+                    //   data => {
+                    //       console.log(data);
+                    //       localStorage.setItem('projects', JSON.stringify(''));
+                    //       localStorage.setItem('projects', JSON.stringify(data));
+                    //       return data;
+                    //   },
+                    //   error => {
+                    //       if (error === 'Not found') {
+                    //         this.alertService.error('No project yet');
+                    //       } else {
+                    //         this.alertService.error(error);
+                    //       }
+                    //       this.loading = false;
+                    //   });
                   } else {
                     this.alertService.error('A team member may not be enrolled twice or more');
                     this.submitted = false;
@@ -325,8 +478,8 @@ export class EditProjectComponent implements OnInit {
     }
 
     document.body.scrollTop = document.documentElement.scrollTop = 0;
-
-
+    const projektID = JSON.parse(localStorage.getItem('projektId'));
+    window.location.replace('/editProject/' + projektID);
   }
 
 
@@ -340,7 +493,7 @@ export class SearchProjectComponent implements OnInit {
   searchProject:SearchProject[];
   postUrlProject: string = '';
   loading = false;
-  public projects: string = '';
+  public projects;
 
   constructor(
     private router: Router,
@@ -353,6 +506,8 @@ export class SearchProjectComponent implements OnInit {
   ngOnInit(): void {
     this.getAllProjects();
     this.projects = JSON.parse(localStorage.getItem('projects'));
+    this.projects.sort((a, b) => (a.name > b.name) ? 1 : -1);
+    console.log(this.projects);
   }
 
   btnEditProject = function(id) {
@@ -369,6 +524,7 @@ export class SearchProjectComponent implements OnInit {
           // console.log(data);
           localStorage.setItem('projects', JSON.stringify(''));
           localStorage.setItem('projects', JSON.stringify(data));
+          // window.location.reload();
           return data;
       },
       error => {

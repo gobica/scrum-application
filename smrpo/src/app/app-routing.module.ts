@@ -15,7 +15,7 @@ const routes: Routes = [
   { path: 'dashboard', component: DashboardComponent },
   { path: 'addProject', component: AddProjectComponent },
   { path: 'searchProject', component: SearchProjectComponent }, // For editing project
-  { path: 'editProject', component: EditProjectComponent },
+  { path: 'editProject/:id', component: EditProjectComponent },
   { path: '**', redirectTo: '' }
 
 ];
