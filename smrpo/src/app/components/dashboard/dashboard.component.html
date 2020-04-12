@@ -37,11 +37,30 @@
                     <span contenteditable="true" (keyup)="changeValue(i,  user.id, 'email', $event)" (blur)="updateList(i, 'email', $event)">{{user.email}}</span>
                 </td>
                 <td *ngIf="!checkIfSame(user)">
-                    <span class="mask" type="password" contenteditable="true" (keyup)="changeValue(i,  user.id, 'password', $event)" (blur)="updateList(i, 'password', $event)">****</span>
+                    <span class="mask" contenteditable="true" (keyup)="changeValue(i,  user.id, 'password', $event)" (blur)="updateList(i, 'password', $event)">****</span>
                 </td>
+                <!--
                 <td *ngIf="!checkIfSame(user)">
                     <span  contenteditable="true" (keyup)="changeValue(i,  user.id, 'globalRole', $event)" (blur)="updateList(i, 'globalRole', $event)">{{user.globalRole}}</span>
                 </td>
+
+            -->
+
+            <td *ngIf="!checkIfSame(user)">
+               <!--<span  contenteditable="true" (keyup)="changeValue(i,  user.id, 'globalRole', $event)" (blur)="updateList(i, 'globalRole', $event)">{{user.globalRole}}</span> -->
+               <div class="dropdown">
+                <button class="btn btn-secondary dropdown-toggle" type="button" id="dropdownMenuButton" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false">
+                  Dropdown button
+                </button>
+                <div class="dropdown-menu" aria-labelledby="dropdownMenuButton">
+                  <a class="dropdown-item" href="#">Action</a>
+                  <a class="dropdown-item" href="#">Another action</a>
+                  <a class="dropdown-item" href="#">Something else here</a>
+                </div>
+              </div>
+            </td>
+
+
                 <td *ngIf="!checkIfSame(user)">
                     <span class="table-delete">
                     <button type="button" mdbBtn color="danger" rounded="true" size="sm" class="my-0" (click)="updateUser(user)" >Save</button>
@@ -61,9 +80,14 @@
 </div>
 
 </div>
-
-
-
-
-
-
+<!-- Bootstrap Dropdown -->
+<div class="dropdown">
+    <button class="btn btn-primary dropdown-toggle" type="button" id="dropdownMenuButton" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false">
+      Dropdown button
+    </button>
+    <div class="dropdown-menu" aria-labelledby="dropdownMenuButton">
+      <a class="dropdown-item" href="javascript:void(0);">Action</a>
+      <a class="dropdown-item" href="javascript:void(0);">Another action</a>
+      <a class="dropdown-item" href="javascript:void(0);">Something else here</a>
+    </div>
+  </div>

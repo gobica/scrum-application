@@ -7,6 +7,9 @@ import { DashboardComponent} from './components/dashboard/dashboard.component';
 import { AuthGuard } from './helpers/auth.guard';
 import { SearchProjectComponent } from './components/editProject/editProject.component';
 import { EditProjectComponent } from './components/editProject/editProject.component';
+import { SprintBacklogComponent } from './components/sprint-backlog/sprint-backlog.component';
+
+SprintBacklogComponent
 
 const routes: Routes = [
   { path: '', component: DashboardComponent, canActivate: [AuthGuard] },
@@ -16,6 +19,8 @@ const routes: Routes = [
   { path: 'addProject', component: AddProjectComponent },
   { path: 'searchProject', component: SearchProjectComponent }, // For editing project
   { path: 'editProject', component: EditProjectComponent },
+  { path: 'springBacklog', component: SprintBacklogComponent },
+
   { path: '**', redirectTo: '' }
 
 ];

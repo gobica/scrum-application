@@ -27,6 +27,7 @@ import { ErrorInterceptor } from './helpers/error.interceptors';
 import { DashboardComponent } from './components/dashboard/dashboard.component';
 import { EditUserDialogComponent } from './components/edit-user-dialog/edit-user-dialog.component';
 import { EditUsersComponent } from './components/edit-users/edit-users.component';
+import { SprintBacklogComponent } from './components/sprint-backlog/sprint-backlog.component';
 
 @NgModule({
   declarations: [
@@ -41,7 +42,8 @@ import { EditUsersComponent } from './components/edit-users/edit-users.component
     AlertComponent,
     DashboardComponent,
     EditUserDialogComponent,
-    EditUsersComponent
+    EditUsersComponent,
+    SprintBacklogComponent
    // LoginComponent,
    //  AlertComponent
   ],
