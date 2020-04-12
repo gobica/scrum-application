@@ -42,5 +42,10 @@ export class AlertService {
         this.subject.next();
     }
 
+    warning(message: string, keepAfterRouteChange = false) {
+        this.keepAfterRouteChange = keepAfterRouteChange;
+        this.subject.next({ type: 'warning', text: message });
+    }
+
     
 }

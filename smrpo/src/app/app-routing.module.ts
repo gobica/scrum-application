@@ -5,7 +5,7 @@ import { LoginComponent } from './components/login/login.component';
 import { AddProjectComponent } from './components/addProject/addProject.component';
 import { DashboardComponent} from './components/dashboard/dashboard.component';
 import { AuthGuard } from './helpers/auth.guard';
-import { SearchProjectComponent } from './components/editProject/editProject.component';
+import { ShowProjectComponent } from './components/showProject/showProject.component';
 import { EditProjectComponent } from './components/editProject/editProject.component';
 
 const routes: Routes = [
@@ -14,7 +14,7 @@ const routes: Routes = [
   { path: 'login', component: LoginComponent },
   { path: 'dashboard', component: DashboardComponent },
   { path: 'addProject', component: AddProjectComponent },
-  { path: 'searchProject', component: SearchProjectComponent }, // For editing project
+  { path: 'showProject', component: ShowProjectComponent }, // For editing project
   { path: 'editProject/:id', component: EditProjectComponent },
   { path: '**', redirectTo: '' }
 

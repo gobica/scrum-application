@@ -5,7 +5,7 @@ import { AppRoutingModule } from './app-routing.module';
 import { AppComponent } from './app.component';
 import { RegisterComponent } from './components/register/register.component';
 import { AddProjectComponent } from './components/addProject/addProject.component';
-import { SearchProjectComponent } from './components/editProject/editProject.component';
+import { ShowProjectComponent } from './components/showProject/showProject.component';
 import { EditProjectComponent } from './components/editProject/editProject.component';
 import { NoopAnimationsModule } from '@angular/platform-browser/animations';
 import { JwtModule } from '@auth0/angular-jwt';
@@ -33,7 +33,7 @@ import { EditUsersComponent } from './components/edit-users/edit-users.component
     AppComponent,
     RegisterComponent,
     AddProjectComponent,
-    SearchProjectComponent,
+    ShowProjectComponent,
     EditProjectComponent,
     // RegisterComponent,
     AlertComponent,

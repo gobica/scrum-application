@@ -2,7 +2,6 @@ import { Component, OnInit } from '@angular/core';
 import { Router, ActivatedRoute } from '@angular/router';
 import { FormGroup, FormArray, FormBuilder, Validators } from '@angular/forms';
 import { EditProject } from '../../models/EditProject';
-import { SearchProject } from '../../models/SearchProject';
 import {first} from 'rxjs/operators';
 import {HttpClient} from '@angular/common/http';
 import {environment} from '../../../environments/environment';
@@ -10,12 +9,6 @@ import {AlertService} from '../../services/alert.service';
 import _ from 'lodash';
 
 
-
-
-// interface TeamRoles {
-//   value: string;
-//   viewValue: string;
-// }
 
 @Component({
   selector: 'app-editProject',
@@ -55,6 +48,7 @@ export class EditProjectComponent implements OnInit {
 
   getProjectData(projektID) {
     // localStorage.setItem('project', JSON.stringify(''));
+
     this.http.get<any>(this.postUrlProjectById + projektID).pipe(first()) // vrne projekt, ki ima dolocen url
     .subscribe(
       data => {
@@ -77,6 +71,8 @@ export class EditProjectComponent implements OnInit {
           });
 
           this.setTeamMembers(data);
+
+
 
         // return data;
       },
@@ -139,7 +135,7 @@ export class EditProjectComponent implements OnInit {
     .pipe(first()) // vrne vse projekte --> ali projekt ze obstaja
     .subscribe(
       data => {
-          console.log(data);
+          // console.log(data);
           localStorage.setItem('projects', JSON.stringify(''));
           localStorage.setItem('projects', JSON.stringify(data));
           return data;
@@ -392,12 +388,6 @@ export class EditProjectComponent implements OnInit {
                 if (users.length === this.f.projekt.value.teamMembers.length) {
                   if (jePodvajanjeUporabnikov === false) {
                     const projektID = JSON.parse(localStorage.getItem('projektId'));
-                    // console.log('+++', users);
-                    // localStorage.setItem('projects', JSON.stringify(''));
-
-                    // console.log('-------------------');
-                    // console.log(this.stariUporabniki);
-                    // console.log(users);
 
                     await this.http.put<any>(this.postUrlProjectById + projektID, {name, description, idProductOwner, idScrumMaster})
                       // .toPromise();
@@ -417,24 +407,6 @@ export class EditProjectComponent implements OnInit {
                     // this.router.navigateByUrl('/editProject/' + projektID);
                     await this.alertService.success('Project updated');
 
-                    // await this.http.get<any>(this.postUrlProject)
-                    // // .toPromise();
-                    // .pipe(first()) // vrne vse projekte --> ali projekt ze obstaja
-                    // .subscribe(
-                    //   data => {
-                    //       console.log(data);
-                    //       localStorage.setItem('projects', JSON.stringify(''));
-                    //       localStorage.setItem('projects', JSON.stringify(data));
-                    //       return data;
-                    //   },
-                    //   error => {
-                    //       if (error === 'Not found') {
-                    //         this.alertService.error('No project yet');
-                    //       } else {
-                    //         this.alertService.error(error);
-                    //       }
-                    //       this.loading = false;
-                    //   });
                   } else {
                     this.alertService.error('A team member may not be enrolled twice or more');
                     this.submitted = false;
@@ -485,59 +457,3 @@ export class EditProjectComponent implements OnInit {
 
 }
 
-@Component({
-  selector: 'app-searchProject',
-  templateUrl: './searchProject.component.html'
-})
-export class SearchProjectComponent implements OnInit {
-  searchProject:SearchProject[];
-  postUrlProject: string = '';
-  loading = false;
-  public projects;
-
-  constructor(
-    private router: Router,
-    private http: HttpClient,
-    private alertService: AlertService
-  ) {
-    this.postUrlProject =  environment.apiUrl + '/project';
-  }
-
-  ngOnInit(): void {
-    this.getAllProjects();
-    this.projects = JSON.parse(localStorage.getItem('projects'));
-    this.projects.sort((a, b) => (a.name > b.name) ? 1 : -1);
-    console.log(this.projects);
-  }
-
-  btnEditProject = function(id) {
-      // localStorage.setItem('projectID', JSON.stringify(''));
-      // localStorage.setItem('project', JSON.stringify(''));
-      this.router.navigateByUrl('/editProject/' + id);
-        // console.log(id);
-  };
-
-  getAllProjects() {
-    this.http.get<any>(this.postUrlProject).pipe(first()) // vrne vse projekte --> ali projekt ze obstaja
-    .subscribe(
-      data => {
-          // console.log(data);
-          localStorage.setItem('projects', JSON.stringify(''));
-          localStorage.setItem('projects', JSON.stringify(data));
-          // window.location.reload();
-          return data;
-      },
-      error => {
-          if (error === 'Not found') {
-            this.alertService.error('No project yet');
-          } else {
-            this.alertService.error(error);
-          }
-          this.loading = false;
-      }
-    );
-  }
-
-
-
-}
