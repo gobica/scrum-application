@@ -16,7 +16,12 @@ export class ErrorInterceptor implements HttpInterceptor {
                 //this.authenticationService.logout();
                 location.reload(true);
             }
+             if (err.status === 200) {
+                // auto logout if 200 response returned from api
+                // location.reload(true); // ne brisat --> rabi za shranjevati editane projekte
+            }
             console.log("ERRROR", err.error.messages);
+            // console.log(err.status);
             if (err.error.messages) {
                 err.error.message = err.error.messages[0];
             }

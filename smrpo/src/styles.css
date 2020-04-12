@@ -34,7 +34,10 @@ a {
 	align-items: center;
 }
 
-
+.title {
+	font-size: 30px;
+	margin-top: 20px;
+}
 
 
 .mat-card-header{
@@ -73,11 +76,36 @@ a {
   margin-top: 5%;
 }
 
+.box-showProject {
+ align-self: flex-start;
+ opacity: 50;
+ /*padding: 60px 50px 40px 50px;*/
+ width: 100%;
+ background-color: #ffffff;
+ border-radius: 5px;
+ max-width: 700px;
+ color: black;
+  min-height: 30px;
+  margin-top: 5%;
+  position: relative;
+  display: table-cell;
+}
+
+
 .project-wrapper {
 	width: 100vh !important;
   margin-top: 5px;
   /*padding: 0px 20px 10px !important;*/
 }
+
+.show-project-wrapper {
+ width: 100vh !important;
+  margin-top: 5px;
+  /*padding: 0px 20px 10px !important;*/
+  position: relative;
+  display: table;
+}
+
 
 .box.back {
 	transform: scale(.95);

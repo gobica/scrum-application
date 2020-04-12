@@ -21,6 +21,7 @@ const routes: Routes = [
   { path: 'editProject', component: EditProjectComponent },
   { path: 'springBacklog', component: SprintBacklogComponent },
 
+  { path: 'editProject/:id', component: EditProjectComponent },
   { path: '**', redirectTo: '' }
 
 ];
