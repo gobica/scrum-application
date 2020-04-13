@@ -3,15 +3,15 @@
 
     <ul class="nav navbar-nav navbar-right">
       <li ><a class="nav-item nav-link" routerLink="/">Dashboard</a> </li>
-      <li *ngIf="authenticationService.currentUserValueFromToken.globalRole == 'admin'"><a class="nav-item nav-link" routerLink="/register">Register users</a></li> 
-      <li *ngIf="authenticationService.currentUserValueFromToken.globalRole == 'admin'"><a class="nav-item nav-link" routerLink="/addProject">Add project</a></li> 
+      <li *ngIf="authenticationService.currentUserValueFromToken.globalRole == 'admin'"><a class="nav-item nav-link" routerLink="/register">Register users</a></li>
+      <li *ngIf="authenticationService.currentUserValueFromToken.globalRole == 'admin'"><a class="nav-item nav-link" routerLink="/addProject">Add project</a></li>
 
       <li *ngIf="authenticationService.currentUserValueFromToken.globalRole == 'admin'"><a (click)="refreshShowProject()" class="nav-item nav-link" routerLink="/showProject">Edit project</a> </li>
     </ul>
 
     <ul class="nav navbar-nav navbar-right">
-      
-      
+
+
       <div class="userdata">
       <li class="nav-item ">  Logged in as {{authenticationService.currentUserValueFromToken.username}} </li>
       <li   class="nav-item " *ngIf="authenticationService.currentUserValueFromToken.lastLogin != null">Last login: {{authenticationService.currentUserValueFromToken.lastLogin * 1000 | date:'yyyy-MM-dd HH:mm'}}</li>

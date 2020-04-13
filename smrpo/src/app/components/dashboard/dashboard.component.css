@@ -1,1 +1,6 @@
 .mask{ -webkit-text-security: disc !important; }
+
+.header-cell{
+  text-align: center;
+  vertical-align: middle;
+}
