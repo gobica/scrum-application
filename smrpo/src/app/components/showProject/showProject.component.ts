@@ -1,70 +1,69 @@
 import { Component, OnInit } from '@angular/core';
 import { Router, ActivatedRoute } from '@angular/router';
 import { FormGroup, FormArray, FormBuilder, Validators } from '@angular/forms';
-import { ShowProject } from '../../models/ShowProject';
 import {first} from 'rxjs/operators';
 import {HttpClient} from '@angular/common/http';
 import {environment} from '../../../environments/environment';
 import {AlertService} from '../../services/alert.service';
 import _ from 'lodash';
+import { ProjectService } from '../../services/project.service';
+import {AuthenticationService} from "../../services/authentication.service";
 
 
 
 @Component({
   selector: 'app-sjowProject',
-  templateUrl: './showProject.component.html'
+  templateUrl: './showProject.component.html',
+
 })
 export class ShowProjectComponent implements OnInit {
-  showProject:ShowProject[];
-  postUrlProject: string = '';
   loading = false;
-  public projects;
+  public allProjects;
 
   constructor(
     private router: Router,
     private http: HttpClient,
-    private alertService: AlertService
+    private alertService: AlertService,
+    private projectService: ProjectService,
+   private authenticationService: AuthenticationService,
   ) {
-    this.postUrlProject =  environment.apiUrl + '/project';
+             // redirect to home if already logged in
+     if (this.authenticationService.currentUserValueFromToken.globalRole == 'user') {
+      this.router.navigate(['/']);
+     }
   }
 
   ngOnInit(): void {
-    // const soProjekti =
     this.getAllProjects();
-    // if (soProjekti === true) {
-      this.projects = JSON.parse(localStorage.getItem('projects'));
-      if(this.projects != '') {
-        this.projects.sort((a, b) => (a.name > b.name) ? 1 : -1);
-        // console.log(this.projects);
-      }
-    // } else {
-    //   localStorage.setItem('projects', JSON.stringify(''));
-    //   // this.alertService.error('No project yet');
-    // }
+    // console.log(this.allProjects);
+
+
+
   }
 
   btnEditProject = function(id) {
-      // localStorage.setItem('projectID', JSON.stringify(''));
-      // localStorage.setItem('project', JSON.stringify(''));
       this.router.navigateByUrl('/editProject/' + id);
         // console.log(id);
   };
 
   getAllProjects() {
     // let soProjekti = false;
-    this.http.get<any>(this.postUrlProject).pipe(first()) // vrne vse projekte --> ali projekt ze obstaja
+    this.projectService.getAllProjects().pipe(first()) // vrne vse projekte --> ali projekt ze obstaja
     .subscribe(
       data => {
           // console.log(data);
-          localStorage.setItem('projects', JSON.stringify(''));
-          localStorage.setItem('projects', JSON.stringify(data));
           // window.location.reload();
           // soProjekti = true;
           // return data;
+        this.allProjects = data;
+        console.log(this.allProjects);
+        if(this.allProjects != '' && this.allProjects != undefined) {
+          this.allProjects.sort((a, b) => (a.name > b.name) ? 1 : -1);
+
+        }
       },
       error => {
           if (error === 'Not Found') {
-            localStorage.setItem('projects', JSON.stringify(''));
             this.alertService.warning('No project to show. Create one :)');
 
           } else {

@@ -27,12 +27,11 @@ export class UserService {
        
   }
 
-    updateUser (user: User) {
-      var id = user.id; 
-      console.log ("tok je id;", id)
-      return this.httpClient.put(this.getUsersUrl + `/${id}`, user);
-
-    }
+  updateUser (user: User) {
+    var id = user.id;
+    console.log ("tok je id;", id)
+    return this.httpClient.put(this.getUsersUrl + `/${id}`, user);
+  }
   delete(id: number) {
     return this.httpClient.delete(this.getUsersUrl + `/${id}`);
   }
@@ -41,5 +40,7 @@ export class UserService {
   }
   getAll() {
     return this.httpClient.get<User[]>(this.getUsersUrl);
-}
+  }
+
+
 }

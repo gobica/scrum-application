@@ -1,12 +1,14 @@
 import { Component, OnInit } from '@angular/core';
 import { Router, ActivatedRoute } from '@angular/router';
 import { FormGroup, FormArray, FormBuilder, Validators } from '@angular/forms';
-import { EditProject } from '../../models/EditProject';
 import {first} from 'rxjs/operators';
 import {HttpClient} from '@angular/common/http';
 import {environment} from '../../../environments/environment';
 import {AlertService} from '../../services/alert.service';
+import { AuthenticationService } from  '../../services/authentication.service';
 import _ from 'lodash';
+import { ProjectService } from '../../services/project.service';
+import {UserService} from '../../services/user.service';
 
 
 
@@ -16,43 +18,41 @@ import _ from 'lodash';
   styleUrls: ['./editProject.component.css']
 })
 export class EditProjectComponent implements OnInit {
-  editProjects:EditProject[];
-
-  postUrlProjectById: string = '';
-  postUrlProject: string = '';
-  postUrlUsers: string = '';
+  public projektID;
 
   loading = false;
   submitted = false;
 
+  allUsers = [];
+  allProjects = [];
   stariUporabniki = [];
 
-  // projekt: {};
 
   public myForm: FormGroup;
   public projectForm: FormGroup;
   constructor(
     private _fb: FormBuilder,
-    // private activatedRoute: ActivatedRoute,
     private route: ActivatedRoute,
     private http: HttpClient,
     private alertService: AlertService,
     private router: Router,
+    private authenticationService: AuthenticationService,
+    private userService: UserService,
+    private projectService: ProjectService,
 
   ) {
-
-    this.postUrlProjectById =  environment.apiUrl + '/project/';
-    this.postUrlProject =  environment.apiUrl + '/project';
-    this.postUrlUsers = '/user/';
+         // redirect to home if already logged in
+     if (this.authenticationService.currentUserValueFromToken.globalRole == 'user') {
+      this.router.navigate(['/']);
+     }
   }
 
   getProjectData(projektID) {
-    // localStorage.setItem('project', JSON.stringify(''));
 
-    this.http.get<any>(this.postUrlProjectById + projektID).pipe(first()) // vrne projekt, ki ima dolocen url
+    this.projectService.getProject(projektID).pipe(first()) // vrne projekt, ki ima dolocen url
     .subscribe(
       data => {
-          // console.log(data);
+          // console.log(data['name']);
 
           this.myForm = this._fb.group({
 
@@ -63,16 +63,14 @@ export class EditProjectComponent implements OnInit {
             ])
           });
           this.projectForm = this._fb.group({
-            projectName: [data.name,  Validators.required],
-            projectDescription: [data.description, ],
-            productOwner: [data.productOwner.username,  Validators.required],
-            scrumMaster: [data.scrumMaster.username,  Validators.required],
+            projectName: [data['name'],  Validators.required],
+            projectDescription: [data['description'], ],
+            productOwner: [data['productOwner'].username,  Validators.required],
+            scrumMaster: [data['scrumMaster'].username,  Validators.required],
             projekt: this.myForm,
           });
 
           this.setTeamMembers(data);
-
-
 
         // return data;
       },
@@ -81,8 +79,6 @@ export class EditProjectComponent implements OnInit {
           this.loading = false;
       }
     );
-
-
   }
 
   async ngOnInit() {
@@ -101,21 +97,56 @@ export class EditProjectComponent implements OnInit {
     });
 
 
-    let projektID = '';
+    // let projektID = '';
 
 
     this.route.params.subscribe(params => {
-        projektID = params.id;
-        localStorage.setItem('projektId', JSON.stringify(''));
-        localStorage.setItem('projektId', JSON.stringify(projektID));
+        this.projektID = params.id;
         // console.log(projektID);
-        this.getProjectData(projektID);
+        this.getProjectData(this.projektID);
     });
 
-
-    // this.stariUporabniki = JSON.parse(localStorage.getItem('users'));
     // console.log('--', this.stariUporabniki);
 
+    this.getAllUsers();
+
+    this.getAllProjects();
+  }
+
+  getAllUsers() {
+    this.userService.getAll().pipe(first()) // vrne vse uporabnike v bazi
+    .subscribe(
+      data => {
+          // console.log(data);
+
+          this.allUsers = data;
+          // console.log(this.allUsers);
+          return data;
+      },
+      error => {
+          this.alertService.error(error);
+          this.loading = false;
+      }
+    );
+  }
+
+  getAllProjects() {
+    this.projectService.getAllProjects().pipe(first()) // vrne vse projekte --> ali projekt ze obstaja
+    .subscribe(
+      data => {
+          // console.log(data);
+          this.allProjects = data;
+          return data;
+      },
+      error => {
+          if (error === 'Not found') {
+            this.alertService.error('No project yet');
+          } else {
+            this.alertService.error(error);
+          }
+          this.loading = false;
+      }
+    );
   }
 
   setTeamMembers(projekt) {
@@ -130,24 +161,6 @@ export class EditProjectComponent implements OnInit {
     });
     // console.log('Stari:', this.stariUporabniki);
 
-    this.http.get<any>(this.postUrlProject)
-    // .toPromise();
-    .pipe(first()) // vrne vse projekte --> ali projekt ze obstaja
-    .subscribe(
-      data => {
-          // console.log(data);
-          localStorage.setItem('projects', JSON.stringify(''));
-          localStorage.setItem('projects', JSON.stringify(data));
-          return data;
-      },
-      error => {
-          if (error === 'Not found') {
-            this.alertService.error('No project yet');
-          } else {
-            this.alertService.error(error);
-          }
-          this.loading = false;
-      });
   }
 
   getTeamMembers(member) {
@@ -227,11 +240,10 @@ export class EditProjectComponent implements OnInit {
   }
 
   projectDuplicates(projekti, name) {
-    const projektID = JSON.parse(localStorage.getItem('projektId'));
     let obstajaZeProjekt = false;
     if (projekti !== '') {
       projekti.forEach(p => {
-        if (p.name === name && p.id != projektID) {
+        if (p.name === name && p.id != this.projektID) {
           obstajaZeProjekt = true;
         }
       });
@@ -288,7 +300,7 @@ export class EditProjectComponent implements OnInit {
       // console.log('A:',a);
       const idProject = projektID;
       const idUser = a.id;
-      await this.http.post<any>((this.postUrlProjectById + idProject +  this.postUrlUsers + idUser), {})
+      await this.projectService.addUserToProject(idProject, idUser)
       .pipe(first())
       .subscribe(
         data => {
@@ -309,7 +321,7 @@ export class EditProjectComponent implements OnInit {
       // console.log('D:', d);
       const idProject = projektID;
       const idUser = d.id;
-      await this.http.delete<any>((this.postUrlProjectById + idProject + this.postUrlUsers + idUser))
+      await this.projectService.deleteUserFromProject(idProject, idUser)
       // .toPromise();
       .pipe(first())
       .subscribe(
@@ -332,7 +344,7 @@ export class EditProjectComponent implements OnInit {
     this.alertService.clear();
     this.loading = true;
 
-    const uporabniki = JSON.parse(localStorage.getItem('users'));
+    const uporabniki = this.allUsers;
     // console.log(uporabniki);
 
 
@@ -341,15 +353,14 @@ export class EditProjectComponent implements OnInit {
 
     const jePodvajanjeUporabnikov = this.userDuplicates(users); // preverjanje podvajanja clanov v skupini
 
-    // // const vloge = JSON.parse(localStorage.getItem('roles')); // (0: Product owner, 1: Scrum master, 2: Team member)
+    // // const vloge // (0: Product owner, 1: Scrum master, 2: Team member)
 
     const name = this.f.projectName.value;
     const description = this.f.projectDescription.value;
     // console.log(description);
 
 
-
-    const projekti = JSON.parse(localStorage.getItem('projects'));
+    const projekti = this.allProjects;
     // console.log(projekti);
 
 
@@ -357,7 +368,7 @@ export class EditProjectComponent implements OnInit {
     // console.log('ßßß', obstajaZeProjekt);
 
     const productOwner = this.f.productOwner.value;
-    let idProductOwner = '';
+    let idProductOwner = 0;
     let productOwnerVBazi = false;
     uporabniki.forEach(u => {
       // console.log(u.username);
@@ -369,7 +380,7 @@ export class EditProjectComponent implements OnInit {
       }
     });
     const scrumMaster = this.f.scrumMaster.value;
-    let idScrumMaster = '';
+    let idScrumMaster = 0;
     let scrumMasterVBazi = false;
     uporabniki.forEach(u => {
       if (scrumMaster === u.email || scrumMaster === u.username) {
@@ -387,16 +398,16 @@ export class EditProjectComponent implements OnInit {
               if (scrumMasterVBazi) {
                 if (users.length === this.f.projekt.value.teamMembers.length) {
                   if (jePodvajanjeUporabnikov === false) {
-                    const projektID = JSON.parse(localStorage.getItem('projektId'));
-
-                    await this.http.put<any>(this.postUrlProjectById + projektID, {name, description, idProductOwner, idScrumMaster})
+                    const id = this.projektID;
+                    const projekt = {id, name, description, idProductOwner, idScrumMaster, users};
+                    await this.projectService.updateProject(projekt)
                       // .toPromise();
                     .pipe(first())
                     .subscribe(
                       data => {
                         // console.log(data);
                         // console.log(users);
-                        this.addDeleteUsers(users, projektID);
+                        this.addDeleteUsers(users, id);
                       },
                       error => {
                         this.alertService.error(error);
@@ -450,8 +461,8 @@ export class EditProjectComponent implements OnInit {
     }
 
     document.body.scrollTop = document.documentElement.scrollTop = 0;
-    const projektID = JSON.parse(localStorage.getItem('projektId'));
-    window.location.replace('/editProject/' + projektID);
+    // const projektID = JSON.parse(localStorage.getItem('projektId'));
+    // window.location.replace('/editProject/' + projektID);
   }
 
 

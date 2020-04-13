@@ -1,9 +1,9 @@
 <!--<button mat-stroked-button color="accent" class="btn-block-newProject" >Add new project</button>-->
 
-<div *ngIf="projects" class="title" >Project list</div>
+<div *ngIf="allProjects" class="title" >Project list</div>
 <!--<div class="title" >Project list</div>-->
 
-<div *ngFor="let project of projects; let i=index" class="panel panel-default" >
+<div *ngFor="let project of allProjects; let i=index" class="panel panel-default" >
   <div id = "project {{i}}" fxLayout="row" >
     <div class="login-wrapper show-project-wrapper" fxLayout="row" flex>
       <mat-card class="box-showProject" >
