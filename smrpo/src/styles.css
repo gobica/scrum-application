@@ -174,7 +174,6 @@ a {
   min-height: unset!important;
   margin: 0px;
   padding: 0px;
-  float: right;
 }
 
 .cdk-textarea-autosize {
@@ -201,14 +200,14 @@ a {
 	padding: 40px 70px 50px;
 }
 
-.login-wrapper .mat-stroked-button {
+.mat-stroked-button {
 	border: 1px solid currentColor;
-	line-height: 54px;
 	background: #23286d;
-    width: 50%;
-    display: block;
-    margin-left: auto;
-    margin-right: auto;
+	width: 50%;
+	padding: 100px;
+
+
+	
 }
 
 .login-wrapper .mat-form-field-appearance-legacy .mat-form-field-infix {

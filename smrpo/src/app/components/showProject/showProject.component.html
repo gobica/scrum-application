@@ -1,0 +1,58 @@
+<!--<button mat-stroked-button color="accent" class="btn-block-newProject" >Add new project</button>-->
+
+<div *ngIf="projects" class="title" >Project list</div>
+<!--<div class="title" >Project list</div>-->
+
+<div *ngFor="let project of projects; let i=index" class="panel panel-default" >
+  <div id = "project {{i}}" fxLayout="row" >
+    <div class="login-wrapper show-project-wrapper" fxLayout="row" flex>
+      <mat-card class="box-showProject" >
+        <mat-card-header>
+          <mat-card-title>{{project.name}}</mat-card-title>
+        </mat-card-header>
+
+        <form class="example-form">
+
+          <mat-card-content>
+            <form class="example-form">
+              <div *ngIf="project.description != ''">
+                <h3><u>Description:</u></h3>
+
+                <p>{{project.description}}</p>
+              </div>
+              <h3><u>Project members:</u></h3>
+              <li><b>Product owner</b>: {{project.productOwner.username}}</li>
+
+              <li><b>Scrum master</b>: {{project.scrumMaster.username}}</li>
+
+              <div *ngIf="project.users != ''">
+                <li><b>Team members:</b></li>
+                <ul>
+                  <div *ngFor="let member of project.users; let i=index">
+
+                      <li>{{member.username}}</li>
+
+                  </div>
+                </ul>
+              </div>
+
+              <!--<mdb-icon fas icon="search" aria-hidden="true"></mdb-icon>-->
+              <!--<mat-form-field class="example-full-width " matNativeControl required>-->
+                <!--<input class="inputfields" matInput placeholder="Enter the project ID">-->
+              <!--</mat-form-field>-->
+            </form>
+          </mat-card-content>
+
+          <button mat-stroked-button color="accent"  (click)="btnEditProject(project.id);">Edit project</button>
+          <br>
+          <br>
+
+          <button mat-stroked-button color="accent" (click)="btnEnterProject(project.id);" >Enter project</button>
+
+        </form>
+      </mat-card>
+    </div>
+    <!--<button mat-stroked-button color="accent" class="btn-block-newProject" (click)="btnSearch();">Edit project</button>-->
+  </div>
+</div>
+

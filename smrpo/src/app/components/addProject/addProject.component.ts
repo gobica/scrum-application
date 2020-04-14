@@ -256,7 +256,7 @@ export class AddProjectComponent implements OnInit {
                           // this.router.navigate([this.returnUrl]);
                           // this.router.navigateByUrl('/searchProject');
                           // this.window.scrollTo(0, 0);
-
+                          window.location.replace('/addProject');
                           this.projectForm.reset();
                         },
                         error => {
@@ -307,6 +307,7 @@ export class AddProjectComponent implements OnInit {
     }
 
     document.body.scrollTop = document.documentElement.scrollTop = 0;
+
   }
 
 }

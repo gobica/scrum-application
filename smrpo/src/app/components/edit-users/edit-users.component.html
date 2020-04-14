@@ -1,1 +1,63 @@
-<p>edit-users works!</p>
+<div >
+    <br>
+    <br>
+  
+    <div *ngIf="currentUserValue.globalRole == 'admin' && isDataLoaded ">
+    
+    <br>
+    
+    <h3>All registered users:</h3>
+        <div class="card-body">
+          <div id="table" class="table-editable table-hover">
+            <table class="table table-bordered table-responsive-md text-center">
+              <thead class="thead-light">
+                <tr>
+                  <th scope="col" class="header-cell">#</th>
+                  <th scope="col" class="header-cell">Username</th>
+                  <th scope="col" class="header-cell">First name</th>
+                  <th scope="col" class="header-cell">Last name</th>
+                  <th scope="col" class="header-cell">E-mail address</th>
+                  <th scope="col" class="header-cell">Password</th>
+                  <th scope="col" class="header-cell">Global role</th>
+                  <th scope="col" class="header-cell" colspan="2"></th>
+                </tr>
+              </thead>
+              <tbody>
+                <tr *ngFor="let user of users; let i = index">
+                  <td *ngIf="!checkIfSame(user)">
+                    <span contenteditable="false">{{1 + i}}.</span>
+                  </td>
+                  <td *ngIf="!checkIfSame(user)">
+                    <span  contenteditable="true"  (keyup)="changeValue(i, user.id, 'username', $event)" (blur)="updateList(i, 'username', $event)" contenteditable="true">{{user.username}}</span>
+                  </td>
+                  <td *ngIf="!checkIfSame(user)">
+                    <span  contenteditable="true"  (keyup)="changeValue(i, user.id, 'firstName', $event)" (blur)="updateList(i, 'firstName', $event)" contenteditable="true">{{user.firstName}}</span>
+                  </td>
+                  <td *ngIf="!checkIfSame(user)">
+                    <span contenteditable="true" (keyup)="changeValue(i,  user.id, 'lastName', $event)" (blur)="updateList(i, 'lastName', $event)">{{user.lastName}}</span>
+                  </td>
+                  <td *ngIf="!checkIfSame(user)">
+                    <span contenteditable="true" (keyup)="changeValue(i,  user.id, 'email', $event)" (blur)="updateList(i, 'email', $event)">{{user.email}}</span>
+                  </td>
+                  <td *ngIf="!checkIfSame(user)">
+                    <span class="mask" type="password" contenteditable="true" (keyup)="changeValue(i,  user.id, 'password', $event)" (blur)="updateList(i, 'password', $event)">****</span>
+                  </td>
+                  <td *ngIf="!checkIfSame(user)">
+                    <span  contenteditable="true" (keyup)="changeValue(i,  user.id, 'globalRole', $event)" (blur)="updateList(i, 'globalRole', $event)">{{user.globalRole}}</span>
+                  </td>
+                  <td *ngIf="!checkIfSame(user)">
+                    <span class="table-delete">
+                      <button type="button" mdbBtn color="danger" rounded="true" class="my-0 btn btn-success btn-sm" (click)="updateUser(user)" >Save</button>
+                    </span>
+                  </td>
+                  <td *ngIf="!checkIfSame(user)">
+                    <span class="table-remove">
+                      <button type="button" mdbBtn color="danger" rounded="true" class="my-0 btn btn-danger btn-sm" (click)="deleteUser(user.id)" (click)="remove(i)">Remove</button>
+                    </span>
+                  </td>
+                </tr>
+              </tbody>
+            </table>
+          </div>
+        </div>
+    </div>

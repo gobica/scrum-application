@@ -5,7 +5,7 @@ import { AppRoutingModule } from './app-routing.module';
 import { AppComponent } from './app.component';
 import { RegisterComponent } from './components/register/register.component';
 import { AddProjectComponent } from './components/addProject/addProject.component';
-import { SearchProjectComponent } from './components/editProject/editProject.component';
+import { ShowProjectComponent } from './components/showProject/showProject.component';
 import { EditProjectComponent } from './components/editProject/editProject.component';
 import { NoopAnimationsModule } from '@angular/platform-browser/animations';
 import { JwtModule } from '@auth0/angular-jwt';
@@ -23,6 +23,10 @@ import { LoginComponent } from './components/login/login.component';
 import { JwtInterceptor } from './helpers/jwt.interceptor';
 import { environment } from 'src/environments/environment';
 
+import { BsDropdownModule } from 'ngx-bootstrap/dropdown';
+import { TooltipModule } from 'ngx-bootstrap/tooltip';
+import { ModalModule } from 'ngx-bootstrap/modal';
+
 import { ErrorInterceptor } from './helpers/error.interceptors';
 import { DashboardComponent } from './components/dashboard/dashboard.component';
 import { EditUserDialogComponent } from './components/edit-user-dialog/edit-user-dialog.component';
@@ -34,7 +38,7 @@ import { SprintBacklogComponent } from './components/sprint-backlog/sprint-backl
     AppComponent,
     RegisterComponent,
     AddProjectComponent,
-    SearchProjectComponent,
+    ShowProjectComponent,
     EditProjectComponent,
     // RegisterComponent,
     AlertComponent,
@@ -49,6 +53,9 @@ import { SprintBacklogComponent } from './components/sprint-backlog/sprint-backl
   ],
   imports: [
     BrowserModule,
+    BsDropdownModule.forRoot(),
+    TooltipModule.forRoot(),
+    ModalModule.forRoot(),
     AppRoutingModule,
     NoopAnimationsModule,
     FormsModule,

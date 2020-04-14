@@ -4,16 +4,38 @@
     <ul class="nav navbar-nav navbar-right">
       <li ><a class="nav-item nav-link" routerLink="/">Dashboard</a> </li>
       <li ><a class="nav-item nav-link" routerLink="/springBacklog">Spring Backlog</a> </li>
+ 
 
-      <li *ngIf="authenticationService.currentUserValueFromToken.globalRole == 'admin'"><a class="nav-item nav-link" routerLink="/register">Register users</a></li> 
-      <li *ngIf="authenticationService.currentUserValueFromToken.globalRole == 'admin'"><a class="nav-item nav-link" routerLink="/addProject">Add project</a></li> 
+      <li class="nav-item dropdown" dropdown>
+        <a dropdownToggle mdbWavesEffect type="button" class="nav-link dropdown-toggle waves-light" mdbWavesEffect>
+          Users <span class="caret"></span></a>
+        <div *dropdownMenu class="dropdown-menu dropdown dropdown-primary" role="menu">
+          <li *ngIf="authenticationService.currentUserValueFromToken.globalRole == 'admin'"><a class="nav-item nav-link" routerLink="/register">Register users</a></li> 
+          <li *ngIf="authenticationService.currentUserValueFromToken.globalRole == 'admin'"><a class="nav-item nav-link" routerLink="/editUsers">Edit users</a></li> 
+        </div>
+      </li>
 
-      <li *ngIf="authenticationService.currentUserValueFromToken.globalRole == 'admin'"><a (click)="refreshShowProject()" class="nav-item nav-link" routerLink="/searchProject">Edit project</a> </li>
+      <li class="nav-item dropdown" dropdown>
+        <a dropdownToggle mdbWavesEffect type="button" class="nav-link dropdown-toggle waves-light" mdbWavesEffect>
+          Projects <span class="caret"></span></a>
+        <div *dropdownMenu class="dropdown-menu dropdown dropdown-primary" role="menu">
+          <li *ngIf="authenticationService.currentUserValueFromToken.globalRole == 'admin'"><a (click)="refreshShowProject()" class="nav-item nav-link" routerLink="/showProject">Project lists</a> </li>
+
+          <li *ngIf="authenticationService.currentUserValueFromToken.globalRole == 'admin'"><a class="nav-item nav-link" routerLink="/addProject">Add project</a></li> 
+
+        </div>
+      </li>
+   
+   
+   
     </ul>
 
+
+
+
     <ul class="nav navbar-nav navbar-right">
-      
-      
+
+
       <div class="userdata">
       <li class="nav-item ">  Logged in as {{authenticationService.currentUserValueFromToken.username}} </li>
       <li   class="nav-item " *ngIf="authenticationService.currentUserValueFromToken.lastLogin != null">Last login: {{authenticationService.currentUserValueFromToken.lastLogin * 1000 | date:'yyyy-MM-dd HH:mm'}}</li>

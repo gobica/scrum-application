@@ -5,9 +5,11 @@ import { LoginComponent } from './components/login/login.component';
 import { AddProjectComponent } from './components/addProject/addProject.component';
 import { DashboardComponent} from './components/dashboard/dashboard.component';
 import { AuthGuard } from './helpers/auth.guard';
-import { SearchProjectComponent } from './components/editProject/editProject.component';
+import { ShowProjectComponent } from './components/showProject/showProject.component';
 import { EditProjectComponent } from './components/editProject/editProject.component';
 import { SprintBacklogComponent } from './components/sprint-backlog/sprint-backlog.component';
+import { EditUsersComponent } from './components/edit-users/edit-users.component';
+
 
 SprintBacklogComponent
 
@@ -17,11 +19,12 @@ const routes: Routes = [
   { path: 'login', component: LoginComponent },
   { path: 'dashboard', component: DashboardComponent },
   { path: 'addProject', component: AddProjectComponent },
-  { path: 'searchProject', component: SearchProjectComponent }, // For editing project
-  { path: 'editProject', component: EditProjectComponent },
-  { path: 'springBacklog', component: SprintBacklogComponent },
-
+  { path: 'showProject', component: ShowProjectComponent }, // For editing project
   { path: 'editProject/:id', component: EditProjectComponent },
+  { path: 'editUsers', component: EditUsersComponent },
+
+
+
   { path: '**', redirectTo: '' }
 
 ];
