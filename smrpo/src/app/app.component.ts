@@ -34,9 +34,7 @@ export class AppComponent {
   }
 
   refreshShowProject(): void {
-    // this.router.navigate(['/searchProject']);
-    // window.location.reload();
-    // window.location.replace('/searchProject');
+    // window.location.replace('/showProject');
   }
 
   logout() {

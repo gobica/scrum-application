@@ -1,18 +1,15 @@
 import { Component, OnInit, Input, NgModule } from '@angular/core';
 import { FormGroup, FormArray, FormBuilder, Validators, ValidationErrors } from '@angular/forms';
-import { AddProject } from '../../models/AddProject';
-// import {first} from 'rxjs/operators';
-// import {ActivatedRoute, Router} from '@angular/router';
-// import {Http, Response} from '@angular/http';
 import { HttpClient } from '@angular/common/http';
 import {environment} from '../../../environments/environment';
 import {first} from 'rxjs/operators';
 import { AlertService } from '../../services/alert.service';
 import {group} from '@angular/animations';
 import {Router} from '@angular/router';
-// import { ValidationErrorsComponent } from '../validation-errors/validation-errors.component';
-// import { WindowRef } from './WindowRef';
 import { AuthenticationService } from  '../../services/authentication.service';
+import { ProjectService } from '../../services/project.service';
+import {UserService} from '../../services/user.service';
+
 
 
 
@@ -23,13 +20,13 @@ import { AuthenticationService } from  '../../services/authentication.service';
 })
 export class AddProjectComponent implements OnInit {
 
-  postUrlProject: string = '';
-  postUrlUser: string = '';
   loading = false;
   submitted = false;
 
+  allUsers = [];
+  allProjects = [];
+
   public myForm: FormGroup;
-  addProjects: AddProject[];
   public projectForm: FormGroup;
 
   constructor(
@@ -38,11 +35,10 @@ export class AddProjectComponent implements OnInit {
     private alertService: AlertService,
     private router: Router,
     private authenticationService: AuthenticationService,
+    private userService: UserService,
+    private projectService: ProjectService,
 
   ) {
-    this.postUrlProject =  environment.apiUrl + '/project';
-    this.postUrlUser =  environment.apiUrl + '/user';
-    
      // redirect to home if already logged in
      if (this.authenticationService.currentUserValueFromToken.globalRole == 'user') {
       this.router.navigate(['/']);
@@ -72,12 +68,12 @@ export class AddProjectComponent implements OnInit {
   }
 
   getAllUsers() {
-    this.http.get<any>(this.postUrlUser).pipe(first()) // vrne vse uporabnike v bazi
+    this.userService.getAll().pipe(first()) // vrne vse uporabnike v bazi
     .subscribe(
       data => {
           // console.log(data);
-          localStorage.setItem('users', JSON.stringify(''));
-          localStorage.setItem('users', JSON.stringify(data));
+
+          this.allUsers = data;
           return data;
       },
       error => {
@@ -88,16 +84,15 @@ export class AddProjectComponent implements OnInit {
   }
 
   getAllProjects() {
-    this.http.get<any>(this.postUrlProject).pipe(first()) // vrne vse projekte --> ali projekt ze obstaja
+    this.projectService.getAllProjects().pipe(first()) // vrne vse projekte --> ali projekt ze obstaja
     .subscribe(
       data => {
           // console.log(data);
-          localStorage.setItem('projects', JSON.stringify(''));
-          localStorage.setItem('projects', JSON.stringify(data));
+          this.allProjects = data;
           return data;
       },
       error => {
-          localStorage.setItem('projects', JSON.stringify(''));
+
           // this.alertService.error(error);
           this.loading = false;
       }
@@ -192,7 +187,8 @@ export class AddProjectComponent implements OnInit {
     this.alertService.clear();
     this.loading = true;
 
-    const uporabniki = JSON.parse(localStorage.getItem('users'));
+
+    const uporabniki = this.allUsers;
     // console.log(uporabniki);
 
 
@@ -201,15 +197,12 @@ export class AddProjectComponent implements OnInit {
 
     const jePodvajanjeUporabnikov = this.userDuplicates(users); // preverjanje podvajanja clanov v skupini
 
-    // // const vloge = JSON.parse(localStorage.getItem('roles')); // (0: Product owner, 1: Scrum master, 2: Team member)
-
     const name = this.f.projectName.value;
     const description = this.f.projectDescription.value;
     // console.log(description);
 
 
-
-    const projekti = JSON.parse(localStorage.getItem('projects'));
+    const projekti = this.allProjects;
     // console.log(projekti);
 
 
@@ -217,7 +210,7 @@ export class AddProjectComponent implements OnInit {
     // console.log('ßßß', obstajaZeProjekt);
 
     const productOwner = this.f.productOwner.value;
-    let idProductOwner = '';
+    let idProductOwner = 0;
     let productOwnerVBazi = false;
     uporabniki.forEach(u => {
       // console.log(u.username);
@@ -229,7 +222,7 @@ export class AddProjectComponent implements OnInit {
       }
     });
     const scrumMaster = this.f.scrumMaster.value;
-    let idScrumMaster = '';
+    let idScrumMaster = 0;
     let scrumMasterVBazi = false;
     uporabniki.forEach(u => {
       if (scrumMaster === u.email || scrumMaster === u.username) {
@@ -239,8 +232,6 @@ export class AddProjectComponent implements OnInit {
       }
     });
 
-
-
     if (name !== undefined && name !== '' && name !== null) {
       if (obstajaZeProjekt === false) {
         if (productOwner !== undefined && productOwner !== '' && productOwner !== null) {
@@ -249,14 +240,15 @@ export class AddProjectComponent implements OnInit {
               if (scrumMasterVBazi) {
                 if (users.length === this.f.projekt.value.teamMembers.length) {
                   if (jePodvajanjeUporabnikov === false) {
-                    this.http.post<any>(this.postUrlProject, {name, description, idProductOwner, idScrumMaster, users}).pipe(first())
+                    const id = 0;
+                    const projekt = {id, name, description, idProductOwner, idScrumMaster, users};
+                    this.projectService.createProject(projekt).pipe(first())
                       .subscribe(
                         data => {
                           console.log(data);
-                          // this.router.navigate([this.returnUrl]);
-                          // this.router.navigateByUrl('/searchProject');
-                          // this.window.scrollTo(0, 0);
-                          window.location.replace('/addProject');
+
+                          // window.location.replace('/addProject');
+
                           this.projectForm.reset();
                         },
                         error => {
