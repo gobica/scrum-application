@@ -21,7 +21,7 @@ import { MatToolbarModule } from '@angular/material/toolbar';
 import { MatTooltipModule } from '@angular/material/tooltip';
 import { MatCardModule } from '@angular/material/card';
 import { MatDialogModule } from '@angular/material/dialog';
-
+import {MatAutocompleteModule} from '@angular/material/autocomplete'
 
 @NgModule({
    imports: [
@@ -44,7 +44,8 @@ import { MatDialogModule } from '@angular/material/dialog';
       MatTableModule,
       MatPaginatorModule,
       MatCardModule, 
-      MatDialogModule
+      MatDialogModule,
+      MatAutocompleteModule
    ],
    exports: [
       MatButtonModule,
@@ -64,8 +65,9 @@ import { MatDialogModule } from '@angular/material/dialog';
       MatTableModule,
       MatPaginatorModule,
       MatCardModule,
-      MatDialogModule
-       
+      MatDialogModule,
+      MatAutocompleteModule
+
    ],
    providers: [
       MatDatepickerModule,
