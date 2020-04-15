@@ -9,7 +9,7 @@ import { ShowProjectComponent } from './components/showProject/showProject.compo
 import { EditProjectComponent } from './components/editProject/editProject.component';
 import { SprintBacklogComponent } from './components/sprint-backlog/sprint-backlog.component';
 import { EditUsersComponent } from './components/edit-users/edit-users.component';
-
+import { ProjectDashboardComponent } from './components/project-dashboard/project-dashboard.component';
 
 SprintBacklogComponent
 
@@ -22,6 +22,8 @@ const routes: Routes = [
   { path: 'showProject', component: ShowProjectComponent }, // For editing project
   { path: 'editProject/:id', component: EditProjectComponent },
   { path: 'editUsers', component: EditUsersComponent },
+  { path: 'projectDashboard/:id', component: ProjectDashboardComponent },
+
 
 
 

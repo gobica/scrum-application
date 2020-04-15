@@ -19,6 +19,7 @@ import {AuthenticationService} from "../../services/authentication.service";
 export class ShowProjectComponent implements OnInit {
   loading = false;
   public allProjects;
+  currentProjectId; 
 
   constructor(
     private router: Router,
@@ -46,7 +47,9 @@ export class ShowProjectComponent implements OnInit {
         // console.log(id);
   };
   btnEnterProject = function(id) {
-    this.router.navigateByUrl('/enterProject/' + id);
+    console.log(this.currentProjectId);
+    this.router.navigateByUrl('/projectDashboard/' + id);
+    
 };
 
   getAllProjects() {

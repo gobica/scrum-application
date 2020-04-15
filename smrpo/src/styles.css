@@ -229,3 +229,15 @@ a {
   flex: 1 1 auto;
 }
 
+.mat-tab-label {
+	margin: 2%;
+	color: #000000;
+}
+.example-tab-icon {
+	margin: 10px;
+}
+.mat-tab-group {
+	width: 100%;
+
+}
+
