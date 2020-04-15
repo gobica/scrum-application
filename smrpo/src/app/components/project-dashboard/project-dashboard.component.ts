@@ -51,7 +51,9 @@ export class ProjectDashboardComponent implements OnInit {
     const dialogRef = this.dialog.open(AddSprintDialogComponent, dialogConfig);
 
     dialogRef.afterClosed().subscribe(
-        data => console.log("Dialog output:", data)
+        data => {console.log("Dialog output:", data)
+        this.loadAllSprints();
+    }
     );    
 
 

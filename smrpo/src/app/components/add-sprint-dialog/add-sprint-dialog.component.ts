@@ -106,12 +106,12 @@ onSubmit() {
       .subscribe(
           (data:any) => {
 
-              this.alertService.success('Registration successful', true);
+              this.alertService.success('Sprint added successfuly', true);
               console.log("DATA", data);
               
           },
           error => {
-              console.log("eeror");
+              console.log("error");
 
               this.alertService.error(error);
               this.loading = false;

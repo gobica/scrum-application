@@ -9,8 +9,36 @@ import {Router} from '@angular/router';
 import { AuthenticationService } from  '../../services/authentication.service';
 import { ProjectService } from '../../services/project.service';
 import {UserService} from '../../services/user.service';
+// import { Pipe, PipeTransform } from '@angular/core';
+
+import {FormControl} from '@angular/forms';
+import {Observable} from 'rxjs';
+import {map, startWith} from 'rxjs/operators';
 
 
+// @Pipe({
+//   name: 'stringFilterBy'
+// })
+//
+// export class StringFilterByPipe implements PipeTransform {
+//
+//   transform(arr: any[], searchText: string,fieldName?:string): any[] {
+//     if (!arr) return [];
+//     if (!searchText) return arr;
+//     searchText = searchText.toLowerCase();
+//     return arr.filter((it:any) => {
+//       if(typeof it == 'string'){
+//         return it.toLowerCase().includes(searchText);
+//       }else if(typeof it == 'number'){
+//         return it.toString().toLowerCase().includes(searchText);
+//       }else{
+//         return it[fieldName].toLowerCase().includes(searchText);
+//       }
+//
+//     });
+//   }
+//
+// }
 
 
 @Component({
@@ -25,6 +53,13 @@ export class AddProjectComponent implements OnInit {
 
   allUsers = [];
   allProjects = [];
+
+  userNameProductOwner: string[] = [];
+  filteredOptionsProductOwner: Observable<string[]>;
+  userNameScrumMaster: string[] = [];
+  filteredOptionsScrumMaster: Observable<string[]>;
+  userNameTeamMember: string[] = [];
+  filteredOptionsTeamMember: Observable<string[]>[] = [];
 
   public myForm: FormGroup;
   public projectForm: FormGroup;
@@ -60,20 +95,70 @@ export class AddProjectComponent implements OnInit {
       scrumMaster: ['',  Validators.required],
       projekt: this.myForm,
     });
-
     this.getAllUsers();
-
     this.getAllProjects();
+  }
 
+  private _filterProductOwner(value: string): string[] {
+    const filterValue = value.toLowerCase();
+
+    return this.userNameProductOwner.filter(userNameProductOwner => userNameProductOwner.toLowerCase().indexOf(filterValue) === 0);
+  }
+  private _filterScrumMaster(value: string): string[] {
+    const filterValue = value.toLowerCase();
+
+    return this.userNameScrumMaster.filter(userNameScrumMaster => userNameScrumMaster.toLowerCase().indexOf(filterValue) === 0);
+  }
+  private _filterTeamMember(value: string): string[] {
+    const filterValue = value.toLowerCase();
+
+    return this.userNameTeamMember.filter(userNameTeamMember => userNameTeamMember.toLowerCase().indexOf(filterValue) === 0);
   }
 
   getAllUsers() {
+    // let users = [];
     this.userService.getAll().pipe(first()) // vrne vse uporabnike v bazi
     .subscribe(
       data => {
           // console.log(data);
-
           this.allUsers = data;
+
+          const users = [];
+          data.forEach(u => {
+            users.push(u.username);
+            // this.userNameProductOwner.push(u.username);
+            // this.userNameScrumMaster.push(u.username);
+
+            // console.log(u.username);
+          });
+          this.userNameProductOwner = users;
+          this.userNameScrumMaster = users;
+          this.userNameTeamMember = users;
+
+          // console.log(this.userNameProductOwner);
+          // console.log(this.userNameScrumMaster);
+
+          this.filteredOptionsProductOwner = this.projectForm.get('productOwner').valueChanges.pipe(
+            startWith(''),
+            map(value => this._filterProductOwner(value))
+          );
+          this.filteredOptionsScrumMaster = this.projectForm.get('scrumMaster').valueChanges.pipe(
+            startWith(''),
+            map(value => this._filterScrumMaster(value))
+          );
+
+          // console.log(this.projectForm.value.projekt.teamMembers);
+          let index = 0;
+          this.projectForm.value.projekt.teamMembers.forEach(m => {
+            let mN = this.projectForm.get('projekt').get('teamMembers').get([index]).get('memberName');
+            // console.log(mN);
+            this.filteredOptionsTeamMember[index] = mN.valueChanges.pipe(
+              startWith(''),
+              map(value => this._filterTeamMember(value))
+            );
+            index += 1;
+          });
+          // console.log(index);
           return data;
       },
       error => {
@@ -81,9 +166,11 @@ export class AddProjectComponent implements OnInit {
           this.loading = false;
       }
     );
+    // return users;
   }
 
   getAllProjects() {
+    // let projects = [];
     this.projectService.getAllProjects().pipe(first()) // vrne vse projekte --> ali projekt ze obstaja
     .subscribe(
       data => {
@@ -97,6 +184,7 @@ export class AddProjectComponent implements OnInit {
           this.loading = false;
       }
     );
+    // return projects;
   }
 
   initTeamMembers() {
@@ -108,6 +196,16 @@ export class AddProjectComponent implements OnInit {
   addMember() {
     const control = this.myForm.controls.teamMembers as FormArray;
     control.push(this.initTeamMembers());
+    let index = 0;
+    this.projectForm.value.projekt.teamMembers.forEach(m => {
+      let mN = this.projectForm.get('projekt').get('teamMembers').get([index]).get('memberName');
+      // console.log(mN);
+      this.filteredOptionsTeamMember[index] = mN.valueChanges.pipe(
+        startWith(''),
+        map(value => this._filterTeamMember(value))
+      );
+      index += 1;
+    });
   }
 
   removeMember(i: number) {
@@ -210,8 +308,10 @@ export class AddProjectComponent implements OnInit {
     // console.log('ßßß', obstajaZeProjekt);
 
     const productOwner = this.f.productOwner.value;
+    // console.log(productOwner);
     let idProductOwner = 0;
     let productOwnerVBazi = false;
+    // console.log(uporabniki);
     uporabniki.forEach(u => {
       // console.log(u.username);
       // console.log(productOwner);
@@ -249,7 +349,32 @@ export class AddProjectComponent implements OnInit {
 
                           // window.location.replace('/addProject');
 
-                          this.projectForm.reset();
+                          // this.projectForm.reset('');
+                          // console.log(this.projectForm.value.projectName);
+                          this.projectForm.get('projectName').setValue('');
+                          this.projectForm.get('projectDescription').setValue('');
+                          this.projectForm.get('productOwner').setValue('');
+                          this.filteredOptionsProductOwner = this.projectForm.get('productOwner').valueChanges.pipe(
+                            startWith(''),
+                            map(value => this._filterProductOwner(value))
+                          );
+                          this.projectForm.get('scrumMaster').setValue('');
+                          this.filteredOptionsScrumMaster = this.projectForm.get('scrumMaster').valueChanges.pipe(
+                            startWith(''),
+                            map(value => this._filterScrumMaster(value))
+                          );
+                          let index = 0;
+                          this.projectForm.value.projekt.teamMembers.forEach(m => {
+                            this.projectForm.get('projekt').get('teamMembers').get([index]).get('memberName').setValue('');
+                            let mN = this.projectForm.get('projekt').get('teamMembers').get([index]).get('memberName');
+                            // console.log(mN);
+                            this.filteredOptionsTeamMember[index] = mN.valueChanges.pipe(
+                              startWith(''),
+                              map(value => this._filterTeamMember(value))
+                            );
+                            index += 1;
+                          });
+
                         },
                         error => {
                           this.alertService.error(error);

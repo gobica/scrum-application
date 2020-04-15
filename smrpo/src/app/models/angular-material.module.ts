@@ -23,6 +23,7 @@ import { MatCardModule } from '@angular/material/card';
 import { MatDialogModule } from '@angular/material/dialog';
 import {MatTabsModule} from '@angular/material/tabs';
 
+import {MatAutocompleteModule} from '@angular/material/autocomplete'
 
 @NgModule({
    imports: [
@@ -46,8 +47,8 @@ import {MatTabsModule} from '@angular/material/tabs';
       MatPaginatorModule,
       MatCardModule, 
       MatDialogModule, 
-      MatTabsModule
-      
+      MatTabsModule,
+       MatAutocompleteModule
    ],
    exports: [
       MatButtonModule,
@@ -68,9 +69,11 @@ import {MatTabsModule} from '@angular/material/tabs';
       MatPaginatorModule,
       MatCardModule,
       MatDialogModule,
-      MatTabsModule
+      MatTabsModule,
 
        
+      MatAutocompleteModule
+
    ],
    providers: [
       MatDatepickerModule,

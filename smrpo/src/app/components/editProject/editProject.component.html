@@ -18,13 +18,49 @@
           <textarea class="cdk-textarea-autosize" matInput placeholder="Project description" formControlName="projectDescription"></textarea>
         </mat-form-field>
 
-        <mat-form-field class="example-full-width " >
-          <input class="inputfields" matInput placeholder="Product owner" formControlName="productOwner" required>
+
+        <mat-form-field class="example-full-width">
+            <input type="text"
+                   placeholder="Product owner"
+                   aria-label="Number"
+                   matInput
+                   [formControl]="projectForm.get('productOwner')"
+                   [matAutocomplete]="autoProductOwner"
+                   matNativeControl required
+                   formControlName="productOwner">
+            <!--[formControl]="myControl"-->
+            <!--formControlName="productOwner"-->
+            <mat-autocomplete autoActiveFirstOption #autoProductOwner="matAutocomplete" >
+                <mat-option *ngFor="let userNameProductOwner of filteredOptionsProductOwner | async" [value]="userNameProductOwner">
+                  {{userNameProductOwner}}
+                </mat-option>
+            </mat-autocomplete>
+          </mat-form-field>
+
+
+        <!--<mat-form-field class="example-full-width " >-->
+          <!--<input class="inputfields" matInput placeholder="Product owner" formControlName="productOwner" required>-->
+        <!--</mat-form-field>-->
+
+        <mat-form-field class="example-full-width">
+          <input type="text"
+                 placeholder="Scrum master"
+                 aria-label="Number"
+                 matInput
+                 [formControl]="projectForm.get('scrumMaster')"
+                 [matAutocomplete]="autoScrumMaster"
+                 matNativeControl required
+                 formControlName="scrumMaster">
+          <mat-autocomplete autoActiveFirstOption #autoScrumMaster="matAutocomplete" >
+              <mat-option *ngFor="let userNameScrumMaster of filteredOptionsScrumMaster | async" [value]="userNameScrumMaster">
+                {{userNameScrumMaster}}
+              </mat-option>
+          </mat-autocomplete>
         </mat-form-field>
 
-        <mat-form-field class="example-full-width " >
-          <input class="inputfields" matInput placeholder="Scrum master" formControlName="scrumMaster" required>
-        </mat-form-field>
+        <!--<mat-form-field class="example-full-width " >-->
+          <!--<input class="inputfields" matInput placeholder="Scrum master" formControlName="scrumMaster" required>-->
+        <!--</mat-form-field>-->
 
         <form [formGroup]="myForm" class="example-form">
 
@@ -34,10 +70,26 @@
 
                 <div [formGroup]="teamMember">
 
-                <mat-form-field class="example-oneWithButton-width " required >
-                  <input class="inputfields" matInput placeholder="Team member" formControlName="memberName">
+                  <mat-form-field class="example-oneWithButton-width">
+                    <input type="text"
+                           placeholder="Team member"
+                           aria-label="Number"
+                           matInput
+                           [formControl]="projectForm.get('projekt').get('teamMembers').get([i]).get('memberName')"
+                           [matAutocomplete]="autoTeamMember"
+                           matNativeControl required
+                           formControlName="memberName">
 
-                </mat-form-field>
+                    <mat-autocomplete autoActiveFirstOption #autoTeamMember="matAutocomplete" >
+                        <mat-option *ngFor="let userNameTeamMember of filteredOptionsTeamMember[i] | async" [value]="userNameTeamMember">
+                          {{userNameTeamMember}}
+                        </mat-option>
+                    </mat-autocomplete>
+                  </mat-form-field>
+
+                <!--<mat-form-field class="example-oneWithButton-width " required >-->
+                  <!--<input class="inputfields" matInput placeholder="Team member" formControlName="memberName">-->
+                <!--</mat-form-field>-->
 
 
                 <!--<mat-form-field class="example-twoWithButton-width ">-->

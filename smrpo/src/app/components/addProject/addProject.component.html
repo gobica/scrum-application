@@ -22,13 +22,101 @@
           <textarea class="cdk-textarea-autosize" matInput placeholder="Project description" formControlName="projectDescription"></textarea>
         </mat-form-field>
 
-        <mat-form-field class="example-full-width " >
-          <input class="inputfields" matInput placeholder="Product owner" formControlName="productOwner" required>
+
+
+        <!--<mat-form-field class="example-full-width ">-->
+          <!--<mat-label>Team roles</mat-label>-->
+
+          <!--<mat-select matNativeControl required>-->
+            <!--<mat-option>None</mat-option>-->
+            <!--<mat-option value="product-manager-0">Product manager</mat-option>-->
+            <!--<mat-option value="methodology-administrator-1">Methodology administrator</mat-option>-->
+            <!--<mat-option value="team-member-2">Team member</mat-option>-->
+          <!--</mat-select>-->
+        <!--</mat-form-field>-->
+
+        <!--<mat-form-field class="example-full-width ">-->
+          <!--<mat-label>Team role</mat-label>-->
+          <!--<mat-select>-->
+            <!--<mat-option *ngFor="let team of teamRoles" [value]="team.value">-->
+              <!--<option class="valuefields"> {{team.viewValue}} </option>-->
+            <!--</mat-option>-->
+          <!--</mat-select>-->
+        <!--</mat-form-field>-->
+
+
+         <!--<mat-form-field class="example-full-width ">-->
+          <!--<mat-label>Team roles</mat-label>-->
+            <!--<mat-select #userName="ngModel" [(ngModel)]="allUsers" name="allUsers">-->
+                <!--<ngx-mat-select-search [(ngModel)]="allUsers" [placeholderLabel]="'Search...'"-->
+                  <!--[noEntriesFoundLabel]="'Not found'" name="search"></ngx-mat-select-search>-->
+                <!--<mat-option *ngFor="let user of allUsers" [value]="user.username">-->
+                <!--{{user.username}}-->
+              <!--</mat-option>-->
+            <!--</mat-select>-->
+          <!--</mat-form-field>-->
+
+         <!--<div>-->
+           <!--<mat-form-field class="example-full-width ">-->
+              <!--<label>Product owner</label>-->
+                <!--<mat-select >-->
+                      <!--&lt;!&ndash;(ngModelChange)="onChange()"&ndash;&gt;-->
+                      <!--&lt;!&ndash;(selectionChange)="onSelectionChange($event)" &ndash;&gt;-->
+                      <!--&lt;!&ndash;name="allUsers">&ndash;&gt;-->
+                    <!--<ngx-mat-select-search [(ngModel)]="allUsers" [placeholderLabel]="'Search...'"-->
+                      <!--[noEntriesFoundLabel]="'Not found'" name="search"></ngx-mat-select-search>-->
+                    <!--&lt;!&ndash;<mat-option *ngFor="let user of allUsers" [value]="user.username">&ndash;&gt;-->
+                  <!--<mat-option *ngFor="let user of allUsers |stringFilterBy:allUsers:'username'" [value]="user.username">-->
+                    <!--{{user.username}}-->
+                  <!--</mat-option>-->
+                <!--</mat-select>-->
+              <!--</mat-form-field>-->
+         <!--</div>-->
+
+
+          <mat-form-field class="example-full-width">
+            <input type="text"
+                   placeholder="Product owner"
+                   aria-label="Number"
+                   matInput
+                   [formControl]="projectForm.get('productOwner')"
+                   [matAutocomplete]="autoProductOwner"
+                   matNativeControl required
+                   formControlName="productOwner">
+            <!--[formControl]="myControl"-->
+            <!--formControlName="productOwner"-->
+            <mat-autocomplete autoActiveFirstOption #autoProductOwner="matAutocomplete" >
+                <mat-option *ngFor="let userNameProductOwner of filteredOptionsProductOwner | async" [value]="userNameProductOwner">
+                  {{userNameProductOwner}}
+                </mat-option>
+            </mat-autocomplete>
+          </mat-form-field>
+
+
+
+       <!--<mat-form-field class="example-full-width " >-->
+          <!--<input class="inputfields" matInput placeholder="Product owner" formControlName="productOwner" required>-->
+        <!--</mat-form-field>-->
+
+        <mat-form-field class="example-full-width">
+          <input type="text"
+                 placeholder="Scrum master"
+                 aria-label="Number"
+                 matInput
+                 [formControl]="projectForm.get('scrumMaster')"
+                 [matAutocomplete]="autoScrumMaster"
+                 matNativeControl required
+                 formControlName="scrumMaster">
+          <mat-autocomplete autoActiveFirstOption #autoScrumMaster="matAutocomplete" >
+              <mat-option *ngFor="let userNameScrumMaster of filteredOptionsScrumMaster | async" [value]="userNameScrumMaster">
+                {{userNameScrumMaster}}
+              </mat-option>
+          </mat-autocomplete>
         </mat-form-field>
 
-        <mat-form-field class="example-full-width " >
-          <input class="inputfields" matInput placeholder="Scrum master" formControlName="scrumMaster" required>
-        </mat-form-field>
+        <!--<mat-form-field class="example-full-width " >-->
+          <!--<input class="inputfields" matInput placeholder="Scrum master" formControlName="scrumMaster" required>-->
+        <!--</mat-form-field>-->
 
         <form [formGroup]="myForm" class="example-form">
 
@@ -38,10 +126,28 @@
 
                 <div [formGroup]="teamMember">
 
-                <mat-form-field class="example-oneWithButton-width " required >
-                  <input class="inputfields" matInput placeholder="Team member" formControlName="memberName">
 
+                 <mat-form-field class="example-oneWithButton-width">
+                  <input type="text"
+                         placeholder="Team member"
+                         aria-label="Number"
+                         matInput
+                         [formControl]="projectForm.get('projekt').get('teamMembers').get([i]).get('memberName')"
+                         [matAutocomplete]="autoTeamMember"
+                         matNativeControl required
+                         formControlName="memberName">
+
+                  <mat-autocomplete autoActiveFirstOption #autoTeamMember="matAutocomplete" >
+                      <mat-option *ngFor="let userNameTeamMember of filteredOptionsTeamMember[i] | async" [value]="userNameTeamMember">
+                        {{userNameTeamMember}}
+                      </mat-option>
+                  </mat-autocomplete>
                 </mat-form-field>
+
+                <!--<mat-form-field class="example-oneWithButton-width " required >-->
+                  <!--<input class="inputfields" matInput placeholder="Team member" formControlName="memberName">-->
+
+                <!--</mat-form-field>-->
 
 
                 <!--<mat-form-field class="example-twoWithButton-width ">-->
