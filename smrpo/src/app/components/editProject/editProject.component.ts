@@ -49,9 +49,12 @@ export class EditProjectComponent implements OnInit {
 
   ) {
          // redirect to home if already logged in
-     if (this.authenticationService.currentUserValueFromToken.globalRole == 'user') {
-      this.router.navigate(['/']);
-     }
+     // if (this.authenticationService.currentUserValueFromToken.globalRole == 'user') {
+     //  this.router.navigate(['/']);
+     // }
+
+    // console.log(this.authenticationService.currentUserValueFromToken);
+
   }
 
   getProjectData(projektID) {
@@ -325,12 +328,11 @@ export class EditProjectComponent implements OnInit {
     return obstajaZeProjekt;
   }
 
-  async addDeleteUsers(users, projektID) {
+  async addDeleteUpdateUsers(users, projektID, projekt) {
     this.stariUporabniki.sort((a, b) => (a.id > b.id) ? 1 : -1);
     // console.log(this.stariUporabniki);
     users.sort((a, b) => (a.id > b.id) ? 1 : -1);
     // console.log(users);
-
 
     let staIsta = true;
     let index = 0;
@@ -409,6 +411,21 @@ export class EditProjectComponent implements OnInit {
           this.loading = false;
         });
     });
+
+    await this.projectService.updateProject(projekt)
+      // .toPromise();
+    .pipe(first())
+    .subscribe(
+      data => {
+        // console.log(data);
+        // console.log(users);
+
+      },
+      error => {
+        // this.alertService.error(error);
+        this.alertService.success('Ojoj :(');
+        this.loading = false;
+      });
   }
 
   async onSubmit() {
@@ -473,21 +490,7 @@ export class EditProjectComponent implements OnInit {
                   if (jePodvajanjeUporabnikov === false) {
                     const id = this.projektID;
                     const projekt = {id, name, description, idProductOwner, idScrumMaster, users};
-                    await this.projectService.updateProject(projekt)
-                      // .toPromise();
-                    .pipe(first())
-                    .subscribe(
-                      data => {
-                        // console.log(data);
-                        // console.log(users);
-                        this.addDeleteUsers(users, id);
-                      },
-                      error => {
-                        this.alertService.error(error);
-                        this.loading = false;
-                      });
-
-
+                    await this.addDeleteUpdateUsers(users, id, projekt);
                     // this.router.navigateByUrl('/editProject/' + projektID);
                     await this.alertService.success('Project updated');
 

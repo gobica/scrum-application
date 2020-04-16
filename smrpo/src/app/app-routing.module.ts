@@ -10,6 +10,7 @@ import { EditProjectComponent } from './components/editProject/editProject.compo
 import { SprintBacklogComponent } from './components/sprint-backlog/sprint-backlog.component';
 import { EditUsersComponent } from './components/edit-users/edit-users.component';
 import { ProjectDashboardComponent } from './components/project-dashboard/project-dashboard.component';
+import { AddTaskComponent } from "./components/add-task/add-task.component";
 
 SprintBacklogComponent
 
@@ -23,6 +24,7 @@ const routes: Routes = [
   { path: 'editProject/:id', component: EditProjectComponent },
   { path: 'editUsers', component: EditUsersComponent },
   { path: 'projectDashboard/:id', component: ProjectDashboardComponent },
+  { path: 'addTask', component: AddTaskComponent },
 
 
 

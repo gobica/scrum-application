@@ -1,0 +1,133 @@
+<div class="login-wrapper project-wrapper" fxLayout="row" fxLayoutAlign="center center " >
+  <mat-card class="box-newProject" layout-align="center center" >
+    <mat-card-header>
+      <mat-card-title>Tasks</mat-card-title>
+    </mat-card-header>
+
+    <form [formGroup]="projectForm"  class="example-form">
+
+
+
+      <mat-card-content>
+
+
+
+
+
+
+       <!--<mat-form-field class="example-full-width " >-->
+          <!--<input class="inputfields" matInput placeholder="Product owner" formControlName="productOwner" required>-->
+        <!--</mat-form-field>-->
+
+
+
+        <form [formGroup]="myForm" class="example-form">
+
+
+          <div formArrayName="teamMembers">
+            <div *ngFor="let teamMember of myForm.controls.teamMembers['controls']; let i=index" class="panel panel-default" >
+
+                <div [formGroup]="teamMember">
+
+
+                  <mat-form-field class="example-full-width " >
+                    <textarea class="cdk-textarea-autosize" matInput placeholder="Task description" formControlName="projectDescription"></textarea>
+                  </mat-form-field>
+
+                  <!--<div ng-repeat="item in Items">-->
+
+                  <!--<input ng-model="item.Quantity" type="number" name="Quantity"/>-->
+
+                  <!--</div>-->
+
+                  <!--<mat-form-field class="example-full-width">-->
+                    <input type="number"
+                      min="0"
+                      step="0.5"
+                      required
+                      placeholder="Size"
+                      name="rateInput">
+                    <!--[(ngModel)]="rateInput"-->
+
+                  <!--</mat-form-field>-->
+
+                  <!--<mat-form-field class="example-full-width">-->
+                    <!--<input type="text"-->
+                           <!--placeholder="Product owner"-->
+                           <!--aria-label="Number"-->
+                           <!--matInput-->
+                           <!--[formControl]="projectForm.get('productOwner')"-->
+                           <!--[matAutocomplete]="autoProductOwner"-->
+                           <!--matNativeControl required-->
+                           <!--formControlName="productOwner">-->
+                    <!--&lt;!&ndash;[formControl]="myControl"&ndash;&gt;-->
+                    <!--&lt;!&ndash;formControlName="productOwner"&ndash;&gt;-->
+                    <!--<mat-autocomplete autoActiveFirstOption #autoProductOwner="matAutocomplete" >-->
+                        <!--<mat-option *ngFor="let userNameProductOwner of filteredOptionsProductOwner | async" [value]="userNameProductOwner">-->
+                          <!--{{userNameProductOwner}}-->
+                        <!--</mat-option>-->
+                    <!--</mat-autocomplete>-->
+                  <!--</mat-form-field>-->
+
+
+                   <mat-form-field class="example-oneWithButton-width">
+                    <input type="text"
+                           placeholder="Team member"
+                           aria-label="Number"
+                           matInput
+                           [formControl]="projectForm.get('projekt').get('teamMembers').get([i]).get('memberName')"
+                           [matAutocomplete]="autoTeamMember"
+                           matNativeControl
+                           formControlName="memberName">
+                    <mat-autocomplete autoActiveFirstOption #autoTeamMember="matAutocomplete" >
+                        <mat-option *ngFor="let userNameTeamMember of filteredOptionsTeamMember[i] | async" [value]="userNameTeamMember">
+                          {{userNameTeamMember}}
+                        </mat-option>
+                    </mat-autocomplete>
+                  </mat-form-field>
+
+                <!--<mat-form-field class="example-oneWithButton-width " required >-->
+                  <!--<input class="inputfields" matInput placeholder="Team member" formControlName="memberName">-->
+
+                <!--</mat-form-field>-->
+
+
+                <!--<mat-form-field class="example-twoWithButton-width ">-->
+                  <!--<mat-label>Team roles</mat-label>-->
+
+                  <!--<mat-select matNativeControl required formControlName="selectedRole">-->
+                    <!--<mat-option>None</mat-option>-->
+                    <!--<mat-option value="Product owner">Product owner</mat-option>-->
+                    <!--<mat-option value="Scrum master">Scrum master</mat-option>-->
+                    <!--<mat-option value="Team member">Team member</mat-option>-->
+                  <!--</mat-select>-->
+                <!--</mat-form-field>-->
+
+
+                <button mat-stroked-button color="accent" class="btn-right " (click)="removeMember(i)">
+                   <!--<span id="btn-remove" class="glyphicon glyphicon-remove"></span>-->
+                  <!--X-->
+                  <span class="mat-button-wrapper"> X </span>
+                </button>
+
+                <button mat-stroked-button color="accent" class="btn-right " (click)="removeMember(i)">
+                   <!--<span id="btn-remove" class="glyphicon glyphicon-remove"></span>-->
+                  <!--X-->
+                  <span class="mat-button-wrapper" class="glyphicon glyphicon-pencil">  </span>
+                </button>
+              </div>
+            </div>
+          </div>
+
+          <div>
+            <button mat-stroked-button color="accent" class="btn-block-newProject" (click)="addMember()">Add task</button>
+          </div>
+
+        </form>
+      </mat-card-content>
+
+      <button mat-stroked-button color="accent" class="btn-block-newProject" (click)="onSubmit()">Save changes</button>
+
+    </form>
+  </mat-card>
+</div>

@@ -8,7 +8,7 @@
     <div class="login-wrapper show-project-wrapper" fxLayout="row" flex>
       <mat-card class="box-showProject" >
         <mat-card-header>
-          <mat-card-title>{{project.name}}</mat-card-title>
+          <mat-card-title>Project {{i+1}}: {{project.name}}</mat-card-title>
         </mat-card-header>
 
         <form class="example-form">
@@ -43,9 +43,11 @@
             </form>
           </mat-card-content>
 
-          <button mat-stroked-button color="accent"  (click)="btnEditProject(project.id);">Edit project</button>
-          <br>
-          <br>
+          <div *ngIf="globalnaUloga == 'admin' || project.scrumMaster.username === trenutniUporabnik">
+            <button mat-stroked-button color="accent"  (click)="btnEditProject(project.id);">Edit project</button>
+            <br>
+            <br>
+          </div>
 
           <button mat-stroked-button color="accent"  (click)="currentProjectId=project.id" (click)="btnEnterProject(project.id);" >Enter project</button>
 

@@ -34,6 +34,8 @@ import { EditUsersComponent } from './components/edit-users/edit-users.component
 import { SprintBacklogComponent } from './components/sprint-backlog/sprint-backlog.component';
 import { ProjectDashboardComponent } from './components/project-dashboard/project-dashboard.component';
 import { AddSprintDialogComponent } from './components/add-sprint-dialog/add-sprint-dialog.component';
+import { AddTaskComponent } from './components/add-task/add-task.component'
+
 
 @NgModule({
   declarations: [
@@ -51,7 +53,8 @@ import { AddSprintDialogComponent } from './components/add-sprint-dialog/add-spr
     EditUsersComponent,
     SprintBacklogComponent,
     ProjectDashboardComponent,
-    AddSprintDialogComponent
+    AddSprintDialogComponent,
+    AddTaskComponent
    // LoginComponent,
    //  AlertComponent
   ],

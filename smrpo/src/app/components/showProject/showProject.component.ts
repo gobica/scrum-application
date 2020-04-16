@@ -12,14 +12,17 @@ import {AuthenticationService} from "../../services/authentication.service";
 
 
 @Component({
-  selector: 'app-sjowProject',
+  selector: 'app-showProject',
   templateUrl: './showProject.component.html',
 
 })
 export class ShowProjectComponent implements OnInit {
   loading = false;
   public allProjects;
-  currentProjectId; 
+  currentProjectId;
+
+  trenutniUporabnik = this.authenticationService.currentUserValueFromToken.username;
+  globalnaUloga = this.authenticationService.currentUserValueFromToken.globalRole;
 
   constructor(
     private router: Router,
@@ -28,10 +31,11 @@ export class ShowProjectComponent implements OnInit {
     private projectService: ProjectService,
    private authenticationService: AuthenticationService,
   ) {
-             // redirect to home if already logged in
-     if (this.authenticationService.currentUserValueFromToken.globalRole == 'user') {
-      this.router.navigate(['/']);
-     }
+     //         // redirect to home if already logged in
+     // if (this.authenticationService.currentUserValueFromToken.globalRole == 'user') {
+     //  this.router.navigate(['/']);
+     // }
+    console.log(this.trenutniUporabnik);
   }
 
   ngOnInit(): void {
@@ -70,7 +74,7 @@ export class ShowProjectComponent implements OnInit {
       },
       error => {
           if (error === 'Not Found') {
-            this.alertService.warning('No project to show. Create one :)');
+            this.alertService.warning('No project to show :)');
 
           } else {
             this.alertService.error(error);
