@@ -1,18 +1,18 @@
 <div >
     <br>
     <br>
-  
+
     <div *ngIf="currentUserValue.globalRole == 'admin' && isDataLoaded ">
-    
+
     <br>
-    
+
     <h3>All registered users:</h3>
         <div class="card-body">
           <div id="table" class="table-editable table-hover">
             <table class="table table-bordered table-responsive-md text-center">
               <thead class="thead-light">
                 <tr>
-                  <th scope="col" class="header-cell">#</th>
+                  <th scope="col" class="header-cell">ID</th>
                   <th scope="col" class="header-cell">Username</th>
                   <th scope="col" class="header-cell">First name</th>
                   <th scope="col" class="header-cell">Last name</th>
@@ -23,9 +23,9 @@
                 </tr>
               </thead>
               <tbody>
-                <tr *ngFor="let user of users; let i = index">
+                <tr *ngFor="let user of users; let i = index" [ngClass]="user.isDeleted? 'deletedUser': ''">
                   <td *ngIf="!checkIfSame(user)">
-                    <span contenteditable="false">{{1 + i}}.</span>
+                    <span contenteditable="false">{{user.id}}</span>
                   </td>
                   <td *ngIf="!checkIfSame(user)">
                     <span  contenteditable="true"  (keyup)="changeValue(i, user.id, 'username', $event)" (blur)="updateList(i, 'username', $event)" contenteditable="true">{{user.username}}</span>
@@ -52,7 +52,7 @@
                   </td>
                   <td *ngIf="!checkIfSame(user)">
                     <span class="table-remove">
-                      <button type="button" mdbBtn color="danger" rounded="true" class="my-0 btn btn-danger btn-sm" (click)="deleteUser(user.id)" (click)="remove(i)">Remove</button>
+                      <button type="button" mdbBtn color="danger" rounded="true" class="my-0 btn btn-danger btn-sm" (click)="deleteUser(i, user.id)">{{user.isDeleted? 'Revive': 'Remove'}}</button>
                     </span>
                   </td>
                 </tr>

@@ -22,7 +22,7 @@ export class EditUsersComponent implements OnInit {
   isDataLoaded ;
 
 
-  constructor( 
+  constructor(
     private authenticationService: AuthenticationService,
     private userService: UserService,
     private matDialog: MatDialog,
@@ -35,69 +35,74 @@ export class EditUsersComponent implements OnInit {
 
   ngOnInit(): void {
     if (this.currentUserValue.globalRole == 'admin') this.loadAllUsers();
-    this.isDataLoaded = true; 
-  
+    this.isDataLoaded = true;
+
 
   }
 
-  deleteUser(id: number) {
-    this.userService.delete(id)
-        .pipe(first())
-        .subscribe(() => this.loadAllUsers());
-}
-checkIfSame (user: User ) {
-  if (this.currentUserValue.id == user.id) {
-    return true; 
-  }  
-  return false; 
-}
-updateUser(user: User) {
-  
-  this.loading = true;
-  this.userService.updateUser(user)
-      .pipe(first())
-      .subscribe(
-          data => {
-              this.alertService.success('Update successful', true);
-          },
-          error => {
-              this.alertService.error(error);
-              this.loading = false;
+  deleteUser(index: number, id: number) {
+      this.userService.delete(id)
+          .pipe(first())
+          .subscribe(data => {
+            this.users[index].isDeleted = !this.users[index].isDeleted;
+            this.loadAllUsers()
           });
-}
+  }
 
+  checkIfSame (user: User ) {
+    if (this.currentUserValue.id == user.id) {
+      return true;
+    }
+    return false;
+  }
 
- private loadAllUsers() {
-  this.userService.getAll()
+  updateUser(user: User) {
+
+    this.loading = true;
+    this.userService.updateUser(user)
+        .pipe(first())
+        .subscribe(
+            data => {
+                this.alertService.success('Update successful', true);
+            },
+            error => {
+                this.alertService.error(error);
+                this.loading = false;
+            });
+  }
+
+  private loadAllUsers() {
+    this.userService.getAll()
+        .pipe(first())
+        .subscribe(users => {
+          this.users = users
+        });
+  }
+
+  getUserByID (id: number) {
+    this.userService.getUser(id)
       .pipe(first())
-      .subscribe(users => this.users = users);
-}
+      .subscribe(user => this.user = user);
+  }
 
-getUserByID (id: number) {
-  this.userService.getUser(id)
-    .pipe(first())
-    .subscribe(user => this.user = user); 
+  openDialog(userObject: User) {
 
-}
+    const dialogConfig = new MatDialogConfig();
+    dialogConfig.data = userObject;
+    this.matDialog.open(EditUserDialogComponent, dialogConfig);
+    //this.matDialog.open(EditUserDialogComponent, dialogConfig);
+  }
 
-openDialog(userObject: User) {
+  updateList(i: number, property: string, event: any) {
+    const editField = event.target.textContent;
+    this.users[i][property] = editField;
+  }
 
-  const dialogConfig = new MatDialogConfig();
-  dialogConfig.data = userObject;
-  this.matDialog.open(EditUserDialogComponent, dialogConfig);
-  //this.matDialog.open(EditUserDialogComponent, dialogConfig);
-}
+  remove(i: any) {
+    //this.awaitingPersonList.push(this.users[id]);
+    this.users.splice(i, 1);
 
-updateList(i: number, property: string, event: any) {
-  const editField = event.target.textContent;
-  this.users[i][property] = editField;
-}
-
-remove(i: any) {
-  //this.awaitingPersonList.push(this.users[id]);
-  this.users.splice(i, 1);
-
-}
+  }
 
 
 
