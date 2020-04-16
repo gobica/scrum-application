@@ -72,7 +72,7 @@ export class EditUsersComponent implements OnInit {
   }
 
   private loadAllUsers() {
-    this.userService.getAll()
+    this.userService.getAll(true)
         .pipe(first())
         .subscribe(users => {
           this.users = users

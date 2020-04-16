@@ -7,7 +7,7 @@ import { environment } from 'src/environments/environment';
 export class UserService {
   postUrl: string = "";
   getUsersUrl: string = "";
-  
+
   /*
   httpOptions = {
     headers: new HttpHeaders({
@@ -24,7 +24,7 @@ export class UserService {
   register (user: User) {
     return this.httpClient.post(this.postUrl, user, //this.httpOptions
       );
-       
+
   }
 
   updateUser (user: User) {
@@ -38,8 +38,8 @@ export class UserService {
   getUser(id: number) {
     return this.httpClient.get(this.getUsersUrl + `/${id}`);
   }
-  getAll() {
-    return this.httpClient.get<User[]>(this.getUsersUrl);
+  getAll(includeDeleted: boolean = false) {
+    return this.httpClient.get<User[]>(this.getUsersUrl + '?includeDeleted=' + includeDeleted);
   }
 
 
