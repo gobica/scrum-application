@@ -27,6 +27,7 @@ export class AddTaskComponent implements OnInit {
 
   allUsers = [];
   allProjects = [];
+  errors = [];
 
 
   userNameTeamMember: string[] = [];
@@ -248,22 +249,32 @@ export class AddTaskComponent implements OnInit {
 
         if (description !== undefined && description !== '' && description !== null) {
           // console.log(description);
+          this.errors[taskIndex-1] = '';
 
           const size = task.taskSize;
           if (size !== undefined && size !== '' && size !== null) {
+            this.errors[taskIndex-1] = '';
             const correctSize = size % 0.5;
             if (correctSize === 0 && size > 0.4) {
               // console.log(size);
+              this.errors[taskIndex-1] = '';
               const user = task.memberName;
               if(user !== undefined && user !== '' && user !== null) {
                 const jeVBazi= this.isInDatabase(this.allUsers, user);
                 if(jeVBazi === true) {
                    // console.log(user);
+                  this.errors[taskIndex-1] = '';
 
 
                 } else {
                   this.alertService.clear();
                   this.alertService.error('The team member of the ' + taskIndex + '. task is not in the database.');
+                  this.errors[taskIndex-1] = 'Not in the database';
+                  let tmp = taskIndex;
+                  while(tmp < dolzina) {
+                    this.errors[tmp] = '';
+                    tmp += 1;
+                  }
                   this.submitted = false;
                   this.loading = false;
                   correctForm = false;
@@ -272,6 +283,12 @@ export class AddTaskComponent implements OnInit {
             } else {
               this.alertService.clear();
               this.alertService.error('The size of the ' + taskIndex + '. task doesn\'t have the right format. Size must be greater than 0.5 and decimal must be 0 or 5.');
+              this.errors[taskIndex-1] = 'Wrong format';
+              let tmp = taskIndex;
+              while(tmp < dolzina) {
+                this.errors[tmp] = '';
+                tmp += 1;
+              }
               this.submitted = false;
               this.loading = false;
               correctForm = false;
@@ -279,6 +296,12 @@ export class AddTaskComponent implements OnInit {
           } else {
             this.alertService.clear();
             this.alertService.error('The size of the ' + taskIndex + '. task is blank or has the wrong format. Please complete it correctly or delete the task.');
+            this.errors[taskIndex-1] = 'Empty size or wrong format';
+            let tmp = taskIndex;
+            while(tmp < dolzina) {
+              this.errors[tmp] = '';
+              tmp += 1;
+            }
             this.submitted = false;
             this.loading = false;
             correctForm = false;
@@ -286,6 +309,12 @@ export class AddTaskComponent implements OnInit {
         } else {
           this.alertService.clear();
           this.alertService.error('The description of the ' + taskIndex + '. task is blank. Please complete it or delete the task.');
+          this.errors[taskIndex-1] = 'Empty description';
+          let tmp = taskIndex;
+          while(tmp < dolzina) {
+            this.errors[tmp] = '';
+            tmp += 1;
+          }
           this.submitted = false;
           this.loading = false;
           correctForm = false;

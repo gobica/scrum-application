@@ -32,7 +32,8 @@
 
                 <!--<mat-form-field class="example-full-width " >-->
                 <mat-form-field class="description " >
-                  <textarea class="cdk-textarea" matInput rows="1" placeholder="Task description" formControlName="taskDescription" required></textarea>
+                  <textarea class="cdk-textarea" matInput rows="1" placeholder="Task description" formControlName="taskDescription" required [ngClass]="{ 'is-invalid': errors[i] }"></textarea>
+                  <div *ngIf="errors[i] === 'Empty description'" class="invalid-feedback">Empty description</div>
                 </mat-form-field>
 
                 <mat-form-field class="select-time">
@@ -43,8 +44,11 @@
                       placeholder="Size"
                       matInput
                       formControlName="taskSize"
-                      name="rateInput">
-                  <!--[(ngModel)]="rateInput"-->
+                      name="rateInput"
+                      [ngClass]="{ 'is-invalid': errors[i] }">
+
+                   <div *ngIf="errors[i] === 'Empty size or wrong format'" class="invalid-feedback">Empty size or wrong format</div>
+                   <div *ngIf="errors[i] === 'Wrong format'" class="invalid-feedback">Wrong format</div>
                 </mat-form-field>
 
                 <mat-form-field class="member">
@@ -55,7 +59,9 @@
                          [formControl]="taskForm.get('task').get('tasks').get([i]).get('memberName')"
                          [matAutocomplete]="autoTeamMember"
                          matNativeControl
-                         formControlName="memberName">
+                         formControlName="memberName"
+                         [ngClass]="{ 'is-invalid': errors[i] }">
+                  <div *ngIf="errors[i] === 'Not in the database'" class="invalid-feedback">Not in the database</div>
                   <mat-autocomplete autoActiveFirstOption #autoTeamMember="matAutocomplete" >
                       <mat-option *ngFor="let userNameTeamMember of filteredOptionsTeamMember[i] | async" [value]="userNameTeamMember">
                         {{userNameTeamMember}}
