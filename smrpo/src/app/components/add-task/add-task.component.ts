@@ -27,16 +27,14 @@ export class AddTaskComponent implements OnInit {
 
   allUsers = [];
   allProjects = [];
+  errors = [];
 
-  // userNameProductOwner: string[] = [];
-  // filteredOptionsProductOwner: Observable<string[]>;
-  // userNameScrumMaster: string[] = [];
-  // filteredOptionsScrumMaster: Observable<string[]>;
+
   userNameTeamMember: string[] = [];
   filteredOptionsTeamMember: Observable<string[]>[] = [];
 
   public myForm: FormGroup;
-  public projectForm: FormGroup;
+  public taskForm: FormGroup;
 
   constructor(
     private _fb: FormBuilder,
@@ -58,34 +56,17 @@ export class AddTaskComponent implements OnInit {
 
   ngOnInit() {
     this.myForm = this._fb.group({
-      projectDescription: ['', ],
-      productOwner: ['',  Validators.required],
-
-      teamMembers: this._fb.array([
-      this.initTeamMembers(),
+      tasks: this._fb.array([
+      this.initTasks(),
       ])
     });
-    this.projectForm = this._fb.group({
-      // projectName: ['',  Validators.required],
-
-
-      // scrumMaster: ['',  Validators.required],
-      projekt: this.myForm,
+    this.taskForm = this._fb.group({
+      task: this.myForm,
     });
     this.getAllUsers();
     this.getAllProjects();
   }
 
-  // private _filterProductOwner(value: string): string[] {
-  //   const filterValue = value.toLowerCase();
-  //
-  //   return this.userNameProductOwner.filter(userNameProductOwner => userNameProductOwner.toLowerCase().indexOf(filterValue) === 0);
-  // }
-  // private _filterScrumMaster(value: string): string[] {
-  //   const filterValue = value.toLowerCase();
-  //
-  //   return this.userNameScrumMaster.filter(userNameScrumMaster => userNameScrumMaster.toLowerCase().indexOf(filterValue) === 0);
-  // }
   private _filterTeamMember(value: string): string[] {
     const filterValue = value.toLowerCase();
 
@@ -103,34 +84,14 @@ export class AddTaskComponent implements OnInit {
           const users = [];
           data.forEach(u => {
             users.push(u.username);
-            // this.userNameProductOwner.push(u.username);
-            // this.userNameScrumMaster.push(u.username);
-
-            // console.log(u.username);
           });
-          // this.userNameProductOwner = users;
-          // this.userNameScrumMaster = users;
           this.userNameTeamMember = users;
 
-          // console.log(this.userNameProductOwner);
-          // console.log(this.userNameScrumMaster);
-
-
-          // this.filteredOptionsScrumMaster = this.projectForm.get('scrumMaster').valueChanges.pipe(
-          //   startWith(''),
-          //   map(value => this._filterScrumMaster(value))
-          // );
-
-          // console.log(this.projectForm.value.projekt.teamMembers);
           let index = 0;
-          this.projectForm.value.projekt.teamMembers.forEach(m => {
-            // this.filteredOptionsProductOwner = this.projectForm.get('projekt').get('teamMembers').get([index]).get('productOwner').valueChanges.pipe(
-            //   startWith(''),
-            //   map(value => this._filterProductOwner(value))
-            // );
-            let mN = this.projectForm.get('projekt').get('teamMembers').get([index]).get('memberName');
+          this.taskForm.value.task.tasks.forEach(t => {
+            let ts = this.taskForm.get('task').get('tasks').get([index]).get('memberName');
             // console.log(mN);
-            this.filteredOptionsTeamMember[index] = mN.valueChanges.pipe(
+            this.filteredOptionsTeamMember[index] = ts.valueChanges.pipe(
               startWith(''),
               map(value => this._filterTeamMember(value))
             );
@@ -157,7 +118,6 @@ export class AddTaskComponent implements OnInit {
           return data;
       },
       error => {
-
           // this.alertService.error(error);
           this.loading = false;
       }
@@ -165,18 +125,20 @@ export class AddTaskComponent implements OnInit {
     // return projects;
   }
 
-  initTeamMembers() {
+  initTasks() {
     return this._fb.group({
-      memberName: ['',  Validators.required],
+      taskDescription: ['',  Validators.required],
+      taskSize: ['',  Validators.required],
+      memberName: ['',  ],
     });
   }
 
-  addMember() {
-    const control = this.myForm.controls.teamMembers as FormArray;
-    control.push(this.initTeamMembers());
+  addTask() {
+    const control = this.myForm.controls.tasks as FormArray;
+    control.push(this.initTasks());
     let index = 0;
-    this.projectForm.value.projekt.teamMembers.forEach(m => {
-      let mN = this.projectForm.get('projekt').get('teamMembers').get([index]).get('memberName');
+    this.taskForm.value.task.tasks.forEach(m => {
+      let mN = this.taskForm.get('task').get('tasks').get([index]).get('memberName');
       // console.log(mN);
       this.filteredOptionsTeamMember[index] = mN.valueChanges.pipe(
         startWith(''),
@@ -186,18 +148,18 @@ export class AddTaskComponent implements OnInit {
     });
   }
 
-  removeMember(i: number) {
-    const control = this.myForm.controls.teamMembers as FormArray;
+  removeTask(i: number) {
+    const control = this.myForm.controls.tasks as FormArray;
     control.removeAt(i);
   }
 
   get f() {
-    return this.projectForm.controls;
+    return this.taskForm.controls;
   }
 
   returnEnteredUsers(uporabniki) {
     const users = [];
-    this.f.projekt.value.teamMembers.forEach(member => { // poisce id uporabnikov na podlagi podanih mailov
+    this.f.task.value.tasks.forEach(member => { // poisce id uporabnikov na podlagi podanih mailov
 
       const emailOrUsername = member.memberName;
 
@@ -257,150 +219,289 @@ export class AddTaskComponent implements OnInit {
     return obstajaZeProjekt;
   }
 
+  isInDatabase(vsiUporabniki, uporabnik){
+    let jeVBazi = false;
+    vsiUporabniki.forEach(u => {
+      if(u.username === uporabnik) {
+        jeVBazi = true;
+      }
+    });
+    return jeVBazi;
+  }
+
   onSubmit() {
     this.submitted = true;
     // reset alerts on submit
     this.alertService.clear();
     this.loading = true;
 
+    let dolzina = this.f.task.value.tasks.length;
+    const valueOfTasks = this.f.task.value.tasks;
+    // console.log(valueOfTasks);
+    let taskIndex = 1;
+    let correctForm = true;
 
-    const uporabniki = this.allUsers;
-    // console.log(uporabniki);
+    valueOfTasks.forEach(task => {
+      // console.log(taskIndex);
+      // console.log(task);
+      if (correctForm === true) {
+        const description = task.taskDescription;
+
+        if (description !== undefined && description !== '' && description !== null) {
+          // console.log(description);
+          this.errors[taskIndex-1] = '';
+
+          const size = task.taskSize;
+          if (size !== undefined && size !== '' && size !== null) {
+            this.errors[taskIndex-1] = '';
+            const correctSize = size % 0.5;
+            if (correctSize === 0 && size > 0.4) {
+              // console.log(size);
+              this.errors[taskIndex-1] = '';
+              const user = task.memberName;
+              if(user !== undefined && user !== '' && user !== null) {
+                const jeVBazi= this.isInDatabase(this.allUsers, user);
+                if(jeVBazi === true) {
+                   // console.log(user);
+                  this.errors[taskIndex-1] = '';
 
 
-    const users = this.returnEnteredUsers(uporabniki);
-    // console.log('--', users);
-
-    const jePodvajanjeUporabnikov = this.userDuplicates(users); // preverjanje podvajanja clanov v skupini
-
-    const name = this.f.projectName.value;
-    // const description = this.f.projectDescription.value;
-    // console.log(description);
-
-
-    const projekti = this.allProjects;
-    // console.log(projekti);
-
-
-    const obstajaZeProjekt = this.projectDuplicates(projekti, name);
-    // console.log('ßßß', obstajaZeProjekt);
-
-    const productOwner = this.f.productOwner.value;
-    // console.log(productOwner);
-    let idProductOwner = 0;
-    let productOwnerVBazi = false;
-    // console.log(uporabniki);
-    uporabniki.forEach(u => {
-      // console.log(u.username);
-      // console.log(productOwner);
-      if (productOwner === u.email || productOwner === u.username) {
-        productOwnerVBazi = true;
-        idProductOwner = u.id;
-        return productOwnerVBazi;
-      }
-    });
-    const scrumMaster = this.f.scrumMaster.value;
-    let idScrumMaster = 0;
-    let scrumMasterVBazi = false;
-    uporabniki.forEach(u => {
-      if (scrumMaster === u.email || scrumMaster === u.username) {
-        scrumMasterVBazi = true;
-        idScrumMaster = u.id;
-        return scrumMasterVBazi;
-      }
-    });
-
-    if (name !== undefined && name !== '' && name !== null) {
-      if (obstajaZeProjekt === false) {
-        if (productOwner !== undefined && productOwner !== '' && productOwner !== null) {
-          if (productOwnerVBazi) {
-            if (scrumMaster !== undefined && scrumMaster !== '' && scrumMaster !== null) {
-              if (scrumMasterVBazi) {
-                if (users.length === this.f.projekt.value.teamMembers.length) {
-                  if (jePodvajanjeUporabnikov === false) {
-                    const id = 0;
-                    // const projekt = {id, name, description, idProductOwner, idScrumMaster, users};
-                    // this.projectService.createProject(projekt).pipe(first())
-                    //   .subscribe(
-                    //     data => {
-                    //       console.log(data);
-                    //
-                    //       // window.location.replace('/addProject');
-                    //
-                    //       // this.projectForm.reset('');
-                    //       // console.log(this.projectForm.value.projectName);
-                    //       this.projectForm.get('projectName').setValue('');
-                    //       // this.projectForm.get('projectDescription').setValue('');
-                    //       this.projectForm.get('productOwner').setValue('');
-                    //       // this.filteredOptionsProductOwner = this.projectForm.get('productOwner').valueChanges.pipe(
-                    //       //   startWith(''),
-                    //       //   map(value => this._filterProductOwner(value))
-                    //       // );
-                    //       // this.projectForm.get('scrumMaster').setValue('');
-                    //       // this.filteredOptionsScrumMaster = this.projectForm.get('scrumMaster').valueChanges.pipe(
-                    //       //   startWith(''),
-                    //       //   map(value => this._filterScrumMaster(value))
-                    //       // );
-                    //       let index = 0;
-                    //       this.projectForm.value.projekt.teamMembers.forEach(m => {
-                    //         this.projectForm.get('projekt').get('teamMembers').get([index]).get('projectDescription').setValue('');
-                    //         this.projectForm.get('projekt').get('teamMembers').get([index]).get('memberName').setValue('');
-                    //         let mN = this.projectForm.get('projekt').get('teamMembers').get([index]).get('memberName');
-                    //         // console.log(mN);
-                    //         this.filteredOptionsTeamMember[index] = mN.valueChanges.pipe(
-                    //           startWith(''),
-                    //           map(value => this._filterTeamMember(value))
-                    //         );
-                    //         index += 1;
-                    //       });
-                    //
-                    //     },
-                    //     error => {
-                    //       this.alertService.error(error);
-                    //       this.loading = false;
-                    //     });
-                    this.alertService.success('New project created');
-                  } else {
-                    this.alertService.error('A team member may not be enrolled twice or more');
-                    this.submitted = false;
-                    this.loading = false;
-                  }
                 } else {
-                  // this.alertService.error('Enter a member email');
+                  this.alertService.clear();
+                  this.alertService.error('The team member of the ' + taskIndex + '. task is not in the database.');
+                  this.errors[taskIndex-1] = 'Not in the database';
+                  let tmp = taskIndex;
+                  while(tmp < dolzina) {
+                    this.errors[tmp] = '';
+                    tmp += 1;
+                  }
                   this.submitted = false;
                   this.loading = false;
+                  correctForm = false;
                 }
-              } else {
-                this.alertService.clear();
-                this.alertService.error('The scrum master is not in the database');
-                this.submitted = false;
-                this.loading = false;
               }
             } else {
-              this.alertService.error('Enter a scrum master by username or email');
+              this.alertService.clear();
+              this.alertService.error('The size of the ' + taskIndex + '. task doesn\'t have the right format. Size must be greater than 0.5 and decimal must be 0 or 5.');
+              this.errors[taskIndex-1] = 'Wrong format';
+              let tmp = taskIndex;
+              while(tmp < dolzina) {
+                this.errors[tmp] = '';
+                tmp += 1;
+              }
               this.submitted = false;
               this.loading = false;
+              correctForm = false;
             }
           } else {
             this.alertService.clear();
-            this.alertService.error('The product owner is not in the database');
+            this.alertService.error('The size of the ' + taskIndex + '. task is blank or has the wrong format. Please complete it correctly or delete the task.');
+            this.errors[taskIndex-1] = 'Empty size or wrong format';
+            let tmp = taskIndex;
+            while(tmp < dolzina) {
+              this.errors[tmp] = '';
+              tmp += 1;
+            }
             this.submitted = false;
             this.loading = false;
+            correctForm = false;
           }
         } else {
-          this.alertService.error('Enter a product owner by username or email');
+          this.alertService.clear();
+          this.alertService.error('The description of the ' + taskIndex + '. task is blank. Please complete it or delete the task.');
+          this.errors[taskIndex-1] = 'Empty description';
+          let tmp = taskIndex;
+          while(tmp < dolzina) {
+            this.errors[tmp] = '';
+            tmp += 1;
+          }
           this.submitted = false;
           this.loading = false;
+          correctForm = false;
         }
+         taskIndex += 1;
       } else {
-          this.alertService.error('A project with this name already exists');
-          this.submitted = false;
-          this.loading = false;
+        return false;
       }
-    } else {
-      this.alertService.error('Enter a project name');
-      this.loading = false;
+
+    });
+
+    if (correctForm === true) {
+
+      if(dolzina >= 1) {
+        console.log(valueOfTasks);
+        this.alertService.success('New tasks created');
+        // console.log(dolzina);
+        let i = 1;
+
+        while (i < dolzina) {
+          // console.log(i);
+          this.removeTask(1);
+          i += 1;
+        }
+
+        // console.log(dolzina);
+
+        this.taskForm.get('task').get('tasks').get([0]).get('taskDescription').setValue('');
+        this.taskForm.get('task').get('tasks').get([0]).get('taskSize').setValue('');
+        this.taskForm.get('task').get('tasks').get([0]).get('memberName').setValue('');
+      } else {
+
+        // console.log("manjse enako 1");
+        this.alertService.warning('No task to add :(');
+      }
+
+
     }
+
+
+
+
+
+
+
+
+
+    //
+    //
+    //
+    // const uporabniki = this.allUsers;
+    // // console.log(uporabniki);
+    //
+    //
+    // const users = this.returnEnteredUsers(uporabniki);
+    // // console.log('--', users);
+    //
+    // const jePodvajanjeUporabnikov = this.userDuplicates(users); // preverjanje podvajanja clanov v skupini
+    //
+    // const name = this.f.projectName.value;
+    // // const description = this.f.projectDescription.value;
+    // // console.log(description);
+    //
+    //
+    // const projekti = this.allProjects;
+    // // console.log(projekti);
+    //
+    //
+    // const obstajaZeProjekt = this.projectDuplicates(projekti, name);
+    // // console.log('ßßß', obstajaZeProjekt);
+    //
+    // const productOwner = this.f.productOwner.value;
+    // // console.log(productOwner);
+    // let idProductOwner = 0;
+    // let productOwnerVBazi = false;
+    // // console.log(uporabniki);
+    // uporabniki.forEach(u => {
+    //   // console.log(u.username);
+    //   // console.log(productOwner);
+    //   if (productOwner === u.email || productOwner === u.username) {
+    //     productOwnerVBazi = true;
+    //     idProductOwner = u.id;
+    //     return productOwnerVBazi;
+    //   }
+    // });
+    // const scrumMaster = this.f.scrumMaster.value;
+    // let idScrumMaster = 0;
+    // let scrumMasterVBazi = false;
+    // uporabniki.forEach(u => {
+    //   if (scrumMaster === u.email || scrumMaster === u.username) {
+    //     scrumMasterVBazi = true;
+    //     idScrumMaster = u.id;
+    //     return scrumMasterVBazi;
+    //   }
+    // });
+    //
+    // if (name !== undefined && name !== '' && name !== null) {
+    //   if (obstajaZeProjekt === false) {
+    //     if (productOwner !== undefined && productOwner !== '' && productOwner !== null) {
+    //       if (productOwnerVBazi) {
+    //         if (scrumMaster !== undefined && scrumMaster !== '' && scrumMaster !== null) {
+    //           if (scrumMasterVBazi) {
+    //             if (users.length === this.f.task.value.tasks.length) {
+    //               if (jePodvajanjeUporabnikov === false) {
+    //                 const id = 0;
+    //                 // const projekt = {id, name, description, idProductOwner, idScrumMaster, users};
+    //                 // this.projectService.createProject(projekt).pipe(first())
+    //                 //   .subscribe(
+    //                 //     data => {
+    //                 //       console.log(data);
+    //                 //
+    //                 //       // window.location.replace('/addProject');
+    //                 //
+    //                 //       // this.taskForm.reset('');
+    //                 //       // console.log(this.taskForm.value.projectName);
+    //                 //       this.taskForm.get('projectName').setValue('');
+    //                 //       // this.taskForm.get('projectDescription').setValue('');
+    //                 //       this.taskForm.get('productOwner').setValue('');
+    //                 //       // this.filteredOptionsProductOwner = this.taskForm.get('productOwner').valueChanges.pipe(
+    //                 //       //   startWith(''),
+    //                 //       //   map(value => this._filterProductOwner(value))
+    //                 //       // );
+    //                 //       // this.taskForm.get('scrumMaster').setValue('');
+    //                 //       // this.filteredOptionsScrumMaster = this.taskForm.get('scrumMaster').valueChanges.pipe(
+    //                 //       //   startWith(''),
+    //                 //       //   map(value => this._filterScrumMaster(value))
+    //                 //       // );
+    //                 //       let index = 0;
+    //                 //       this.taskForm.value.projekt.tasks.forEach(m => {
+    //                 //         this.taskForm.get('projekt').get('tasks').get([index]).get('projectDescription').setValue('');
+    //                 //         this.taskForm.get('projekt').get('tasks').get([index]).get('memberName').setValue('');
+    //                 //         let mN = this.taskForm.get('projekt').get('tasks').get([index]).get('memberName');
+    //                 //         // console.log(mN);
+    //                 //         this.filteredOptionsTeamMember[index] = mN.valueChanges.pipe(
+    //                 //           startWith(''),
+    //                 //           map(value => this._filterTeamMember(value))
+    //                 //         );
+    //                 //         index += 1;
+    //                 //       });
+    //                 //
+    //                 //     },
+    //                 //     error => {
+    //                 //       this.alertService.error(error);
+    //                 //       this.loading = false;
+    //                 //     });
+    //                 this.alertService.success('New project created');
+    //               } else {
+    //                 this.alertService.error('A team member may not be enrolled twice or more');
+    //                 this.submitted = false;
+    //                 this.loading = false;
+    //               }
+    //             } else {
+    //               // this.alertService.error('Enter a member email');
+    //               this.submitted = false;
+    //               this.loading = false;
+    //             }
+    //           } else {
+    //             this.alertService.clear();
+    //             this.alertService.error('The scrum master is not in the database');
+    //             this.submitted = false;
+    //             this.loading = false;
+    //           }
+    //         } else {
+    //           this.alertService.error('Enter a scrum master by username or email');
+    //           this.submitted = false;
+    //           this.loading = false;
+    //         }
+    //       } else {
+    //         this.alertService.clear();
+    //         this.alertService.error('The product owner is not in the database');
+    //         this.submitted = false;
+    //         this.loading = false;
+    //       }
+    //     } else {
+    //       this.alertService.error('Enter a product owner by username or email');
+    //       this.submitted = false;
+    //       this.loading = false;
+    //     }
+    //   } else {
+    //       this.alertService.error('A project with this name already exists');
+    //       this.submitted = false;
+    //       this.loading = false;
+    //   }
+    // } else {
+    //   this.alertService.error('Enter a project name');
+    //   this.loading = false;
+    // }
 
     document.body.scrollTop = document.documentElement.scrollTop = 0;
 

@@ -1,6 +1,6 @@
 export class Task {
     id: number;
     description: string;
-    time: number;
+    size: number;
     user: string;
   }

@@ -21,7 +21,8 @@ import { MatToolbarModule } from '@angular/material/toolbar';
 import { MatTooltipModule } from '@angular/material/tooltip';
 import { MatCardModule } from '@angular/material/card';
 import { MatDialogModule } from '@angular/material/dialog';
-import {MatTabsModule} from '@angular/material/tabs';
+import { MatTabsModule } from '@angular/material/tabs';
+import { MatCheckboxModule } from "@angular/material/checkbox";
 
 import {MatAutocompleteModule} from '@angular/material/autocomplete'
 
@@ -48,7 +49,8 @@ import {MatAutocompleteModule} from '@angular/material/autocomplete'
       MatCardModule, 
       MatDialogModule, 
       MatTabsModule,
-       MatAutocompleteModule
+      MatAutocompleteModule,
+      MatCheckboxModule
    ],
    exports: [
       MatButtonModule,
@@ -70,9 +72,8 @@ import {MatAutocompleteModule} from '@angular/material/autocomplete'
       MatCardModule,
       MatDialogModule,
       MatTabsModule,
-
-       
-      MatAutocompleteModule
+      MatAutocompleteModule,
+      MatCheckboxModule
 
    ],
    providers: [

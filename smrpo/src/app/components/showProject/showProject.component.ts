@@ -29,7 +29,7 @@ export class ShowProjectComponent implements OnInit {
     private http: HttpClient,
     private alertService: AlertService,
     private projectService: ProjectService,
-   private authenticationService: AuthenticationService,
+    private authenticationService: AuthenticationService,
   ) {
      //         // redirect to home if already logged in
      // if (this.authenticationService.currentUserValueFromToken.globalRole == 'user') {
