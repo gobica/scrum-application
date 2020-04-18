@@ -5,7 +5,13 @@
         Sprint
       </ng-template>
 
-      <button mat-stroked-button color="accent" (click)="openDialog();" >Add Sprint</button>
+   
+
+      <div *ngIf=  " trenutniProjekt ">    
+        <button *ngIf = "trenutniProjekt.scrumMaster.username === authenticationService.currentUserValueFromToken.username" mat-stroked-button color="accent" (click)="openDialog();" >Add Sprint</button> 
+      <br>
+    </div>
+  
       <div *ngFor="let sprint of sprints; let i = index">
         
         Sprint id: {{sprint.id}}

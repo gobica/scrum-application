@@ -7,11 +7,6 @@ import { AlertService,  } from '../../services/alert.service';
 import {MatDatepickerInputEvent} from '@angular/material/datepicker';
 import { SprintService } from  '../../services/sprint.service';
 import { first } from 'rxjs/operators';
-import { Router, ActivatedRoute } from '@angular/router';
-
-
-import { ShowProjectComponent } from  '../showProject/showProject.component';
-
 
 @Component({
   selector: 'app-add-sprint-dialog',
@@ -30,31 +25,21 @@ export class AddSprintDialogComponent implements OnInit {
 
   currentDate  = new Date();
   minDate ;
-  maxDate = new Date(2019, 0, 1);
 
   constructor(
     private formBuilder: FormBuilder,
     private alertService: AlertService,
     private sprintService: SprintService,
-    private router: Router,
-    private fb: FormBuilder,   
-    private route: ActivatedRoute,
-
-
     private dialogRef: MatDialogRef<AddSprintDialogComponent>,
-
     @Inject(MAT_DIALOG_DATA) data) {
-
-
     this.idProject = data.id;
-
 
     }
     get f() { return this.form.controls; }
 
 
   ngOnInit(): void { 
-    console.log("lalalalal", this.idProject)
+  //  console.log("CURRENT DATE", this.currentDate);
 
 
     this.form = this.formBuilder.group({
@@ -66,14 +51,12 @@ export class AddSprintDialogComponent implements OnInit {
   },);
 
 
-
-
   }
   
   addEvent(type: string, event: MatDatepickerInputEvent<Date>) {
     console.log(`${event.value}`);
     this.minDate = (`${event.value}`);
-    console.log("date", this.minDate);
+    console.log("min date", this.minDate);
   }
 
   save() {
@@ -88,7 +71,6 @@ close() {
 
 onSubmit() {
   this.submitted = true;
-  console.log("trenutni datum", this.minDate);
 
   // reset alerts on submit
   this.alertService.clear();
@@ -100,18 +82,21 @@ onSubmit() {
   this.loading = true;
   this.dialogRef.close(this.form.value);
   this.loading = true;
-  
+  // send last milisecond to datbase
+  this.form.value.startDate = new Date (this.form.value.startDate.getTime() + 23 *  60 * 60 * 1000 + 59* 60 * 1000 + 59 * 1000 +  999 );
+  this.form.value.endDate = new Date (this.form.value.endDate.getTime() + 23 *  60 * 60 * 1000 + 59* 60 * 1000 + 59 * 1000 +999 );
+
   this.sprintService.addSprint(this.form.value, this.idProject)
       .pipe(first())
       .subscribe(
           (data:any) => {
 
               this.alertService.success('Sprint added successfuly', true);
-              console.log("DATA", data);
+             // console.log("DATA", data);
               
           },
           error => {
-              console.log("error");
+             // console.log("error");
 
               this.alertService.error(error);
               this.loading = false;
