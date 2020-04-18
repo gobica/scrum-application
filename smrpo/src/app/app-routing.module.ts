@@ -12,6 +12,8 @@ import { EditUsersComponent } from './components/edit-users/edit-users.component
 import { ProjectDashboardComponent } from './components/project-dashboard/project-dashboard.component';
 import { AddTaskComponent } from "./components/add-task/add-task.component";
 import { ShowTaskComponent } from "./components/show-task/show-task.component";
+import { ResetByMailComponent } from "./components/reset-password/reset-by-mail.component"
+import { NewPasswordComponent } from "./components/reset-password/new-password.component"
 
 SprintBacklogComponent
 
@@ -27,6 +29,8 @@ const routes: Routes = [
   { path: 'projectDashboard/:id', component: ProjectDashboardComponent },
   { path: 'addTask', component: AddTaskComponent },
   { path: 'showTask', component: ShowTaskComponent },
+  { path: 'reset', component: ResetByMailComponent },
+  { path: 'reset/:token', component: NewPasswordComponent },
 
 
 

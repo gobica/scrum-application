@@ -62,4 +62,9 @@ export class LoginComponent implements OnInit {
                     this.loading = false;
                 });
     }
+
+    btnResetPassword = function() {
+      this.router.navigateByUrl('/reset');
+      console.log('Notr');
+    };
 }
