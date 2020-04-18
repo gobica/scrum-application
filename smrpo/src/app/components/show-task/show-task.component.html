@@ -1,74 +1,79 @@
 <div class="login-wrapper task-wrapper" fxLayout="row" fxLayoutAlign="center center " >
   <mat-card class="box-task" layout-align="center center" >
     <mat-card-header>
-      <mat-card-title>Show tasks</mat-card-title>
+      <mat-card-title>Tasks</mat-card-title>
     </mat-card-header>
 
-    <div class="checkbox "><b>Done</b></div>
+    <div *ngIf="allTasks.length > 0">
 
-    <div class="index-tag " ><b>#</b></div>
+      <div class="checkbox "><b>Done</b></div>
 
-    <div class="description " ><b>Task</b></div>
+      <div class="index-tag " ><b>#</b></div>
 
-    <div class="select-time" ><b>Size</b></div>
+      <div class="description " ><b>Task</b></div>
 
-    <div class="member" ><b>Team member</b></div>
+      <div class="select-time" ><b>Size</b></div>
+
+      <div class="member" ><b>Team member</b></div>
 
 
-    <div *ngFor="let task of allTasks; let i=index" class="panel panel-default" >
+      <div *ngFor="let task of allTasks; let i=index" class="panel panel-default" >
 
-      <div *ngIf="task.check === false" class="checkbox" >
-        <button class="btn-check" (click)="openDialog(i)" >
-          <span class="glyphicon glyphicon-unchecked glyphicon-color">  </span>
-        </button>
-      </div>
-        <!--<div *ngIf="task.check === false" class="mat-checkbox" >-->
-          <!--<mat-checkbox [ngModel]="false" (click)="openDialog(i)"></mat-checkbox>-->
-        <!--</div>-->
+        <div *ngIf="task.check === false" class="checkbox" >
+          <button class="btn-check" (click)="openDialog(i)" >
+            <span class="glyphicon glyphicon-unchecked glyphicon-color">  </span>
+          </button>
+        </div>
+          <!--<div *ngIf="task.check === false" class="mat-checkbox" >-->
+            <!--<mat-checkbox [ngModel]="false" (click)="openDialog(i)"></mat-checkbox>-->
+          <!--</div>-->
 
-        <!--<div *ngIf="task.check === true" class="mat-checkbox" >-->
-          <!--<mat-checkbox [ngModel]="true" disabled></mat-checkbox>-->
-        <!--</div>-->
+          <!--<div *ngIf="task.check === true" class="mat-checkbox" >-->
+            <!--<mat-checkbox [ngModel]="true" disabled></mat-checkbox>-->
+          <!--</div>-->
 
-      <div *ngIf="task.check === true" class="checkbox">
-        <button class="btn-check" disabled title="Task already completed">
+        <div *ngIf="task.check === true" class="checkbox">
+          <button class="btn-check" disabled title="Task already completed">
+             <!--<span id="btn-remove" class="glyphicon glyphicon-remove"></span>-->
+            <!--X-->
+            <span class="glyphicon glyphicon-check glyphicon-color">  </span>
+          </button>
+        </div>
+
+
+        <div class="index " >{{i+1}}. </div>
+
+
+        <div class="description " >{{task.description}}</div>
+
+
+        <div class="select-time" >{{task.size}}</div>
+
+        <!--<div class="member" >{{task.user}}</div>-->
+        <div *ngIf="task.user != undefined && task.user != null && task.user != ''" class="member" >
+          <div >{{task.user}}</div>
+        </div>
+        <div *ngIf="task.user === undefined || task.user === null || task.user === ''" class="noMember" >
+          <div >None</div>
+        </div>
+
+        <button mat-stroked-button color="accent" class="btn-right btn-margin" disabled  title='Sorry, currently unavailable :(' >
            <!--<span id="btn-remove" class="glyphicon glyphicon-remove"></span>-->
           <!--X-->
-          <span class="glyphicon glyphicon-check glyphicon-color">  </span>
+          <span class="mat-button-wrapper" class="glyphicon glyphicon-pencil">  </span>
         </button>
+
+        <button mat-stroked-button color="accent" class="btn-right btn-margin" disabled title='Sorry, currently unavailable :(' >
+           <!--<span id="btn-remove" class="glyphicon glyphicon-remove"></span>-->
+          <!--X-->
+          <span class="mat-button-wrapper"> X </span>
+        </button>
+
       </div>
-
-
-      <div class="index " >{{i+1}}. </div>
-
-
-      <div class="description " >{{task.description}}</div>
-
-
-      <div class="select-time" >{{task.size}}</div>
-
-      <!--<div class="member" >{{task.user}}</div>-->
-      <div *ngIf="task.user != undefined && task.user != null && task.user != ''" class="member" >
-        <div >{{task.user}}</div>
-      </div>
-      <div *ngIf="task.user === undefined || task.user === null || task.user === ''" class="noMember" >
-        <div >None</div>
-      </div>
-
-      <button mat-stroked-button color="accent" class="btn-right btn-margin" (click)="removeTask(i)" disabled  title='Sorry, currently unavailable :(' >
-         <!--<span id="btn-remove" class="glyphicon glyphicon-remove"></span>-->
-        <!--X-->
-        <span class="mat-button-wrapper" class="glyphicon glyphicon-pencil">  </span>
-      </button>
-
-      <button mat-stroked-button color="accent" class="btn-right btn-margin" (click)="removeTask(i)" disabled title='Sorry, currently unavailable :(' >
-         <!--<span id="btn-remove" class="glyphicon glyphicon-remove"></span>-->
-        <!--X-->
-        <span class="mat-button-wrapper"> X </span>
-      </button>
-
 
     </div>
+    <br><br>
+    <button mat-stroked-button color="accent" class="btn-addTask" (click)="btnAddTask();">Add new task</button>
 
   </mat-card>
 </div>

@@ -19,7 +19,7 @@
   <mat-form-field  class="example-full-width">
 
     <div class="form-group">
-        <input matInput  placeholder="password" type="password" formControlName="password" [ngClass]="{ 'is-invalid': submitted && f.password.errors }" />          
+        <input matInput  placeholder="Password" type="password" formControlName="password" [ngClass]="{ 'is-invalid': submitted && f.password.errors }" />
         <div *ngIf="submitted && f.password.errors" class="invalid-feedback">
             <div *ngIf="f.password.errors.required">Password is required</div>
         </div>
