@@ -11,6 +11,7 @@ import { SprintBacklogComponent } from './components/sprint-backlog/sprint-backl
 import { EditUsersComponent } from './components/edit-users/edit-users.component';
 import { ProjectDashboardComponent } from './components/project-dashboard/project-dashboard.component';
 import { AddTaskComponent } from "./components/add-task/add-task.component";
+import { ShowTaskComponent } from "./components/show-task/show-task.component";
 
 SprintBacklogComponent
 
@@ -25,6 +26,7 @@ const routes: Routes = [
   { path: 'editUsers', component: EditUsersComponent },
   { path: 'projectDashboard/:id', component: ProjectDashboardComponent },
   { path: 'addTask', component: AddTaskComponent },
+  { path: 'showTask', component: ShowTaskComponent },
 
 
 

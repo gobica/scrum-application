@@ -99,7 +99,7 @@ a {
 }
 
 .show-project-wrapper {
- width: 100vh !important;
+  width: 100vh !important;
   margin-top: 5px;
   /*padding: 0px 20px 10px !important;*/
   position: relative;

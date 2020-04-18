@@ -35,6 +35,8 @@ import { SprintBacklogComponent } from './components/sprint-backlog/sprint-backl
 import { ProjectDashboardComponent } from './components/project-dashboard/project-dashboard.component';
 import { AddSprintDialogComponent } from './components/add-sprint-dialog/add-sprint-dialog.component';
 import { AddTaskComponent } from './components/add-task/add-task.component'
+import { ShowTaskComponent } from "./components/show-task/show-task.component";
+import { DialogCompletedTaskComponent } from "./components/show-task/dialog-completed-task.component";
 
 
 @NgModule({
@@ -54,7 +56,9 @@ import { AddTaskComponent } from './components/add-task/add-task.component'
     SprintBacklogComponent,
     ProjectDashboardComponent,
     AddSprintDialogComponent,
-    AddTaskComponent
+    AddTaskComponent,
+    ShowTaskComponent,
+    DialogCompletedTaskComponent
    // LoginComponent,
    //  AlertComponent
   ],

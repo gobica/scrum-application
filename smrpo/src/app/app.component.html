@@ -26,10 +26,18 @@
         </div>
       </li>
 
-      <li ><a class="nav-item nav-link" routerLink="/addTask">Add task</a> </li>
-   
-   
-   
+      <!--<li ><a class="nav-item nav-link" routerLink="/addTask">Add task</a> </li>-->
+      <!--<li ><a class="nav-item nav-link" routerLink="/showTask">Task lists</a> </li>-->
+      <li class="nav-item dropdown" dropdown>
+        <a dropdownToggle mdbWavesEffect type="button" class="nav-link dropdown-toggle waves-light" mdbWavesEffect>
+          Tasks <span class="caret"></span></a>
+        <div *dropdownMenu class="dropdown-menu dropdown dropdown-primary" role="menu">
+          <li ><a class="nav-item nav-link" routerLink="/addTask">Add task</a> </li>
+          <li ><a class="nav-item nav-link" routerLink="/showTask">Task lists</a> </li>
+        </div>
+      </li>
+
+
     </ul>
 
 
