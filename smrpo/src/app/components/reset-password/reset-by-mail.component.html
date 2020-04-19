@@ -13,7 +13,7 @@
             <input matInput placeholder="Email" type="email" formControlName="email"  pattern="^[a-z0-9._%+-]+@[a-z0-9.-]+\.[a-z]{2,4}$" [ngClass]="{ 'is-invalid': submitted && f.email.errors }" />
             <div *ngIf="submitted && f.email.errors" class="invalid-feedback">
                 <div *ngIf="f.email.errors.required">Email is required</div>
-                <div *ngIf="f.email.errors.pattern">Please enter valid mail.</div>
+                <div *ngIf="f.email.errors.pattern">Please enter a valid mail</div>
 
             </div>
         </div>
@@ -23,7 +23,11 @@
     <div class="form-group">
         <button mat-stroked-button color="accent" class="btn-block">Send</button>
     </div>
- 
+
+    <div>
+      <a routerLink="/" style="color: black;">Back to front page</a>
+    </div>
+
 </form>
 </mat-card>
 </div>

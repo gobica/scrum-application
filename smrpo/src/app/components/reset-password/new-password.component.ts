@@ -5,6 +5,7 @@ import { first } from 'rxjs/operators';
 
 import { AlertService } from '../../services/alert.service';
 import { AuthenticationService } from '../../services/authentication.service';
+import { UserService } from 'src/app/services/user.service';
 
 
 @Component({
@@ -22,6 +23,7 @@ export class NewPasswordComponent implements OnInit {
         private formBuilder: FormBuilder,
         private route: ActivatedRoute,
         private router: Router,
+        private userService: UserService,
         private authenticationService: AuthenticationService,
         private alertService: AlertService
     ) {
@@ -50,7 +52,6 @@ export class NewPasswordComponent implements OnInit {
         // reset alerts on submit
         this.alertService.clear();
 
-
         if (this.resetForm.invalid) {
             return;
         }
@@ -60,10 +61,19 @@ export class NewPasswordComponent implements OnInit {
         if( password.length > 5) {
           if(password === confirmPassword) {
 
-            // geslo se v bazi spremeni
+            const resetToken = this.route.snapshot.paramMap.get('token');
+            this.userService.resetPassword(resetToken, password)
+              .pipe(first())
+              .subscribe(
+                  data => {
+                    this.alertService.success(data["message"]);
+                  },
+                  error => {
+                    this.alertService.error(error);
+                    this.loading = false;
+                  });
 
-            this.alertService.success('Successful password change');
-            this.loading = true;
+            this.loading = false;
           } else {
             this.alertService.error('Passwords must match');
           }

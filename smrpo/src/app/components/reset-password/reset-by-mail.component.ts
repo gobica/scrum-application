@@ -5,6 +5,7 @@ import { first } from 'rxjs/operators';
 
 import { AlertService } from '../../services/alert.service';
 import { AuthenticationService } from '../../services/authentication.service';
+import { UserService } from 'src/app/services/user.service';
 
 
 @Component({
@@ -23,6 +24,7 @@ export class ResetByMailComponent implements OnInit {
         private route: ActivatedRoute,
         private router: Router,
         private authenticationService: AuthenticationService,
+        private userService: UserService,
         private alertService: AlertService
     ) {
         // // redirect to home if already logged in
@@ -54,13 +56,9 @@ export class ResetByMailComponent implements OnInit {
             return;
         }
 
-        // preveri ce je mail v bazi?????? --> vrne napako ce ni?
-
+        this.userService.sendResetRequest(this.resetForm.get('email').value);
         this.loading = true;
 
-        //posreduje naprej na mail
-
-        this.alertService.success('Check your email');
-
+        this.alertService.success('If an account with that e-mail address exists, a message with further information on resetting the password will be available in the inbox soon');
     }
 }

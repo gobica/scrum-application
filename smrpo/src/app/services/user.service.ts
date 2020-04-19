@@ -7,6 +7,7 @@ import { environment } from 'src/environments/environment';
 export class UserService {
   postUrl: string = "";
   getUsersUrl: string = "";
+  resetUrl: string;
 
   /*
   httpOptions = {
@@ -19,6 +20,7 @@ export class UserService {
   constructor(private httpClient : HttpClient) {
     this.postUrl =  environment.apiUrl + '/register';
     this.getUsersUrl = environment.apiUrl + '/user' ;
+    this.resetUrl = environment.apiUrl + '/reset';
    }
 
   register (user: User) {
@@ -42,5 +44,15 @@ export class UserService {
     return this.httpClient.get<User[]>(this.getUsersUrl + '?includeDeleted=' + includeDeleted);
   }
 
+  sendResetRequest(email: string) {
+    // Not using HTTP client here as we won't wait for a response (fire&forget)
+    let req = new XMLHttpRequest();
+    req.open('POST', this.resetUrl, true);
+    req.setRequestHeader('Content-Type', 'application/json;charset=UTF-8');
+    req.send(JSON.stringify({ 'email': email }));
+  }
 
+  resetPassword(resetToken: string, newPassword: string) {
+    return this.httpClient.post(this.resetUrl + '/' + resetToken, { 'password': newPassword });
+  }
 }
