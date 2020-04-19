@@ -38,7 +38,8 @@ import { AddTaskComponent } from './components/add-task/add-task.component'
 import { ShowTaskComponent } from "./components/show-task/show-task.component";
 import { DialogCompletedTaskComponent } from "./components/show-task/dialog-completed-task.component";
 import { ResetByMailComponent } from "./components/reset-password/reset-by-mail.component";
-import { NewPasswordComponent } from "./components/reset-password/new-password.component"
+import { NewPasswordComponent } from "./components/reset-password/new-password.component";
+import { AddUserStoryComponent } from './components/add-user-story/add-user-story.component'
 
 
 @NgModule({
@@ -62,7 +63,8 @@ import { NewPasswordComponent } from "./components/reset-password/new-password.c
     ShowTaskComponent,
     DialogCompletedTaskComponent,
     ResetByMailComponent,
-    NewPasswordComponent
+    NewPasswordComponent,
+    AddUserStoryComponent
    // LoginComponent,
    //  AlertComponent
   ],

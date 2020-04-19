@@ -45,7 +45,7 @@ export class AddSprintDialogComponent implements OnInit {
     this.form = this.formBuilder.group({
       startDate: ['', Validators.required],
       endDate: ['', Validators.required],
-      velocity: ['', Validators.required]
+      velocity: ['', [Validators.min(0), Validators.required]]
 
 
   },);

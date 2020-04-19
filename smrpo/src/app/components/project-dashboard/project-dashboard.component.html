@@ -1,14 +1,28 @@
 <mat-tab-group>
+
+
+  
+  <mat-tab>
+    <ng-template mat-tab-label>
+      <mat-icon class="example-tab-icon">assignment</mat-icon>
+      Product Backlog
+    </ng-template>
+    <div *ngIf=  " trenutniProjekt ">    
+      <button *ngIf = "trenutniProjekt.scrumMaster.username === authenticationService.currentUserValueFromToken.username" mat-stroked-button color="accent" (click)="openStoryDialog();" >Add User Story</button> 
+    <br>
+  </div>
+
+  </mat-tab>
+
+
     <mat-tab>
       <ng-template mat-tab-label>
         <mat-icon class="example-tab-icon">av_timer</mat-icon>
-        Sprint
+        Sprint Backlog
       </ng-template>
 
-   
-
       <div *ngIf=  " trenutniProjekt ">    
-        <button *ngIf = "trenutniProjekt.scrumMaster.username === authenticationService.currentUserValueFromToken.username" mat-stroked-button color="accent" (click)="openDialog();" >Add Sprint</button> 
+        <button *ngIf = "trenutniProjekt.scrumMaster.username === authenticationService.currentUserValueFromToken.username" mat-stroked-button color="accent" (click)="openSprintDialog();" >Add Sprint</button> 
       <br>
     </div>
   
@@ -23,18 +37,9 @@
         Velocity: {{sprint.velocity}}
 
         </div>
-
-
     </mat-tab>
   
-    <mat-tab>
-      <ng-template mat-tab-label>
-        <mat-icon class="example-tab-icon">thumb_up</mat-icon>
-        Ediit
-      </ng-template>
-      Content 2
-    </mat-tab>
-  
+
     <mat-tab>
       <ng-template mat-tab-label>
         <mat-icon class="example-tab-icon">thumb_up</mat-icon>
