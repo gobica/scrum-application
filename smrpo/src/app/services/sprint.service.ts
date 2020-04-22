@@ -37,6 +37,8 @@ export class SprintService {
     return this.httpClient.get<Sprint[]>(this.projectUrl + `/${idProject}` + '/sprint');
   }
 
+ 
+
    //project/<idProject>/sprint
 
 

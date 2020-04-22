@@ -25,7 +25,8 @@
     <mat-form-field >
         <mat-label>Choose a end date</mat-label> 
         <input         [ngClass]="{ 'is-invalid': submitted && f.endDate.errors }" 
-        matInput [matDatepicker]="picker1"  formControlName="endDate"  (focus)="picker1.open()" and (click)="picker1.open()" readonly  [min]="form.controls.startDate.value" >
+        matInput [matDatepicker]="picker1"  formControlName="endDate"  (focus)="picker1.open()" and (click)="picker1.open()" 
+        readonly  [min]="incrementDay(form.controls.startDate.value)" >
        
         <div *ngIf=" submitted && f.endDate.errors" class="invalid-feedback">
             <div *ngIf="f.endDate.errors.required">End date is required</div>
@@ -42,7 +43,7 @@
 
     <mat-form-field>
         <input matInput
-        min="0"
+        min="1"
         type="number"
         formControlName="velocity"
         [ngClass]="{ 'is-invalid': submitted && f.velocity.errors }" 
@@ -64,6 +65,7 @@
 
 </mat-dialog-content>
 </form>
+
 
 
                

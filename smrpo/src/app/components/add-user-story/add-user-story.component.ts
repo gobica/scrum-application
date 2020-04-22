@@ -39,7 +39,7 @@ export class AddUserStoryComponent implements OnInit {
       acceptanceTests: ['', Validators.required],
       priority: ['', Validators.required],
       businessValue: ['', Validators.required],
-      sizePts: ['',  Validators.min(0)]
+      sizePts: [,  Validators.min(0)]
 
       
 
@@ -61,15 +61,16 @@ onSubmit() {
   if (this.formStory.invalid) {
       return;
   }
-  this.dialogRef.close(this.formStory.value);
 
   this.storyService.addStory(this.formStory.value, this.idProject)
       .pipe(first())
       .subscribe(
           (data:any) => {
 
-              this.alertService.success('Sprint added successfuly', true);
+              this.alertService.success('Story added successfuly.', true);
               console.log("DATA", data);
+              this.dialogRef.close(this.formStory.value);
+
               
           },
           error => {

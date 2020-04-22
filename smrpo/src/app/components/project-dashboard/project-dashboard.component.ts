@@ -18,8 +18,11 @@ import { StoryService } from  '../../services/story.service';
 export class ProjectDashboardComponent implements OnInit {
   projektID;
   sprints = [];
+  stories = [];
+
   trenutniProjekt; 
   userLoaded = false;
+  jeTreuntuniSprint; 
 
 
   constructor(
@@ -45,6 +48,10 @@ export class ProjectDashboardComponent implements OnInit {
   // get project by id
   this.getCurrentProject(this.projektID);
   this.loadAllSprints();
+  this.loadAllStories();
+
+  
+
   }
 
   openSprintDialog() {
@@ -73,6 +80,11 @@ openStoryDialog() {
   const dialogConfigStory = new MatDialogConfig();
   dialogConfigStory.disableClose = true;
   dialogConfigStory.autoFocus = true;
+  dialogConfigStory.width = "50vh"; 
+  dialogConfigStory.maxHeight = "80vh"; 
+
+
+
 //  console.log("USERNAME", this.trenutniProjekt.scrumMaster.username);
   //console.log(" PROJEKT V DIALOG", this.trenutniProjekt);
 
@@ -86,11 +98,19 @@ openStoryDialog() {
   const dialogRefStory = this.dialogStory.open(AddUserStoryComponent, dialogConfigStory);
   dialogRefStory.afterClosed().subscribe(
       data => {console.log("Dialog output:", data)
-     // this.loadAllSprints();
+      this.loadAllStories() 
   }
   );    
 
 
+
+}
+
+
+private loadAllStories() {
+  this.storyService.getAll(this.projektID)
+      .pipe(first())
+      .subscribe(stories => this.stories = stories);
 }
 
 private loadAllSprints() {
@@ -98,12 +118,35 @@ private loadAllSprints() {
       .pipe(first())
       .subscribe(sprints => this.sprints = sprints);
 }
+public beautifySprints(date) {
+  var currentDate  = new Date(date);
+  var izpis = currentDate.getDate() + ". " + currentDate.getMonth()  + ". " +  currentDate.getFullYear(); 
+  return izpis;
 
+
+}
 private getCurrentProject (id: number) {
     // get project by id
     this.projectService.getProject(this.projektID)
     .pipe(first())
     .subscribe(project => this.trenutniProjekt =  project);
 }
+public  isCurrentSprint(sprint) {
+  // your date logic here, recommend moment.js;
+  var currentDate  = new Date();
+  var startDate = new Date(sprint.startDate);
+  var endDate =  new Date(sprint.endDate);
+  console.log ("Start", startDate, "current", currentDate);
+  
+if ( startDate < currentDate && currentDate < endDate) 
+  {
+    console.log("TRENUTNISPRINT")
+   return true; 
+  }
+
+ // else return false; 
+
+  }
+
 
 }

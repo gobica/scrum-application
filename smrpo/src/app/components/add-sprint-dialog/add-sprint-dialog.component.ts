@@ -45,7 +45,7 @@ export class AddSprintDialogComponent implements OnInit {
     this.form = this.formBuilder.group({
       startDate: ['', Validators.required],
       endDate: ['', Validators.required],
-      velocity: ['', [Validators.min(0), Validators.required]]
+      velocity: ['', [Validators.min(1), Validators.required]]
 
 
   },);
@@ -54,9 +54,7 @@ export class AddSprintDialogComponent implements OnInit {
   }
   
   addEvent(type: string, event: MatDatepickerInputEvent<Date>) {
-    console.log(`${event.value}`);
     this.minDate = (`${event.value}`);
-    console.log("min date", this.minDate);
   }
 
   save() {
@@ -66,6 +64,11 @@ export class AddSprintDialogComponent implements OnInit {
 close() {
     this.dialogRef.close();
 } 
+incrementDay(date) {
+  if (date)
+  return new Date (date.getTime() + 24 *  60 * 60 * 1000 )
+} 
+
 
 
 
@@ -80,7 +83,6 @@ onSubmit() {
       return;
   }
   this.loading = true;
-  this.dialogRef.close(this.form.value);
   this.loading = true;
   // send last milisecond to datbase
   this.form.value.startDate = new Date (this.form.value.startDate.getTime() + 23 *  60 * 60 * 1000 + 59* 60 * 1000 + 59 * 1000 +  999 );
@@ -92,6 +94,8 @@ onSubmit() {
           (data:any) => {
 
               this.alertService.success('Sprint added successfuly', true);
+              this.dialogRef.close(this.form.value);
+
              // console.log("DATA", data);
               
           },

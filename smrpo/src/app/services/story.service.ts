@@ -19,6 +19,10 @@ export class StoryService {
   addStory(story: Story, idProject: number) {
     return this.httpClient.post(this.projectUrl + `/${idProject}` + '/story', story);
   }
+  getAll(idProject: number) {
+    return this.httpClient.get<Story[]>(this.projectUrl + `/${idProject}` + '/story');
+  }
+  
 }
 
 
@@ -33,8 +37,6 @@ export class StoryService {
   }
   getUser(id: number) {
     return this.httpClient.get(this.getSprintsUrl + `/${id}`);
-  }
-  getAll(idProject: number) {
-    return this.httpClient.get<Sprint[]>(this.projectUrl + `/${idProject}` + '/sprint');
-  }
   */
+
+  

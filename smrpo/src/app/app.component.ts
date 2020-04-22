@@ -28,9 +28,16 @@ export class AppComponent {
        //  this.ifAdmin = this.authenticationService.isAdmin(); 
        this.currentUserValue = authenticationService.currentUserValueFromToken;
        this.dataLoaded = true; 
-       console.log("loggedin" );
 
+       
+      if (this.authenticationService.isTokenExpired() ) {
+        this.router.navigate(['/login']);
+        this.authenticationService.logout();
+
+      };
       }
+
+
   }
 
   refreshShowProject(): void {

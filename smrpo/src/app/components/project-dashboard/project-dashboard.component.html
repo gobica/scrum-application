@@ -8,9 +8,27 @@
       Product Backlog
     </ng-template>
     <div *ngIf=  " trenutniProjekt ">    
-      <button *ngIf = "trenutniProjekt.scrumMaster.username === authenticationService.currentUserValueFromToken.username" mat-stroked-button color="accent" (click)="openStoryDialog();" >Add User Story</button> 
+     
+
+      <button *ngIf =" authenticationService.currentUserValueFromToken.username == trenutniProjekt.productOwner.username || trenutniProjekt.scrumMaster.username === authenticationService.currentUserValueFromToken.username" 
+      mat-stroked-button color="accent" (click)="openStoryDialog();" >Add User Story</button> 
     <br>
   </div>
+
+  
+  <div *ngFor="let story of stories; let i = index">
+    
+    <p>
+      name : {{story.name}}
+      description : {{story.description}}
+      acceptance Tests : {{story.acceptanceTests}}
+      priority : {{story.priority}}
+      Business Value : {{story.businessValue}}
+      Size : {{story.sizePts}}
+
+
+    </p>
+    </div>
 
   </mat-tab>
 
@@ -27,15 +45,20 @@
     </div>
   
       <div *ngFor="let sprint of sprints; let i = index">
-        
-        Sprint id: {{sprint.id}}
+        <p class="text-success" *ngIf="isCurrentSprint(sprint)">
+        Start date: {{beautifySprints(sprint.startDate)}}
         <br>
-        Start date: {{sprint.startDate}}
-        <br>
-        End date: {{sprint.endDate}}
+        End date: {{beautifySprints(sprint.endDate)}}
         <br>
         Velocity: {{sprint.velocity}}
-
+        </p>
+        <p *ngIf="!isCurrentSprint(sprint)">
+        Start date: {{beautifySprints(sprint.startDate)}}
+        <br>
+        End date: {{beautifySprints(sprint.endDate)}}
+        <br>
+        Velocity: {{sprint.velocity}}
+      </p>
         </div>
     </mat-tab>
   
