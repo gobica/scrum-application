@@ -110,6 +110,16 @@ a {
 }
 
 
+.show-story-wrapper {
+  width: 100vh !important;
+  margin-top: 5px;
+  margin-bottom: 20px;
+  /*padding: 0px 20px 10px !important;*/
+  position: relative;
+  display: table;
+}
+
+
 .box.back {
 	transform: scale(.95);
 	-webkit-transform: scale(.95);

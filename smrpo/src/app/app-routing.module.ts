@@ -27,8 +27,8 @@ const routes: Routes = [
   { path: 'editProject/:id', component: EditProjectComponent },
   { path: 'editUsers', component: EditUsersComponent },
   { path: 'projectDashboard/:id', component: ProjectDashboardComponent },
-  { path: 'addTask', component: AddTaskComponent },
-  { path: 'showTask', component: ShowTaskComponent },
+  { path: 'projectDashboard/:projectId/sprint/:sprintId/story/:storyId/addTask', component: AddTaskComponent },
+  { path: 'projectDashboard/:projectId/sprint/:sprintId/story/:storyId/showTask', component: ShowTaskComponent },     // /project/:projectId/sprint/:sprintId/story/:storyId/task
   { path: 'reset', component: ResetByMailComponent },
   { path: 'reset/:token', component: NewPasswordComponent },
 

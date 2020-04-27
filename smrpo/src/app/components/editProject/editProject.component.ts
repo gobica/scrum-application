@@ -59,7 +59,7 @@ export class EditProjectComponent implements OnInit {
 
   getProjectData(projektID) {
 
-    this.projectService.getProject(projektID).pipe(first()) // vrne projekt, ki ima dolocen url
+    this.projectService.getProject(projektID).pipe(first()) // vrne projekt, ki ima dolocen id
     .subscribe(
       data => {
           // console.log(data['name']);

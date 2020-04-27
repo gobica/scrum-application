@@ -5,17 +5,25 @@ import {environment} from '../../../environments/environment';
 import {first} from 'rxjs/operators';
 import { AlertService } from '../../services/alert.service';
 import {group} from '@angular/animations';
-import {Router} from '@angular/router';
+import {ActivatedRoute, Router} from '@angular/router';
 import { AuthenticationService } from  '../../services/authentication.service';
 import { ProjectService } from '../../services/project.service';
 import {UserService} from '../../services/user.service';
+import {StoryService} from "../../services/story.service";
+import { TaskService } from '../../services/task.service';
 
 import {Inject} from '@angular/core';
 import {MatDialog, MatDialogRef, MAT_DIALOG_DATA} from '@angular/material/dialog';
 import { DialogCompletedTaskComponent } from './dialog-completed-task.component';
+import { DialogUncompletedTaskComponent } from './dialog-uncompleted-task.component';
+import { DialogAcceptTaskComponent } from './dialog-accept-task.component';
+import { DialogGiveupTaskComponent } from './dialog-giveup-task.component';
+import { DialogRedirectTaskComponent } from './dialog-redirect-task.component';
+
 import {FormControl} from '@angular/forms';
 import {Observable} from 'rxjs';
 import {map, startWith} from 'rxjs/operators';
+
 
 @Component({
   selector: 'app-show-task',
@@ -23,25 +31,30 @@ import {map, startWith} from 'rxjs/operators';
   styleUrls: ['./show-task.component.css']
 })
 export class ShowTaskComponent implements OnInit {
+  public projektID;
+  public sprintID;
+  public zgodbaID;
+  public zgodbaIme;
+
+  trenutniUporabnik = this.authenticationService.currentUserValueFromToken.username;
 
   loading = false;
   submitted = false;
 
   allUsers = [];
   allProjects = [];
+  allStories = [];
   errors = [];
-  allTasks = [{check: false, description: 'Prva naloga je lepa', size: 2.5, user: 'roberto'}, {check: false, description: 'Druga naloga je zanimiva', size: 3.0, user: ''}, {check: false, description: 'Tretja naloga je dolgočasna', size: 4.5, user: 'samantha'}];
-  // allTasks = [];
+  // allTasks = [{check: false, description: 'Prva naloga je lepa', size: 2.5, user: 'roberto'}, {check: false, description: 'Druga naloga je zanimiva', size: 3.0, user: ''}, {check: false, description: 'Tretja naloga je dolgočasna', size: 4.5, user: 'samantha'}];
+  allTasks = [];
 
 
   userNameTeamMember: string[] = [];
-  filteredOptionsTeamMember: Observable<string[]>[] = [];
+  // filteredOptionsTeamMember: Observable<string[]>[] = [];
 
   public myForm: FormGroup;
   public taskForm: FormGroup;
 
-  // animal: string;
-  // name: string;
 
   constructor(
     private _fb: FormBuilder,
@@ -51,7 +64,10 @@ export class ShowTaskComponent implements OnInit {
     private authenticationService: AuthenticationService,
     private userService: UserService,
     private projectService: ProjectService,
+    private storyService: StoryService,
+    private taskService: TaskService,
     public dialog: MatDialog,
+    private route: ActivatedRoute,
 
   ) {
      // redirect to home if already logged in
@@ -74,9 +90,16 @@ export class ShowTaskComponent implements OnInit {
     this.getAllUsers();
     this.getAllProjects();
 
-    if (this.allTasks.length < 1) {
-      this.alertService.warning('No tasks to show :)');
-    }
+    this.route.params.subscribe(params => {
+      // console.log(params);
+      this.projektID = params.projectId; //projectDashboard/:projectId/sprint/:sprintId/story/:storyId/showTask
+      this.sprintID = params.sprintId;
+      this.zgodbaID = params.storyId;
+
+    });
+    this.getAllStories();
+    this.getAllTasks();
+
   }
 
   // private _filterTeamMember(value: string): string[] {
@@ -135,6 +158,51 @@ export class ShowTaskComponent implements OnInit {
       }
     );
     // return projects;
+  }
+
+  getAllStories() {
+  this.storyService.getAll(this.projektID)
+      .pipe(first())
+      .subscribe(stories => this.allStories = stories);
+}
+
+  async getAllTasks() {
+    // let projects = [];
+    await this.taskService.getAllTasksOfStory(this.projektID, this.sprintID, this.zgodbaID).pipe(first()) // vrne vse naloge
+    .subscribe(
+      data => {
+          console.log(data);
+          this.allTasks = data;
+          this.allTasks.forEach(t => {
+            this.allUsers.forEach(u => {
+              if(u.id === t.idAssignedUser){
+                t.user = u.username; // doda novo polje v task! POZOR!
+              }
+            });
+            // console.log(t);
+            t.check = false; // TODO: zbriši, ko bo check implementiran!
+          });
+          // console.log(this.allProjects);
+          this.zgodbaIme = this.allStories.find(x => {
+            console.log(x);
+            console.log(this.zgodbaID);
+            if(x.id === parseInt(this.zgodbaID)){
+              return x;
+            }
+          });
+          this.zgodbaIme = this.zgodbaIme.name;
+          console.log("---"+this.zgodbaIme);
+          return data;
+      },
+      error => {
+          if (error === 'Not Found') {
+            this.alertService.warning('No tasks to show :)');
+          } else {
+            this.alertService.error(error);
+          }
+          this.loading = false;
+      }
+    );
   }
 
   // initTasks() {
@@ -309,27 +377,106 @@ export class ShowTaskComponent implements OnInit {
   //
   // }
 
-  openDialog(i): void {
-    const dialogRef = this.dialog.open(DialogCompletedTaskComponent, {
-      width: '250px',
+  taskDone(i): void {
+    if(this.allTasks[i].userConfirmed === true) {
+      const dialogRef = this.dialog.open(DialogCompletedTaskComponent, {
+        width: '50vw',
+        // data: {checked: this.name, animal: this.animal}
+        data: {checked: this.allTasks[i].check}
+      });
+
+      dialogRef.afterClosed().subscribe(result => {
+        if (result === true) {
+          this.allTasks[i].check = result;
+          // console.log(this.allTasks[i].check);
+        } else {
+          this.allTasks[i].check = false;
+          // console.log(this.allTasks[i].check);
+        }
+        // console.log('The dialog was closed: '+ result);
+      });
+    } else {
+       this.alertService.clear();
+       this.alertService.error('Task is not already accepted.');
+    }
+  }
+
+  taskNotDone(i) {
+    this.alertService.clear();
+    // this.allTasks[i].check = false;
+    // console.log(this.allTasks[i].check);
+    const dialogRef = this.dialog.open(DialogUncompletedTaskComponent, {
+      width: '50vw',
       // data: {checked: this.name, animal: this.animal}
       data: {checked: this.allTasks[i].check}
     });
 
     dialogRef.afterClosed().subscribe(result => {
-      if (result === true) {
+      if (result === false) {
         this.allTasks[i].check = result;
-        console.log(this.allTasks[i].check);
+        // console.log(this.allTasks[i].check);
       } else {
-        this.allTasks[i].check = false;
-        console.log(this.allTasks[i].check);
+        this.allTasks[i].check = true;
+        // console.log(this.allTasks[i].check);
       }
-      console.log('The dialog was closed: '+ result);
+      // console.log('The dialog was closed: '+ result);
+    });
+  }
+
+  acceptTask(i) {
+    this.alertService.clear();
+    const dialogRef = this.dialog.open(DialogAcceptTaskComponent, {
+      width: '50vw',
+      data: {userConfirmed: this.allTasks[i].userConfirmed}
+    });
+
+    dialogRef.afterClosed().subscribe(result => {
+      if (result === true) {
+        this.allTasks[i].userConfirmed = result;
+      } else {
+        this.allTasks[i].userConfirmed = false;
+      }
+      // console.log('The dialog was closed: '+ this.allTasks[i].userConfirmed);
+    });
+  }
+
+  giveUpTask(i) {
+    this.alertService.clear();
+    const dialogRef = this.dialog.open(DialogGiveupTaskComponent, {
+      width: '50vw',
+      data: {userConfirmed: this.allTasks[i].userConfirmed}
+    });
+
+    dialogRef.afterClosed().subscribe(result => {
+      if (result === false) {
+        this.allTasks[i].userConfirmed = result;
+        this.allTasks[i].idAssignedUser = null;
+        this.allTasks[i].user = "";
+      } else {
+        this.allTasks[i].userConfirmed = true;
+      }
+      // console.log('The dialog was closed: '+ this.allTasks[i].userConfirmed);
+    });
+  }
+
+  redirectTask(i) {
+    this.alertService.clear();
+    const dialogRef = this.dialog.open(DialogRedirectTaskComponent, {
+      width: '50vw',
+      data: {user: this.allTasks[i].user}
+    });
+
+    dialogRef.afterClosed().subscribe(result => {
+      if (result === true) {
+        this.allTasks[i].user = this.trenutniUporabnik;
+      }
+      // console.log('The dialog was closed: '+ this.allTasks[i].userConfirmed);
     });
   }
 
   btnAddTask = function() {
-      this.router.navigateByUrl('/addTask');
+    this.alertService.clear();
+    this.router.navigateByUrl('/projectDashboard/' + this.projektID + '/sprint/' + this.sprintID + '/story/' + this.zgodbaID + '/addTask');
         // console.log(id);
   };
 }

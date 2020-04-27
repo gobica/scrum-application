@@ -1,3 +1,4 @@
+<div class="title-tasks"><b>Story: </b> {{zgodbaIme}}</div>
 <div class="login-wrapper task-wrapper" fxLayout="row" fxLayoutAlign="center center " >
   <mat-card class="box-task" layout-align="center center" >
     <mat-card-header>
@@ -5,25 +6,49 @@
     </mat-card-header>
 
     <div *ngIf="allTasks.length > 0">
-
+      <!--TODO: ne birisat! rabi za zakljucevanje nalog-->
       <div class="checkbox "><b>Done</b></div>
 
       <div class="index-tag " ><b>#</b></div>
 
       <div class="description " ><b>Task</b></div>
 
-      <div class="select-time" ><b>Size</b></div>
+      <div class="select-time" ><b>Size (in hours)</b></div>
 
       <div class="member" ><b>Team member</b></div>
 
 
       <div *ngFor="let task of allTasks; let i=index" class="panel panel-default" >
 
+        <!--TODO: ne birisat! rabi za zakljucevanje nalog-->
+        <!--<mat-checkbox [ngModel]="false" class="btn-check"></mat-checkbox>-->
+
         <div *ngIf="task.check === false" class="checkbox" >
-          <button class="btn-check" (click)="openDialog(i)" >
-            <span class="glyphicon glyphicon-unchecked glyphicon-color">  </span>
-          </button>
+          <div *ngIf="task.user === trenutniUporabnik">
+            <button class="btn-check" (click)="taskDone(i)" >
+              <span class="glyphicon glyphicon-unchecked glyphicon-color">  </span>
+            </button>
+          </div>
+          <div *ngIf="task.user != trenutniUporabnik">
+            <button class="btn-check" disabled title="You cannot complete the task" >
+              <span class="glyphicon glyphicon-unchecked glyphicon-color">  </span>
+            </button>
+          </div>
         </div>
+        <div *ngIf="task.check === true" class="checkbox">
+          <div *ngIf="task.user === trenutniUporabnik">
+            <button class="btn-check" (click)="taskNotDone(i)">
+              <span class="glyphicon glyphicon-check glyphicon-color">  </span>
+            </button>
+          </div>
+          <div *ngIf="task.user != trenutniUporabnik">
+            <button class="btn-check" disabled title="You cannot restart the task" >
+              <span class="glyphicon glyphicon-check glyphicon-color">  </span>
+            </button>
+          </div>
+        </div>
+
+
           <!--<div *ngIf="task.check === false" class="mat-checkbox" >-->
             <!--<mat-checkbox [ngModel]="false" (click)="openDialog(i)"></mat-checkbox>-->
           <!--</div>-->
@@ -32,13 +57,7 @@
             <!--<mat-checkbox [ngModel]="true" disabled></mat-checkbox>-->
           <!--</div>-->
 
-        <div *ngIf="task.check === true" class="checkbox">
-          <button class="btn-check" disabled title="Task already completed">
-             <!--<span id="btn-remove" class="glyphicon glyphicon-remove"></span>-->
-            <!--X-->
-            <span class="glyphicon glyphicon-check glyphicon-color">  </span>
-          </button>
-        </div>
+
 
 
         <div class="index " >{{i+1}}. </div>
@@ -47,14 +66,59 @@
         <div class="description " >{{task.description}}</div>
 
 
-        <div class="select-time" >{{task.size}}</div>
+        <div class="select-time" >{{task.timeEstimateHrs}}</div>
 
         <!--<div class="member" >{{task.user}}</div>-->
         <div *ngIf="task.user != undefined && task.user != null && task.user != ''" class="member" >
-          <div >{{task.user}}</div>
+          <div *ngIf="task.userConfirmed === false" >
+            <div class="memberGray">{{task.user}}
+              <span class="tooltiptext">The task is not yet accepted</span>
+            </div>
+          </div>
+          <div *ngIf="task.userConfirmed === true" >
+            <div class="memberBlack">{{task.user}}
+              <span class="tooltiptext">The task is accepted</span>
+            </div>
+          </div>
         </div>
-        <div *ngIf="task.user === undefined || task.user === null || task.user === ''" class="noMember" >
-          <div >None</div>
+        <div *ngIf="task.user === undefined || task.user === null || task.user === ''" class="member " >
+          <div class="memberGray"><i>None</i>
+            <span class="tooltiptext">The task is not assigned to any team member</span>
+          </div>
+        </div>
+
+
+        <div *ngIf="task.user === trenutniUporabnik" class="btn-right">
+          <div *ngIf="task.userConfirmed === false">
+            <button mat-stroked-button color="accent" class="btn-right btn-margin" title='Accept the assignment' (click)="acceptTask(i)" >
+              <span class="mat-button-wrapper" class="glyphicon glyphicon-thumbs-up">  </span>
+            </button>
+          </div>
+        </div>
+
+        <div *ngIf="task.user === trenutniUporabnik" class="btn-right">
+          <div *ngIf="task.userConfirmed === true">
+            <button mat-stroked-button color="accent" class="btn-right btn-margin" title='Give up the task' (click)="giveUpTask(i)" >
+              <span class="mat-button-wrapper" class="glyphicon glyphicon-thumbs-down">  </span>
+            </button>
+          </div>
+        </div>
+
+        <div *ngIf="task.user != trenutniUporabnik" class="btn-right">
+          <div *ngIf="task.userConfirmed === false">
+            <button mat-stroked-button color="accent" class="btn-right btn-margin" title='Redirect to yourself the unaccepted task' (click)="redirectTask(i)" >
+              <span class="mat-button-wrapper" class="glyphicon glyphicon-bell">  </span>
+            </button>
+          </div>
+        </div>
+
+        <!--blank space-->
+        <div *ngIf="task.user != trenutniUporabnik" class="btn-right">
+          <div *ngIf="task.userConfirmed === true">
+            <button mat-stroked-button class="white-block btn-right btn-margin" disabled>
+              <span class="mat-button-wrapper" class="glyphicon glyphicon-thumbs-down">  </span>
+            </button>
+          </div>
         </div>
 
         <button mat-stroked-button color="accent" class="btn-right btn-margin" disabled  title='Sorry, currently unavailable :(' >

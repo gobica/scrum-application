@@ -20,14 +20,14 @@ export class DialogCompletedTaskComponent {
     public dialogRef: MatDialogRef<DialogCompletedTaskComponent>,
     @Inject(MAT_DIALOG_DATA) public data: DialogData) {}
 
-  onNoClick() {
-    // console.log(value);
-    // console.log(this.data.checked);
-    // this.data.checked = value;
-    // console.log(this.data.checked);
-    this.dialogRef.close();
-    // return this.data.checked;
-  }
+  // onNoClick() {
+  //   // console.log(value);
+  //   // console.log(this.data.checked);
+  //   // this.data.checked = value;
+  //   // console.log(this.data.checked);
+  //   this.dialogRef.close();
+  //   // return this.data.checked;
+  // }
 
   // onYesClick(value): void {
   //   console.log(value);

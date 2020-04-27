@@ -68,7 +68,7 @@
 
 .description {
   margin: 10px;
-  width: 50%;
+  width: 40%;
   /*display: table-cell;*/
   /*display: table-row;*/
   display: inline-block;
@@ -93,18 +93,26 @@
   /*display: table-row;*/
 }
 
-.member {
+.member{
 	width: 15%;
   padding-right: 6px;
   display: inline-block !important;
   margin: 10px;
 }
 
-.noMember {
-	width: 15%;
-  padding-right: 6px;
-  display: inline-block !important;
-  margin: 10px;
+.memberBlack {
+	/*width: 15%;*/
+  /*padding-right: 6px;*/
+  /*display: inline-block !important;*/
+  /*margin: 10px;*/
+  color: black;
+}
+
+.memberGray {
+	/*width: 15%;*/
+  /*padding-right: 6px;*/
+  /*display: inline-block !important;*/
+  /*margin: 10px;*/
   color: gray;
 }
 
@@ -133,4 +141,46 @@
   width: fit-content;
 }
 
+.tooltip {
+  position: relative;
+  display: inline-block;
+  border-bottom: 1px dotted black;
+}
 
+.tooltiptext {
+  visibility: hidden;
+  width: 120px;
+  background-color: gray;
+  color: #fff;
+  text-align: center;
+  border-radius: 6px;
+  padding: 5px 0;
+
+  /* Position the tooltip */
+  position: absolute;
+  z-index: 1;
+  margin-left: 5px;
+  /*bottom: 10%;*/
+  /*left: 50%;*/
+  /*margin-left: -60px;*/
+}
+
+.memberGray:hover .tooltiptext {
+  visibility: visible;
+}
+
+.memberBlack:hover .tooltiptext {
+  visibility: visible;
+}
+
+.white-block {
+  color:white;
+  background: white;
+}
+
+.title-tasks {
+	font-size: 30px;
+	margin: 20px;
+  align-self: center;
+  text-align:center;
+}

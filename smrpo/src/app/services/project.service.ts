@@ -3,7 +3,6 @@ import { HttpClient, HttpHeaders,HttpErrorResponse } from '@angular/common/http'
 import { Project } from '../models/project'
 import { environment } from 'src/environments/environment';
 import {first} from "rxjs/operators";
-import {User} from "../models/user";
 
 @Injectable({  providedIn: 'root' })
 export class ProjectService {

@@ -5,7 +5,7 @@ import {environment} from '../../../environments/environment';
 import {first} from 'rxjs/operators';
 import { AlertService } from '../../services/alert.service';
 import {group} from '@angular/animations';
-import {Router} from '@angular/router';
+import {ActivatedRoute, Router} from '@angular/router';
 import { AuthenticationService } from  '../../services/authentication.service';
 import { ProjectService } from '../../services/project.service';
 import {UserService} from '../../services/user.service';
@@ -14,6 +14,7 @@ import {UserService} from '../../services/user.service';
 import {FormControl} from '@angular/forms';
 import {Observable} from 'rxjs';
 import {map, startWith} from 'rxjs/operators';
+import {TaskService} from "../../services/task.service";
 
 @Component({
   selector: 'app-add-task',
@@ -21,11 +22,16 @@ import {map, startWith} from 'rxjs/operators';
   styleUrls: ['./add-task.component.css']
 })
 export class AddTaskComponent implements OnInit {
+  public projektID;
+  public sprintID;
+  public zgodbaID;
 
   loading = false;
   submitted = false;
 
   allUsers = [];
+  project;
+  projectUsers = [];
   allProjects = [];
   errors = [];
 
@@ -44,13 +50,15 @@ export class AddTaskComponent implements OnInit {
     private authenticationService: AuthenticationService,
     private userService: UserService,
     private projectService: ProjectService,
+    private taskService: TaskService,
+    private route: ActivatedRoute,
 
   ) {
      // redirect to home if already logged in
      // if (this.authenticationService.currentUserValueFromToken.globalRole === 'user') {
      //  this.router.navigate(['/']);
      // }
-    console.log(this.authenticationService.currentUserValueFromToken.globalRole);
+    // console.log(this.authenticationService.currentUserValueFromToken.globalRole);
 
   }
 
@@ -65,6 +73,14 @@ export class AddTaskComponent implements OnInit {
     });
     this.getAllUsers();
     this.getAllProjects();
+    this.route.params.subscribe(params => {
+      // console.log(params);
+      this.projektID = params.projectId; //projectDashboard/:projectId/sprint/:sprintId/story/:storyId/showTask
+      this.sprintID = params.sprintId;
+      this.zgodbaID = params.storyId;
+      this.getAllProjectUsers();
+      });
+
   }
 
   private _filterTeamMember(value: string): string[] {
@@ -80,24 +96,6 @@ export class AddTaskComponent implements OnInit {
       data => {
           // console.log(data);
           this.allUsers = data;
-
-          const users = [];
-          data.forEach(u => {
-            users.push(u.username);
-          });
-          this.userNameTeamMember = users;
-
-          let index = 0;
-          this.taskForm.value.task.tasks.forEach(t => {
-            let ts = this.taskForm.get('task').get('tasks').get([index]).get('memberName');
-            // console.log(mN);
-            this.filteredOptionsTeamMember[index] = ts.valueChanges.pipe(
-              startWith(''),
-              map(value => this._filterTeamMember(value))
-            );
-            index += 1;
-          });
-          // console.log(index);
           return data;
       },
       error => {
@@ -106,6 +104,42 @@ export class AddTaskComponent implements OnInit {
       }
     );
     // return users;
+  }
+
+  getAllProjectUsers() {
+    this.projectService.getProject(this.projektID).pipe(first()) // vrne projekt, ki ima dolocen id
+        .subscribe(
+          data => {
+              // console.log('----------');
+              // console.log(data);
+              // console.log('----------');
+              this.project = data;
+              this.projectUsers = this.project.users;
+              // console.log(this.projectUsers);
+              const users = [];
+              this.projectUsers.forEach(u => {
+                users.push(u.username);
+              });
+              this.userNameTeamMember = users;
+
+              let index = 0;
+              this.taskForm.value.task.tasks.forEach(t => {
+                let ts = this.taskForm.get('task').get('tasks').get([index]).get('memberName');
+                // console.log(mN);
+                this.filteredOptionsTeamMember[index] = ts.valueChanges.pipe(
+                  startWith(''),
+                  map(value => this._filterTeamMember(value))
+                );
+                index += 1;
+              });
+              // console.log(index);
+              return data;
+          },
+          error => {
+              this.alertService.error(error);
+              this.loading = false;
+          }
+        );
   }
 
   getAllProjects() {
@@ -219,7 +253,7 @@ export class AddTaskComponent implements OnInit {
     return obstajaZeProjekt;
   }
 
-  isInDatabase(vsiUporabniki, uporabnik){
+  isIn(vsiUporabniki, uporabnik){
     let jeVBazi = false;
     vsiUporabniki.forEach(u => {
       if(u.username === uporabnik) {
@@ -260,12 +294,27 @@ export class AddTaskComponent implements OnInit {
               this.errors[taskIndex-1] = '';
               const user = task.memberName;
               if(user !== undefined && user !== '' && user !== null) {
-                const jeVBazi= this.isInDatabase(this.allUsers, user);
+                const jeVBazi = this.isIn(this.allUsers, user);
                 if(jeVBazi === true) {
                    // console.log(user);
                   this.errors[taskIndex-1] = '';
-
-
+                  const jeVProjektu = this.isIn(this.projectUsers, user);
+                  if(jeVProjektu === true) {
+                     // console.log(user);
+                    this.errors[taskIndex-1] = '';
+                  } else {
+                    this.alertService.clear();
+                    this.alertService.error('The team member of the ' + taskIndex + '. task is not in the project.');
+                    this.errors[taskIndex-1] = 'Not in the project';
+                    let tmp = taskIndex;
+                    while(tmp < dolzina) {
+                      this.errors[tmp] = '';
+                      tmp += 1;
+                    }
+                    this.submitted = false;
+                    this.loading = false;
+                    correctForm = false;
+                  }
                 } else {
                   this.alertService.clear();
                   this.alertService.error('The team member of the ' + taskIndex + '. task is not in the database.');
@@ -330,6 +379,38 @@ export class AddTaskComponent implements OnInit {
 
       if(dolzina >= 1) {
         console.log(valueOfTasks);
+        valueOfTasks.forEach(t => {
+          const id = 0;
+          const description = t.taskDescription;
+          const timeEstimateHrs = t.taskSize;
+          let idAssignedUser = null;
+          this.allUsers.forEach(u => {
+            if (t.memberName === u.username) {
+              idAssignedUser =  u.id;
+              return idAssignedUser;
+            }
+          });
+          const idSprintStory = 0;
+          const userConfirmed = false;
+
+          const task = {id, description, timeEstimateHrs, idAssignedUser, idSprintStory, userConfirmed};
+          this.taskService.addTasksToStory(this.projektID, this.sprintID, this.zgodbaID, task).pipe(first()) // vrne vse naloge
+          .subscribe(
+            data => {
+                console.log(data);
+                // this.allTasks = data;
+                return data;
+            },
+            error => {
+                this.alertService.error(error);
+                this.loading = false;
+            }
+          );
+        });
+
+
+
+
         this.alertService.success('New tasks created');
         // console.log(dolzina);
         let i = 1;

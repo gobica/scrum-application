@@ -20,7 +20,11 @@ export class ProjectDashboardComponent implements OnInit {
   sprints = [];
   stories = [];
 
-  trenutniProjekt; 
+  //TODO: premakni v sprintBacklog
+  trenutniUporabnik = this.authenticationService.currentUserValueFromToken.username;
+  globalnaUloga = this.authenticationService.currentUserValueFromToken.globalRole;
+
+  trenutniProjekt;
   userLoaded = false;
   jeTreuntuniSprint; 
 
@@ -36,6 +40,7 @@ export class ProjectDashboardComponent implements OnInit {
     private route: ActivatedRoute,
     public authenticationService: AuthenticationService,  
     private projectService: ProjectService,
+    private router: Router,
     ) {
     
   }
@@ -43,14 +48,14 @@ export class ProjectDashboardComponent implements OnInit {
     //get project ID
     this.route.params.subscribe(params => {
       this.projektID = params.id;
-  });
+    });
 
-  // get project by id
-  this.getCurrentProject(this.projektID);
-  this.loadAllSprints();
-  this.loadAllStories();
+    // get project by id
+    this.getCurrentProject(this.projektID);
+    this.loadAllSprints();
+    this.loadAllStories();
 
-  
+
 
   }
 
@@ -110,7 +115,25 @@ openStoryDialog() {
 private loadAllStories() {
   this.storyService.getAll(this.projektID)
       .pipe(first())
-      .subscribe(stories => this.stories = stories);
+      .subscribe(stories => {
+        this.stories = stories;
+        // console.log(stories);
+        this.stories.forEach(s => {
+          if(s.priority === "must have"){
+            s.priorityColor = "high";
+          }
+          else if(s.priority === "should have"){
+            s.priorityColor = "average";
+          }
+          else if(s.priority === "could have"){
+            s.priorityColor = "low";
+          }
+          else {
+            s.priorityColor = "";
+          }
+        });
+      });
+
 }
 
 private loadAllSprints() {
@@ -136,7 +159,7 @@ public  isCurrentSprint(sprint) {
   var currentDate  = new Date();
   var startDate = new Date(sprint.startDate);
   var endDate =  new Date(sprint.endDate);
-  console.log ("Start", startDate, "current", currentDate);
+  // console.log ("Start", startDate, "current", currentDate);
   
 if ( startDate < currentDate && currentDate < endDate) 
   {
@@ -148,5 +171,11 @@ if ( startDate < currentDate && currentDate < endDate)
 
   }
 
+public btnShowStory = function(projectId, storyId) { // bo moralo it v sprint backlog!!!!!!!!!!!!!!!!! //TODO: mora it v sprint backlog
+  // console.log(projectId, storyId);
+  this.router.navigateByUrl('/projectDashboard/' + projectId + '/sprint/' + 1 + '/story/' + storyId + '/showTask');
+
+    // console.log(id);
+};
 
 }

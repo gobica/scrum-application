@@ -37,6 +37,10 @@ import { AddSprintDialogComponent } from './components/add-sprint-dialog/add-spr
 import { AddTaskComponent } from './components/add-task/add-task.component'
 import { ShowTaskComponent } from "./components/show-task/show-task.component";
 import { DialogCompletedTaskComponent } from "./components/show-task/dialog-completed-task.component";
+import { DialogUncompletedTaskComponent } from "./components/show-task/dialog-uncompleted-task.component";
+import { DialogAcceptTaskComponent } from "./components/show-task/dialog-accept-task.component";
+import { DialogGiveupTaskComponent } from "./components/show-task/dialog-giveup-task.component";
+import { DialogRedirectTaskComponent } from "./components/show-task/dialog-redirect-task.component";
 import { ResetByMailComponent } from "./components/reset-password/reset-by-mail.component";
 import { NewPasswordComponent } from "./components/reset-password/new-password.component";
 import { AddUserStoryComponent } from './components/add-user-story/add-user-story.component'
@@ -62,6 +66,10 @@ import { AddUserStoryComponent } from './components/add-user-story/add-user-stor
     AddTaskComponent,
     ShowTaskComponent,
     DialogCompletedTaskComponent,
+    DialogUncompletedTaskComponent,
+    DialogAcceptTaskComponent,
+    DialogGiveupTaskComponent,
+    DialogRedirectTaskComponent,
     ResetByMailComponent,
     NewPasswordComponent,
     AddUserStoryComponent

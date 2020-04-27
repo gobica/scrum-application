@@ -35,7 +35,7 @@ export class ShowProjectComponent implements OnInit {
      // if (this.authenticationService.currentUserValueFromToken.globalRole == 'user') {
      //  this.router.navigate(['/']);
      // }
-    console.log(this.trenutniUporabnik);
+    // console.log(this.trenutniUporabnik);
   }
 
   ngOnInit(): void {
