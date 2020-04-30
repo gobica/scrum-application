@@ -9,48 +9,62 @@
       <mat-icon class="example-tab-icon">assignment</mat-icon>
       Product Backlog
     </ng-template>
-    <div *ngIf=  " trenutniProjekt ">    
+    <div *ngIf=  " trenutniProjekt ">
+      <br>
      
 
       <button *ngIf =" authenticationService.currentUserValueFromToken.username == trenutniProjekt.productOwner.username || trenutniProjekt.scrumMaster.username === authenticationService.currentUserValueFromToken.username" 
-      mat-stroked-button color="accent" (click)="openStoryDialog();" >Add User Story</button> 
+      mat-stroked-button color="accent" (click)="openStoryDialog();" fxLayout="row" class="half-width-right">Add User Story</button>
+
+      <mat-form-field fxLayout="row" class="half-width-left">
+          <mat-label>Show category</mat-label>
+
+          <mat-select matNativeControl [(value)]="selectedStories" >
+            <mat-option value="all">All stories</mat-option>
+            <mat-option value="finished">Finished stories</mat-option>
+            <mat-option value="assigned">Assigned stories</mat-option>
+            <mat-option value="unassigned">Unassigned stories</mat-option>
+          </mat-select>
+        </mat-form-field>
       <br>
     </div>
 
-  
     <div *ngFor="let story of stories; let i = index" class="panel panel-default" >
-      <div id = "story {{i}}" fxLayout="row" >
-        <div class="login-wrapper show-story-wrapper" fxLayout="row" flex>
-          <mat-card class="box-story-{{story.priorityColor}}" >
-            <mat-card-header>
-              <mat-card-title>Story {{i+1}}: {{story.name}}</mat-card-title>
-            </mat-card-header>
-            <mat-card-content>
-              <ul>
-                <!--<li>name : {{story.name}}</li>-->
-                <li>Description : {{story.description}}</li>
-                <li>Acceptance tests : {{story.acceptanceTests}}</li>
-                <li>Priority : {{story.priority}}</li>
-                <li>Business value : {{story.businessValue}}</li>
-                <li>Size : {{story.sizePts}}</li>
+      <div *ngIf="selectedStories === 'all' || selectedStories === story.category">
+        <div id = "story {{i}}" fxLayout="row" >
+          <div class="login-wrapper show-story-wrapper" fxLayout="row" flex>
+            <mat-card class="box-story-{{story.priorityColor}}" >
+              <mat-card-header>
+                <mat-card-title>Story {{story.index}}: {{story.name}} </mat-card-title>
+                {{story.priority}}
+                <br><br>
+              </mat-card-header>
+              <mat-card-content>
+                <ul>
+                  <!--<li>name : {{story.name}}</li>-->
+                  <h3><u>Description:</u></h3><p>{{story.description}}</p>
+                  <h3><u>Acceptance tests:</u></h3><p class="acceptance-tests">{{story.acceptanceTests}}</p>
+                  <h3><u>Business value:</u> {{story.businessValue}}</h3>
+                  <h3><u>Size:</u> {{story.sizePts}}</h3>
 
 
-              </ul>
-              <!--<p>{{trenutniProjekt.id}}</p>-->
-              <!--<p>{{story.id}}</p>-->
-              <!--Bo moralo it v sprint backlog!!!  TODO: dodat sprintId in menjat lokacijo v sprint backlog-->
-              <div *ngIf="globalnaUloga == 'admin' || trenutniProjekt.scrumMaster.username === trenutniUporabnik; else sicer">
-                <button mat-stroked-button color="accent"  (click)="btnShowStory(trenutniProjekt.id, story.id);">Show tasks</button>
-              </div>
-              <ng-template #sicer>
-                <div *ngFor="let member of trenutniProjekt.users; let i=index">
-                  <div *ngIf="member.username === trenutniUporabnik">
-                    <button mat-stroked-button color="accent"  (click)="btnShowStory(trenutniProjekt.id, story.id);">Show tasks</button>
-                  </div>
+                </ul>
+                <!--<p>{{trenutniProjekt.id}}</p>-->
+                <!--<p>{{story.id}}</p>-->
+                <!--Bo moralo it v sprint backlog!!!  TODO: dodat sprintId in menjat lokacijo v sprint backlog-->
+                <div *ngIf="globalnaUloga == 'admin' || trenutniProjekt.scrumMaster.username === trenutniUporabnik; else sicer">
+                  <button mat-stroked-button color="accent"  (click)="btnShowStory(trenutniProjekt.id, story.id);">Show tasks</button>
                 </div>
-              </ng-template>
-            </mat-card-content>
-          </mat-card>
+                <ng-template #sicer>
+                  <div *ngFor="let member of trenutniProjekt.users; let i=index">
+                    <div *ngIf="member.username === trenutniUporabnik">
+                      <button mat-stroked-button color="accent"  (click)="btnShowStory(trenutniProjekt.id, story.id);">Show tasks</button>
+                    </div>
+                  </div>
+                </ng-template>
+              </mat-card-content>
+            </mat-card>
+          </div>
         </div>
       </div>
     </div>

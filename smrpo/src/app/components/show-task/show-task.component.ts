@@ -171,7 +171,7 @@ export class ShowTaskComponent implements OnInit {
     await this.taskService.getAllTasksOfStory(this.projektID, this.sprintID, this.zgodbaID).pipe(first()) // vrne vse naloge
     .subscribe(
       data => {
-          console.log(data);
+          // console.log(data);
           this.allTasks = data;
           this.allTasks.forEach(t => {
             this.allUsers.forEach(u => {
@@ -184,14 +184,14 @@ export class ShowTaskComponent implements OnInit {
           });
           // console.log(this.allProjects);
           this.zgodbaIme = this.allStories.find(x => {
-            console.log(x);
-            console.log(this.zgodbaID);
+            // console.log(x);
+            // console.log(this.zgodbaID);
             if(x.id === parseInt(this.zgodbaID)){
               return x;
             }
           });
           this.zgodbaIme = this.zgodbaIme.name;
-          console.log("---"+this.zgodbaIme);
+          // console.log("---"+this.zgodbaIme);
           return data;
       },
       error => {
@@ -201,6 +201,16 @@ export class ShowTaskComponent implements OnInit {
             this.alertService.error(error);
           }
           this.loading = false;
+          // console.log(this.allProjects);
+          this.zgodbaIme = this.allStories.find(x => {
+            // console.log(x);
+            // console.log(this.zgodbaID);
+            if(x.id === parseInt(this.zgodbaID)){
+              return x;
+            }
+          });
+          this.zgodbaIme = this.zgodbaIme.name;
+          // console.log("---"+this.zgodbaIme);
       }
     );
   }

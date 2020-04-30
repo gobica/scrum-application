@@ -2,6 +2,7 @@ import { Component, OnInit } from '@angular/core';
 import {MatDialog, MatDialogConfig, MAT_DIALOG_DATA} from '@angular/material/dialog';
 import { AddSprintDialogComponent } from '../add-sprint-dialog/add-sprint-dialog.component';
 import { AddUserStoryComponent } from '../add-user-story/add-user-story.component';
+import { AlertService } from '../../services/alert.service';
 
 import { Router, ActivatedRoute } from '@angular/router';
 import { SprintService } from  '../../services/sprint.service';
@@ -19,6 +20,8 @@ export class ProjectDashboardComponent implements OnInit {
   projektID;
   sprints = [];
   stories = [];
+
+  selectedStories = 'all';
 
   //TODO: premakni v sprintBacklog
   trenutniUporabnik = this.authenticationService.currentUserValueFromToken.username;
@@ -41,6 +44,7 @@ export class ProjectDashboardComponent implements OnInit {
     public authenticationService: AuthenticationService,  
     private projectService: ProjectService,
     private router: Router,
+    private alertService: AlertService,
     ) {
     
   }
@@ -60,6 +64,7 @@ export class ProjectDashboardComponent implements OnInit {
   }
 
   openSprintDialog() {
+    this.alertService.clear();
 
     const dialogConfigSprint = new MatDialogConfig();
     dialogConfigSprint.disableClose = true;
@@ -73,7 +78,7 @@ export class ProjectDashboardComponent implements OnInit {
     //this.dialog.open(AddSprintDialogComponent, dialogConfig);
     const dialogRefSprint = this.dialogSprint.open(AddSprintDialogComponent, dialogConfigSprint);
     dialogRefSprint.afterClosed().subscribe(
-        data => {console.log("Dialog output:", data)
+        data => {console.log("Dialog output:", data);
         this.loadAllSprints();
     }
     );    
@@ -81,6 +86,7 @@ export class ProjectDashboardComponent implements OnInit {
 
 
 openStoryDialog() {
+  this.alertService.clear();
 
   const dialogConfigStory = new MatDialogConfig();
   dialogConfigStory.disableClose = true;
@@ -102,7 +108,7 @@ openStoryDialog() {
 
   const dialogRefStory = this.dialogStory.open(AddUserStoryComponent, dialogConfigStory);
   dialogRefStory.afterClosed().subscribe(
-      data => {console.log("Dialog output:", data)
+      data => {console.log("Dialog output:", data);
       this.loadAllStories() 
   }
   );    
@@ -118,21 +124,31 @@ private loadAllStories() {
       .subscribe(stories => {
         this.stories = stories;
         // console.log(stories);
+        let index = 1;
         this.stories.forEach(s => {
           if(s.priority === "must have"){
             s.priorityColor = "high";
+            s.category = "finished"; //TODO: zbrisat
           }
           else if(s.priority === "should have"){
             s.priorityColor = "average";
+            s.category = "assigned"; //TODO: zbrisat
           }
           else if(s.priority === "could have"){
             s.priorityColor = "low";
+            s.category = "unassigned"; //TODO: zbrisat
           }
           else {
             s.priorityColor = "";
           }
+          s.acceptanceTests = "# "+s.acceptanceTests;
+          s.acceptanceTests = s.acceptanceTests.replace(/\n/g, "\n# ");
+          s.index = index;
+          index += 1;
         });
+        this.stories = this.stories.sort((a, b) => (a.businessValue < b.businessValue) ? 1 : -1);
       });
+
 
 }
 
@@ -163,7 +179,7 @@ public  isCurrentSprint(sprint) {
   
 if ( startDate < currentDate && currentDate < endDate) 
   {
-    console.log("TRENUTNISPRINT")
+    console.log("TRENUTNISPRINT");
    return true; 
   }
 
@@ -173,6 +189,7 @@ if ( startDate < currentDate && currentDate < endDate)
 
 public btnShowStory = function(projectId, storyId) { // bo moralo it v sprint backlog!!!!!!!!!!!!!!!!! //TODO: mora it v sprint backlog
   // console.log(projectId, storyId);
+  this.alertService.clear();
   this.router.navigateByUrl('/projectDashboard/' + projectId + '/sprint/' + 1 + '/story/' + storyId + '/showTask');
 
     // console.log(id);

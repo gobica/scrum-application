@@ -1,3 +1,5 @@
 .alert_massage {
-    padding-top: 5vh;
+  padding-top: 5vh;
+  width: 50vw !important;
+  left: -30vw !important;
 }

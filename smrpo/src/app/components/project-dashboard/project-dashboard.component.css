@@ -64,3 +64,18 @@
   position: relative;
   display: table-cell;
 }
+
+.half-width-right {
+	width: 45%;
+  padding-right: 6px;
+  margin-right: 3%;
+}
+.half-width-left {
+	width: 45%;
+  /*padding-right: 6px;*/
+  margin-left: 3%;
+}
+
+.acceptance-tests{
+  white-space:pre-wrap;
+}

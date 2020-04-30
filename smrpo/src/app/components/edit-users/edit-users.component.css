@@ -1,3 +1,7 @@
 .deletedUser {
   opacity: 0.7;
 }
+
+.editUsers {
+  margin-left: -100px;
+}

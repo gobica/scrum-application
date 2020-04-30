@@ -1,28 +1,47 @@
 @import url("//netdna.bootstrapcdn.com/bootstrap/3.0.0/css/bootstrap-glyphicons.css");
 
 .mat-card {
-	padding: 40px 50px 50px;
+	padding: 40px 50px 50px !important;
 }
 
 .task-wrapper {
+  width: unset !important;
   width: 90vw !important;
   margin:unset !important;
-  position: unset !important;
+  float: none;
   position: relative !important;
   size: unset !important;
   margin-top: 5px !important;
   margin-left: -25vw !important;
   margin-right: 5vw !important;
   max-width: 100% !important;
-  min-width: 40%;
-  display: table;
+  min-width: 40% !important;
+	justify-content: center;
+	align-items: center;
+  display: table !important;
+  /*height: auto;*/
+
+  /*width: 90vw !important;*/
+  /*margin:unset !important;*/
+  /*position: unset !important;*/
+  /*position: relative !important;*/
+  /*size: unset !important;*/
+  /*margin-top: 5px !important;*/
+  /*margin-left: -25vw !important;*/
+  /*!*margin-right: 5vw !important;*!*/
+  /*max-width: 100% !important;*/
+  /*min-width: 40%;*/
+  /*display: table;*/
+  /*justify-content: center;*/
+	/*align-items: center;*/
+
 }
 
 .box-task {
 	align-self: flex-start;
 	opacity: 50;
 	/*padding: 60px 50px 40px 50px;*/
-	width: 100%;
+	width: 100%!important;
 	background-color: #ffffff;
 	border-radius: 5px;
 	max-width: 100%!important;
@@ -34,7 +53,7 @@
 }
 
 .panel .panel-default{
-  width: 100%;
+  width: 100% !important;
   display: table;
   table-layout: fixed;
 }
@@ -181,6 +200,9 @@
 .title-tasks {
 	font-size: 30px;
 	margin: 20px;
+  margin-left: -550px;
   align-self: center;
   text-align:center;
+  justify-content: center;
+	align-items: center;
 }

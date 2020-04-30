@@ -80,4 +80,7 @@ btn-margin {
   margin: 10px;
 }
 
+.btn-block-newTask {
+	width: 30%  !important;
+}
 
