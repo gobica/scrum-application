@@ -213,16 +213,6 @@ a {
 	padding: 40px 70px 50px;
 }
 
-.mat-stroked-button {
-	border: 1px solid currentColor;
-	background: #23286d;
-	width: 50%;
-	padding: 100px;
-
-
-	
-}
-
 .login-wrapper .mat-form-field-appearance-legacy .mat-form-field-infix {
 	padding: 0.8375em 0;
 	color: black
@@ -251,8 +241,4 @@ a {
 }
 .mat-tab-group {
 	width: 100%;
-
 }
-mat-form-field {
-	width: 100%;
-  }

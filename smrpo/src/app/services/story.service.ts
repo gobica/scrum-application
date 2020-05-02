@@ -22,6 +22,11 @@ export class StoryService {
   getAll(idProject: number) {
     return this.httpClient.get<Story[]>(this.projectUrl + `/${idProject}` + '/story');
   }
+
+  updateStory(story: Story, idProject: number) {
+    var idStory = story.id;
+    return this.httpClient.put(this.projectUrl + `/${idProject}`+ '/story' +`/${idStory}`, story);
+  }
   
 }
 

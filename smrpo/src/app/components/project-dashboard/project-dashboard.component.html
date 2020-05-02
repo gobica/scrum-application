@@ -5,17 +5,15 @@
 
   
   <mat-tab>
+
+
     <ng-template mat-tab-label>
       <mat-icon class="example-tab-icon">assignment</mat-icon>
       Product Backlog
     </ng-template>
-    <div *ngIf=  " trenutniProjekt ">
-      <br>
-     
 
-      <button *ngIf =" authenticationService.currentUserValueFromToken.username == trenutniProjekt.productOwner.username || trenutniProjekt.scrumMaster.username === authenticationService.currentUserValueFromToken.username" 
-      mat-stroked-button color="accent" (click)="openStoryDialog();" fxLayout="row" class="half-width-right">Add User Story</button>
 
+<!--
       <mat-form-field fxLayout="row" class="half-width-left">
           <mat-label>Show category</mat-label>
 
@@ -26,13 +24,172 @@
             <mat-option value="unassigned">Unassigned stories</mat-option>
           </mat-select>
         </mat-form-field>
-      <br>
+      -->
+      
+    
+    <div class="container-fluid">
+    <div class="row" >
+      
+      <div class="col-sm">
+        <mat-toolbar>
+          <span>Unfinished</span>
+      
+        <span class="example-fill-remaining-space"></span>
+
+        <span  *ngIf=  " trenutniProjekt ">
+          <button *ngIf =" authenticationService.currentUserValueFromToken.username == trenutniProjekt.productOwner.username || trenutniProjekt.scrumMaster.username === authenticationService.currentUserValueFromToken.username" 
+          mat-stroked-button color="primary" (click)="openStoryDialog();">Add Story
+          <mat-icon>add</mat-icon>
+        </button>
+     </span>
+        </mat-toolbar>  
+    
+        <div *ngFor="let story of stories; let i = index"  >
+          <div *ngIf="'assigned' === story.category || 'unassigned' === story.category">
+            <div id = "story {{i}}" >
+                <mat-card >
+
+
+                  <mat-card-header>
+                    <mat-card-title>
+                      Story {{story.index}}: {{story.name}} 
+                    </mat-card-title>
+                    <br>
+                  </mat-card-header>
+                  <mat-card-content>
+
+                    <ul>
+                      <!--<li>name : {{story.name}}</li>-->
+                      <mat-chip-list >
+                      <mat-chip color={{story.priorityColor}} selected>{{story.priority}}</mat-chip>
+                    </mat-chip-list>
+
+                      <h3><u>Description:</u></h3><p>{{story.description}}</p>
+                      <h3><u>Acceptance tests:</u></h3><p class="acceptance-tests">{{story.acceptanceTests}}</p>
+                      <h3><u>Business value:</u> {{story.businessValue}}</h3>
+
+                      <div class="d-flex flex-row" *ngIf="!isSizeEnabled">
+                      <h3    ><u>Size:</u> {{story.sizePts}}</h3>
+                      <button  mat-icon-button	 color="primary" (click)="isSizeEnabled=true" >
+                        <mat-icon>create</mat-icon>
+                      </button>
+                    </div>
+                   
+                    <!-- SPREMINJANJE ČASOVNE ZAHTEVNOSTI STORYA-->
+                    <div class="d-flex flex-row" *ngIf="isSizeEnabled">
+                    <form [formGroup]="formSetSize" class="example-form">
+                      <mat-form-field class="example-full-width ">
+                        <div class="form-group">
+                            <input    matInput placeholder={{story.sizePts}} type="number" formControlName="sizePts" [ngClass]="{ 'is-invalid': submittedSize && f.sizePts.errors }" />
+                            <div *ngIf="submittedSize && f.sizePts.errors" class="invalid-feedback">
+                                <div *ngIf="f.sizePts.errors.required">Username is required</div>
+                            </div>
+                        </div>
+                      </mat-form-field>
+                      <button    (click)="isSizeEnabled=false"  (click)="SubmitSizePts(story)"  mat-flat-button color="accent">Save</button>
+                      <button   (click)="isSizeEnabled=false" mat-flat-button color="warn">Cancel</button>
+
+                    </form>
+                  </div >
+          
+                    </ul>
+                    <!--<p>{{trenutniProjekt.id}}</p>-->
+                    <!--<p>{{story.id}}</p>-->
+                    <!--Bo moralo it v sprint backlog!!!  TODO: dodat sprintId in menjat lokacijo v sprint backlog-->
+                    <!--<div *ngIf="globalnaUloga == 'admin' || trenutniProjekt.scrumMaster.username === trenutniUporabnik; else sicer">
+                      <button mat-stroked-button color="accent"  (click)="btnShowStory(trenutniProjekt.id, story.id);">Show tasks</button>
+                    </div>
+                    <ng-template #sicer>
+                      <div *ngFor="let member of trenutniProjekt.users; let i=index">
+                        <div *ngIf="member.username === trenutniUporabnik">
+                          <button mat-stroked-button color="accent"  (click)="btnShowStory(trenutniProjekt.id, story.id);">Show tasks</button>
+                        </div>
+                      </div>
+                    </ng-template>
+                  -->
+                      <!--ADD TO CURRENT SPRINT-->
+                      <br>
+                  <button *ngIf =" authenticationService.currentUserValueFromToken.username == trenutniProjekt.productOwner.username || trenutniProjekt.scrumMaster.username === authenticationService.currentUserValueFromToken.username" 
+                  mat-stroked-button color="primary" (click)="addStoryToSprint(story.id);"   >Add to sprint 
+                  <mat-icon>done</mat-icon>
+                </button>
+                  </mat-card-content>
+
+
+                
+
+
+
+                </mat-card>
+                <br>
+            </div>
+          </div>
+        </div>
+     </div>
+     <div class="col-sm">
+      <mat-toolbar>
+        <span>Finished</span>
+      </mat-toolbar>  
+      <div *ngFor="let story of stories; let i = index"  >
+        <div *ngIf="'finished' === story.category">
+          <div id = "story {{i}}" >
+              <mat-card >
+                <mat-card-header>
+                  <mat-card-title>Story {{story.index}}: {{story.name}} </mat-card-title>
+               
+                </mat-card-header>
+                <mat-card-content>
+
+                  <ul>
+                    <!--<li>name : {{story.name}}</li>-->
+                    <mat-chip-list >
+                    <mat-chip color={{story.priorityColor}} selected>{{story.priority}}</mat-chip>
+                  </mat-chip-list>
+
+                    <h3><u>Description:</u></h3><p>{{story.description}}</p>
+                    <h3><u>Acceptance tests:</u></h3><p class="acceptance-tests">{{story.acceptanceTests}}</p>
+                    <h3><u>Business value:</u> {{story.businessValue}}</h3>
+                    <h3><u>Size:</u> {{story.sizePts}}</h3>
+                  </ul>
+                  <!--<p>{{trenutniProjekt.id}}</p>-->
+                  <!--<p>{{story.id}}</p>-->
+                  <!--Bo moralo it v sprint backlog!!!  TODO: dodat sprintId in menjat lokacijo v sprint backlog-->
+                 
+                 <!-- <div *ngIf="globalnaUloga == 'admin' || trenutniProjekt.scrumMaster.username === trenutniUporabnik; else sicer">
+                    <button mat-stroked-button color="accent"  (click)="btnShowStory(trenutniProjekt.id, story.id);">Show tasks</button>
+                  </div>
+                  <ng-template #sicer>
+                    <div *ngFor="let member of trenutniProjekt.users; let i=index">
+                      <div *ngIf="member.username === trenutniUporabnik">
+                        <button mat-stroked-button color="accent"  (click)="btnShowStory(trenutniProjekt.id, story.id);">Show tasks</button>
+                      </div>
+                    </div>
+                  
+
+
+
+                  </ng-template>
+                -->
+                </mat-card-content>
+              </mat-card>
+          </div>
+        </div>
+      </div>
     </div>
 
+
+    </div>
+  </div>
+
+
+
+
+
+<!--
     <div *ngFor="let story of stories; let i = index" class="panel panel-default" >
       <div *ngIf="selectedStories === 'all' || selectedStories === story.category">
         <div id = "story {{i}}" fxLayout="row" >
-          <div class="login-wrapper show-story-wrapper" fxLayout="row" flex>
+          <div class="show-story-wrapper" fxLayout="row" flex>
             <mat-card class="box-story-{{story.priorityColor}}" >
               <mat-card-header>
                 <mat-card-title>Story {{story.index}}: {{story.name}} </mat-card-title>
@@ -41,7 +198,6 @@
               </mat-card-header>
               <mat-card-content>
                 <ul>
-                  <!--<li>name : {{story.name}}</li>-->
                   <h3><u>Description:</u></h3><p>{{story.description}}</p>
                   <h3><u>Acceptance tests:</u></h3><p class="acceptance-tests">{{story.acceptanceTests}}</p>
                   <h3><u>Business value:</u> {{story.businessValue}}</h3>
@@ -49,9 +205,7 @@
 
 
                 </ul>
-                <!--<p>{{trenutniProjekt.id}}</p>-->
-                <!--<p>{{story.id}}</p>-->
-                <!--Bo moralo it v sprint backlog!!!  TODO: dodat sprintId in menjat lokacijo v sprint backlog-->
+             
                 <div *ngIf="globalnaUloga == 'admin' || trenutniProjekt.scrumMaster.username === trenutniUporabnik; else sicer">
                   <button mat-stroked-button color="accent"  (click)="btnShowStory(trenutniProjekt.id, story.id);">Show tasks</button>
                 </div>
@@ -68,8 +222,30 @@
         </div>
       </div>
     </div>
+    -->      
+    
 
   </mat-tab>
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
 
 
     <mat-tab>
@@ -98,7 +274,54 @@
         <br>
         Velocity: {{sprint.velocity}}
       </p>
-        </div>
+      <div class="container-fluid">
+
+    <mat-grid-list cols="3"  > 
+
+      <div *ngFor="let story of stories; let i = index"  >
+      
+        <mat-grid-tile>
+              <mat-card class="full-width-mat" >
+                <mat-card-header>
+                  <mat-card-title>Story {{story.index}}: {{story.name}} </mat-card-title>
+               
+                </mat-card-header>
+                <mat-card-content>
+
+                  <ul>
+                    <!--<li>name : {{story.name}}</li>-->
+                    <mat-chip-list >
+                    <mat-chip color={{story.priorityColor}} selected>{{story.priority}}</mat-chip>
+                  </mat-chip-list>
+
+                    <h3><u>Description:</u></h3><p>{{story.description}}</p>
+                    <h3><u>Acceptance tests:</u></h3><p class="acceptance-tests">{{story.acceptanceTests}}</p>
+                    <h3><u>Business value:</u> {{story.businessValue}}</h3>
+
+
+  
+                  </ul>
+                  <!--<p>{{trenutniProjekt.id}}</p>-->
+                  <!--<p>{{story.id}}</p>-->
+                  <!--Bo moralo it v sprint backlog!!!  TODO: dodat sprintId in menjat lokacijo v sprint backlog-->
+                  <div *ngIf="globalnaUloga == 'admin' || trenutniProjekt.scrumMaster.username === trenutniUporabnik; else sicer">
+                    <button mat-stroked-button color="accent"  (click)="btnShowStory(trenutniProjekt.id, story.id);">Show tasks</button>
+                  </div>
+                  <ng-template #sicer>
+                    <div *ngFor="let member of trenutniProjekt.users; let i=index">
+                      <div *ngIf="member.username === trenutniUporabnik">
+                        <button mat-stroked-button color="accent"  (click)="btnShowStory(trenutniProjekt.id, story.id);">Show tasks</button>
+                      </div>
+                    </div>
+                  </ng-template>
+                </mat-card-content>
+              </mat-card>
+  
+        </mat-grid-tile>
+      </div>
+      </mat-grid-list>
+      </div>
+      </div>
     </mat-tab>
   
 
@@ -107,8 +330,7 @@
         <mat-icon class="example-tab-icon">thumb_up</mat-icon>
         Third
       </ng-template>
-  
-      Content 3
+    
     </mat-tab>
 
   </mat-tab-group>

@@ -3,6 +3,7 @@ import {MatDialog, MatDialogConfig, MAT_DIALOG_DATA} from '@angular/material/dia
 import { AddSprintDialogComponent } from '../add-sprint-dialog/add-sprint-dialog.component';
 import { AddUserStoryComponent } from '../add-user-story/add-user-story.component';
 import { AlertService } from '../../services/alert.service';
+import { Story } from '../../models/story'
 
 import { Router, ActivatedRoute } from '@angular/router';
 import { SprintService } from  '../../services/sprint.service';
@@ -10,6 +11,7 @@ import { first } from 'rxjs/operators';
 import {AuthenticationService} from "../../services/authentication.service";
 import { ProjectService } from '../../services/project.service';
 import { StoryService } from  '../../services/story.service';
+import { FormBuilder, FormGroup, Validators } from '@angular/forms';
 
 @Component({
   selector: 'app-project-dashboard',
@@ -17,9 +19,13 @@ import { StoryService } from  '../../services/story.service';
   styleUrls: ['./project-dashboard.component.css']
 })
 export class ProjectDashboardComponent implements OnInit {
+  formSetSize: FormGroup;
   projektID;
   sprints = [];
   stories = [];
+  submittedSize = false;
+  loading = false; 
+  isSizeEnabled = false; 
 
   selectedStories = 'all';
 
@@ -33,6 +39,8 @@ export class ProjectDashboardComponent implements OnInit {
 
 
   constructor(
+    private formBuilder: FormBuilder,
+
     //sprint dialog
     private dialogSprint: MatDialog,
     private sprintService: SprintService,
@@ -49,18 +57,20 @@ export class ProjectDashboardComponent implements OnInit {
     
   }
   ngOnInit(): void {
+
+    this.formSetSize = this.formBuilder.group({
+      sizePts: [,  Validators.min(0)]
+
+      }),
     //get project ID
     this.route.params.subscribe(params => {
       this.projektID = params.id;
-    });
-
+    }
+    );
     // get project by id
     this.getCurrentProject(this.projektID);
     this.loadAllSprints();
     this.loadAllStories();
-
-
-
   }
 
   openSprintDialog() {
@@ -127,15 +137,15 @@ private loadAllStories() {
         let index = 1;
         this.stories.forEach(s => {
           if(s.priority === "must have"){
-            s.priorityColor = "high";
+            s.priorityColor = "warn";
             s.category = "finished"; //TODO: zbrisat
           }
           else if(s.priority === "should have"){
-            s.priorityColor = "average";
+            s.priorityColor = "primary";
             s.category = "assigned"; //TODO: zbrisat
           }
           else if(s.priority === "could have"){
-            s.priorityColor = "low";
+            s.priorityColor = "primary";
             s.category = "unassigned"; //TODO: zbrisat
           }
           else {
@@ -164,6 +174,83 @@ public beautifySprints(date) {
 
 
 }
+
+
+
+
+public addStoryToSprint (idOfStory: number) {
+  // get project by id
+  var idSprint = this.getCurrentSprint().id;
+  console.log(idSprint);
+  this.sprintService.addStorytoSprint(this.projektID, idSprint, idOfStory )
+  .pipe(first())
+  .subscribe(
+      (data:any) => {
+
+          this.alertService.success('Story added to sprint successful', true);
+      },
+      error => {
+          console.log("eeror");
+
+          this.alertService.error(error);
+      });
+}
+
+private updateStoryAPI (story: Story) {
+  // get project by id
+  console.log("a sam pride?")
+  this.storyService.updateStory(story, this.projektID)
+  .pipe(first())
+  .subscribe(
+      (data:any) => {
+
+          this.alertService.success('Story Updated', true);
+      },
+      error => {
+          console.log("eeror");
+
+          this.alertService.error(error);
+      });
+}
+
+// ZGODBA ZA SUBBMITAT SIZE
+public SubmitSizePts (story: Story) {
+    this.submittedSize = true;
+
+    if (this.formSetSize.invalid) {
+      return;
+  }
+    // reset alerts on submit
+    this.alertService.clear();
+    story.sizePts = this.formSetSize.value.sizePts;
+
+    this.loading = true;
+    this.storyService.updateStory(story, this.projektID)
+        .pipe(first())
+        .subscribe(
+            (data:any) => {
+
+                this.alertService.success('Registration successful', true);
+                console.log("DATA", data);
+                
+            },
+            error => {
+                console.log("eeror");
+
+                this.alertService.error(error);
+                this.loading = false;
+            });
+}
+
+get f() { return this.formSetSize.controls; }
+
+//UPDATE STORY ------------------------------------- TO DO ----------------------
+
+
+
+
+
+
 private getCurrentProject (id: number) {
     // get project by id
     this.projectService.getProject(this.projektID)
@@ -186,6 +273,15 @@ if ( startDate < currentDate && currentDate < endDate)
  // else return false; 
 
   }
+
+public getCurrentSprint() {
+  for (var i = 0; i < this.sprints.length; i++) {
+    if (this.isCurrentSprint(this.sprints[i])) {
+      return this.sprints[i];
+    }
+  }
+  return null;
+}
 
 public btnShowStory = function(projectId, storyId) { // bo moralo it v sprint backlog!!!!!!!!!!!!!!!!! //TODO: mora it v sprint backlog
   // console.log(projectId, storyId);
