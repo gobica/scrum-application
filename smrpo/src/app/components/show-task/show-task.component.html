@@ -7,7 +7,7 @@
       </mat-card-header>
 
       <div *ngIf="allTasks.length > 0">
-        <!--TODO: ne birisat! rabi za zakljucevanje nalog-->
+
         <div class="checkbox "><b>Done</b></div>
 
         <div class="index-tag " ><b>#</b></div>
@@ -21,12 +21,12 @@
 
         <div *ngFor="let task of allTasks; let i=index" class="panel panel-default" >
 
-          <!--TODO: ne birisat! rabi za zakljucevanje nalog-->
+
           <!--<mat-checkbox [ngModel]="false" class="btn-check"></mat-checkbox>-->
 
-          <div *ngIf="task.check === false" class="checkbox" >
+          <div *ngIf="task.isReady === false" class="checkbox" >
             <div *ngIf="task.user === trenutniUporabnik">
-              <button class="btn-check" (click)="taskDone(i)" >
+              <button class="btn-check" (click)="taskDone(i, task.id)" >
                 <span class="glyphicon glyphicon-unchecked glyphicon-color">  </span>
               </button>
             </div>
@@ -36,9 +36,9 @@
               </button>
             </div>
           </div>
-          <div *ngIf="task.check === true" class="checkbox">
+          <div *ngIf="task.isReady === true" class="checkbox">
             <div *ngIf="task.user === trenutniUporabnik">
-              <button class="btn-check" (click)="taskNotDone(i)">
+              <button class="btn-check" (click)="taskNotDone(i, task.id)">
                 <span class="glyphicon glyphicon-check glyphicon-color">  </span>
               </button>
             </div>
@@ -91,7 +91,7 @@
 
           <div *ngIf="task.user === trenutniUporabnik" class="btn-right">
             <div *ngIf="task.userConfirmed === false">
-              <button mat-stroked-button color="accent" class="btn-right btn-margin" title='Accept the assignment' (click)="acceptTask(i)" >
+              <button mat-stroked-button color="accent" class="btn-right btn-margin" title='Accept the assignment' (click)="acceptTask(i, task.id)" >
                 <span class="mat-button-wrapper" class="glyphicon glyphicon-thumbs-up">  </span>
               </button>
             </div>
@@ -99,15 +99,15 @@
 
           <div *ngIf="task.user === trenutniUporabnik" class="btn-right">
             <div *ngIf="task.userConfirmed === true">
-              <button mat-stroked-button color="accent" class="btn-right btn-margin" title='Give up the task' (click)="giveUpTask(i)" >
+              <button mat-stroked-button color="accent" class="btn-right btn-margin" title='Give up the task' (click)="giveUpTask(i, task.id)" disabled>
                 <span class="mat-button-wrapper" class="glyphicon glyphicon-thumbs-down">  </span>
               </button>
             </div>
           </div>
 
-          <div *ngIf="task.user != trenutniUporabnik" class="btn-right">
+          <div *ngIf="task.user != trenutniUporabnik && jeTeamMember === true" class="btn-right">
             <div *ngIf="task.userConfirmed === false">
-              <button mat-stroked-button color="accent" class="btn-right btn-margin" title='Redirect to yourself the unaccepted task' (click)="redirectTask(i)" >
+              <button mat-stroked-button color="accent" class="btn-right btn-margin" title='Redirect to yourself the unaccepted task' (click)="redirectTask(i, task.id)" >
                 <span class="mat-button-wrapper" class="glyphicon glyphicon-bell">  </span>
               </button>
             </div>
@@ -115,9 +115,9 @@
 
           <!--blank space-->
           <div *ngIf="task.user != trenutniUporabnik" class="btn-right">
-            <div *ngIf="task.userConfirmed === true">
+            <div *ngIf="task.userConfirmed === true || jeTeamMember === false">
               <button mat-stroked-button class="white-block btn-right btn-margin" disabled>
-                <span class="mat-button-wrapper" class="glyphicon glyphicon-thumbs-down">  </span>
+                <span class="mat-button-wrapper" class="glyphicon glyphicon-bell">  </span>
               </button>
             </div>
           </div>

@@ -8,7 +8,8 @@ import {group} from '@angular/animations';
 import {ActivatedRoute, Router} from '@angular/router';
 import { AuthenticationService } from  '../../services/authentication.service';
 import { ProjectService } from '../../services/project.service';
-import {UserService} from '../../services/user.service';
+import { UserService } from '../../services/user.service';
+import { SprintService } from '../../services/sprint.service';
 
 
 import {FormControl} from '@angular/forms';
@@ -33,7 +34,10 @@ export class AddTaskComponent implements OnInit {
   project;
   projectUsers = [];
   allProjects = [];
+  sprint;
+  allSprints = [];
   errors = [];
+  maxHour;
 
 
   userNameTeamMember: string[] = [];
@@ -50,6 +54,7 @@ export class AddTaskComponent implements OnInit {
     private authenticationService: AuthenticationService,
     private userService: UserService,
     private projectService: ProjectService,
+    private sprintService: SprintService,
     private taskService: TaskService,
     private route: ActivatedRoute,
 
@@ -78,8 +83,10 @@ export class AddTaskComponent implements OnInit {
       this.projektID = params.projectId; //projectDashboard/:projectId/sprint/:sprintId/story/:storyId/showTask
       this.sprintID = params.sprintId;
       this.zgodbaID = params.storyId;
+      this.getAllSprints();
       this.getAllProjectUsers();
       });
+
 
   }
 
@@ -157,6 +164,25 @@ export class AddTaskComponent implements OnInit {
       }
     );
     // return projects;
+  }
+
+  getAllSprints(){
+    this.sprintService.getAll(this.projektID).pipe(first())
+    .subscribe(
+      data => {
+          // console.log(idSprint);
+          // console.log(data);
+          this.allSprints = data;
+          this.maxHour =  this.findSprintAndReturnMaxHour();
+          return data;
+      },
+      error => {
+          // console.log(idSprint);
+          this.alertService.error(error);
+          this.loading = false;
+      }
+    );
+
   }
 
   initTasks() {
@@ -263,6 +289,27 @@ export class AddTaskComponent implements OnInit {
     return jeVBazi;
   }
 
+  findSprintAndReturnMaxHour(){
+    let sprint = null;
+    this.allSprints.forEach(s => {
+      if(s.id == this.sprintID) {
+        sprint = s;
+      }
+    });
+    if(sprint){
+      let start = new Date(sprint.startDate);
+      let end = new Date(sprint.endDate);
+      let razlika = end.valueOf()-start.valueOf();
+      razlika = razlika / (1000 * 3600 * 24);
+      let delovnihDni = razlika + 1;
+      let delovneUre = delovnihDni * 8; // ce delas osem ur na dan
+      // console.log(delovneUre);
+      return delovneUre
+
+    }
+    return null
+  }
+
   onSubmit() {
     this.submitted = true;
     // reset alerts on submit
@@ -292,22 +339,38 @@ export class AddTaskComponent implements OnInit {
             if (correctSize === 0 && size > 0.4) {
               // console.log(size);
               this.errors[taskIndex-1] = '';
-              const user = task.memberName;
-              if(user !== undefined && user !== '' && user !== null) {
-                const jeVBazi = this.isIn(this.allUsers, user);
-                if(jeVBazi === true) {
-                   // console.log(user);
-                  this.errors[taskIndex-1] = '';
-                  const jeVProjektu = this.isIn(this.projectUsers, user);
-                  if(jeVProjektu === true) {
-                     // console.log(user);
-                    this.errors[taskIndex-1] = '';
+              // const maxUr = this.findSprintAndReturnMaxHour();
+              if (size <= this.maxHour) {
+                this.errors[taskIndex-1] = '';
+                const user = task.memberName;
+                if (user !== undefined && user !== '' && user !== null) {
+                  const jeVBazi = this.isIn(this.allUsers, user);
+                  if (jeVBazi === true) {
+                    // console.log(user);
+                    this.errors[taskIndex - 1] = '';
+                    const jeVProjektu = this.isIn(this.projectUsers, user);
+                    if (jeVProjektu === true) {
+                      // console.log(user);
+                      this.errors[taskIndex - 1] = '';
+                    } else {
+                      this.alertService.clear();
+                      this.alertService.error('The team member of the ' + taskIndex + '. task is not in the project.');
+                      this.errors[taskIndex - 1] = 'Not in the project';
+                      let tmp = taskIndex;
+                      while (tmp < dolzina) {
+                        this.errors[tmp] = '';
+                        tmp += 1;
+                      }
+                      this.submitted = false;
+                      this.loading = false;
+                      correctForm = false;
+                    }
                   } else {
                     this.alertService.clear();
-                    this.alertService.error('The team member of the ' + taskIndex + '. task is not in the project.');
-                    this.errors[taskIndex-1] = 'Not in the project';
+                    this.alertService.error('The team member of the ' + taskIndex + '. task is not in the database.');
+                    this.errors[taskIndex - 1] = 'Not in the database';
                     let tmp = taskIndex;
-                    while(tmp < dolzina) {
+                    while (tmp < dolzina) {
                       this.errors[tmp] = '';
                       tmp += 1;
                     }
@@ -315,23 +378,23 @@ export class AddTaskComponent implements OnInit {
                     this.loading = false;
                     correctForm = false;
                   }
-                } else {
-                  this.alertService.clear();
-                  this.alertService.error('The team member of the ' + taskIndex + '. task is not in the database.');
-                  this.errors[taskIndex-1] = 'Not in the database';
-                  let tmp = taskIndex;
-                  while(tmp < dolzina) {
-                    this.errors[tmp] = '';
-                    tmp += 1;
-                  }
-                  this.submitted = false;
-                  this.loading = false;
-                  correctForm = false;
                 }
+              } else {
+                this.alertService.clear();
+                this.alertService.error('The size of the ' + taskIndex + '. task doesn\'t have the right format. Size must be lower than sprint size.');
+                this.errors[taskIndex-1] = 'Wrong format';
+                let tmp = taskIndex;
+                while(tmp < dolzina) {
+                  this.errors[tmp] = '';
+                  tmp += 1;
+                }
+                this.submitted = false;
+                this.loading = false;
+                correctForm = false;
               }
             } else {
               this.alertService.clear();
-              this.alertService.error('The size of the ' + taskIndex + '. task doesn\'t have the right format. Size must be greater than 0.5 and decimal must be 0 or 5.');
+              this.alertService.error('The size of the ' + taskIndex + '. task doesn\'t have the right format. Size must be greater than 0.4 and decimal must be 0 or 5.');
               this.errors[taskIndex-1] = 'Wrong format';
               let tmp = taskIndex;
               while(tmp < dolzina) {
@@ -397,7 +460,7 @@ export class AddTaskComponent implements OnInit {
           this.taskService.addTasksToStory(this.projektID, this.sprintID, this.zgodbaID, task).pipe(first()) // vrne vse naloge
           .subscribe(
             data => {
-                console.log(data);
+                // console.log(data);
                 // this.allTasks = data;
                 return data;
             },

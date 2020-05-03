@@ -6,13 +6,13 @@
 
 .task-wrapper {
   width: unset !important;
-  width: 90vw !important;
+  width: 80vw !important;
   margin:unset !important;
   float: none;
   position: relative !important;
   size: unset !important;
   margin-top: 5px !important;
-  margin-left: -25vw !important;
+  /*margin-left: -25vw !important;*/
   margin-right: 5vw !important;
   max-width: 100% !important;
   min-width: 40% !important;
@@ -193,8 +193,10 @@
 }
 
 .white-block {
-  color:white;
+  color: white !important;
   background: white;
+  border-color: white;
+  text-decoration-color: white;
 }
 
 .title-tasks {
