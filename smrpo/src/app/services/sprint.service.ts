@@ -20,6 +20,7 @@ export class SprintService {
 
    // TLE ČE BO KDO KLICU APIJE NISO PREVERJEN 
   addSprint (sprint: Sprint, idProject: number) {
+    console.log("sprint", sprint);
     return this.httpClient.post(this.projectUrl + `/${idProject}` + '/sprint', sprint);
   }
 

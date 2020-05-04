@@ -144,6 +144,7 @@ private loadAllStories() {
   this.storyService.getAll(this.projektID)
       .pipe(first())
       .subscribe(stories => {
+
         this.stories = stories;
         for (var i = 0; i<stories.length; i++) {
           this.isSizeEnabled.push(false);
@@ -187,24 +188,41 @@ public beautifySprints(date) {
   var currentDate  = new Date(date);
   var izpis = currentDate.getDate() + ". " + (currentDate.getMonth() + 1) + ". " +  currentDate.getFullYear(); 
   return izpis;
+}
 
+public isStoryInCurrentSprint(story) {
+  if(this.getCurrentSprint()) {
+   // console.log("ternnutni sprint", this.getCurrentSprint());
+    for (var i = 0; i < this.getCurrentSprint().stories.length; i++) {
+      if (story.id == this.getCurrentSprint().stories[i].id) { 
+        return true;      }
+    }
+  }      
+  return false; 
+
+  
 
 }
 
 
 
-
-public addStoryToSprint (idOfStory: number) {
+public addStoryToSprint (story: Story) {
+  console.log(story);
   // get project by id
-  var idSprint = this.getCurrentSprint().id;
-  console.log(idSprint);
-  this.sprintService.addStorytoSprint(this.projektID, idSprint, idOfStory )
+  var sprint = this.getCurrentSprint();
+  var idSprint = sprint.id;
+
+  this.sprintService.addStorytoSprint(this.projektID, idSprint, story.id )
   .pipe(first())
   .subscribe(
       (data:any) => {
+      //  this.loadAllSprints();
+        this.loadAllStories();
         this.loadAllSprints();
 
+        console.log(this.getCurrentSprint());
           this.alertService.success('Story added to sprint successful', true);
+          
       },
       error => {
           console.log("error");
@@ -212,6 +230,9 @@ public addStoryToSprint (idOfStory: number) {
           this.alertService.error(error);
       });
 }
+
+
+
 
 private updateStoryAPI (story: Story) {
   // get project by id
@@ -237,9 +258,6 @@ public SubmitSizePts (story: Story, i) {
     if (this.formSetSize.invalid) {
       return;
   }
-
-
-
     // reset alerts on submit
     story.sizePts = this.formSetSize.value.sizePts;
     console.log("form", this.formSetSize.value.sizePts);
@@ -249,8 +267,7 @@ public SubmitSizePts (story: Story, i) {
         .pipe(first())
         .subscribe(
             (data:Story) => {
-                console.log("story", (story));
-                console.log("story", (data));
+          
                 this.alertService.success('Changed Size successful', true);
                 this.isSizeEnabled[i] = false; 
             },
@@ -262,6 +279,27 @@ public SubmitSizePts (story: Story, i) {
             });
 }
 
+// ZGODBA ZA SUBBMITAT isAccepted
+public SubmitIsAccepted (story: Story, valueIsAccepted) {
+  this.alertService.clear();
+
+  // reset alerts on submit
+  story.isAccepted = valueIsAccepted;
+  this.storyService.updateStory(story, this.projektID)
+      .pipe(first())
+      .subscribe(
+          (data:Story) => {
+            if (valueIsAccepted == true) this.alertService.success('Story is Accepted!', true);
+            if (valueIsAccepted == false) this.alertService.success('Redu story accept!', true);
+            this.loadAllStories();
+            
+          },
+          error => {
+              console.log("eeror");
+
+              this.alertService.error(error);
+          });
+}
 
 
 //UPDATE STORY ------------------------------------- TO DO ----------------------
@@ -285,17 +323,16 @@ public  isCurrentSprint(sprint) {
   
   var endDate =  new Date(sprint.endDate);
   endDate.setHours(0,0,0,0);  
-  
-if ( startDate < currentDate && currentDate < endDate) 
-  {
-    console.log("TRENUTNISPRINT");
-    console.log ("Start", startDate, "current", currentDate, "end", endDate);
+  currentDate.setHours(0,0,0,0);
 
-    // console.log("TRENUTNISPRINT");
+  
+  
+if ( startDate <= currentDate && currentDate <= endDate) 
+  {
    return true; 
   }
 
- // else return false; 
+  else return false; 
 
   }
 
