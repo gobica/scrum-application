@@ -1,7 +1,5 @@
 <form [formGroup]="formStory" (ngSubmit)="onSubmit()" >
     <mat-dialog-content >
-
-
         <mat-form-field>
             <input matInput placeholder="*Name" type ="text"  formControlName="name"       
             [ngClass]="{ 'is-invalid': submitted && f.name.errors }" 
@@ -12,16 +10,11 @@
             </div>
         </mat-form-field>
         <br>
-    
         <mat-form-field>
             <textarea  rows="4" cols="50" matInput placeholder="Description" type ="text"  formControlName="description"    
             [ngClass]="{ 'is-invalid': submitted && f.description.errors }" ></textarea>
-
-     
         </mat-form-field>
-
         <br>
-    
         <mat-form-field>
             <textarea rows="4" cols="50" matInput placeholder="*Acceptance Tests" type ="text"  formControlName="acceptanceTests"       
             [ngClass]="{ 'is-invalid': submitted && f.priority.errors }" 
@@ -63,6 +56,8 @@
 
             <div *ngIf=" submitted && f.businessValue.errors" class="invalid-feedback">
                 <div *ngIf="f.businessValue.errors.required">Business Value is required</div>
+                <div *ngIf="f.businessValue.errors.min">Must be a positive number</div>
+
             </div>
         </mat-form-field>
         <br>
@@ -76,6 +71,8 @@
 
             <div *ngIf=" submitted && f.sizePts.errors" class="invalid-feedback">
                 <div *ngIf="f.sizePts.errors.min">Must be a positive number</div>
+                <div *ngIf="f.sizePts.errors.max">Number is too high. Pick lower than 1000.</div>
+
 
             </div>
         </mat-form-field>

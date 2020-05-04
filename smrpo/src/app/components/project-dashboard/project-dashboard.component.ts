@@ -25,7 +25,7 @@ export class ProjectDashboardComponent implements OnInit {
   stories = [];
   submittedSize = false;
   loading = false; 
-  isSizeEnabled = false; 
+  isSizeEnabled = []; 
 
   selectedStories = 'all';
 
@@ -56,10 +56,14 @@ export class ProjectDashboardComponent implements OnInit {
     ) {
     
   }
+  get f() { return this.formSetSize.controls; }
+
   ngOnInit(): void {
 
     this.formSetSize = this.formBuilder.group({
-      sizePts: [,  Validators.min(0)]
+      sizePts: [,   [Validators.min(1), Validators.max(1000)]]
+
+
 
       }),
     //get project ID
@@ -71,6 +75,7 @@ export class ProjectDashboardComponent implements OnInit {
     this.getCurrentProject(this.projektID);
     this.loadAllSprints();
     this.loadAllStories();
+
   }
 
   openSprintDialog() {
@@ -133,6 +138,9 @@ private loadAllStories() {
       .pipe(first())
       .subscribe(stories => {
         this.stories = stories;
+        for (var i = 0; i<stories.length; i++) {
+          this.isSizeEnabled.push(false);
+        }
         // console.log(stories);
         let index = 1;
         this.stories.forEach(s => {
@@ -169,7 +177,7 @@ private loadAllSprints() {
 }
 public beautifySprints(date) {
   var currentDate  = new Date(date);
-  var izpis = currentDate.getDate() + ". " + currentDate.getMonth()  + ". " +  currentDate.getFullYear(); 
+  var izpis = currentDate.getDate() + ". " + (currentDate.getMonth() + 1) + ". " +  currentDate.getFullYear(); 
   return izpis;
 
 
@@ -186,12 +194,11 @@ public addStoryToSprint (idOfStory: number) {
   .pipe(first())
   .subscribe(
       (data:any) => {
+        this.loadAllSprints();
 
           this.alertService.success('Story added to sprint successful', true);
       },
       error => {
-          console.log("eeror");
-
           this.alertService.error(error);
       });
 }
@@ -203,7 +210,6 @@ private updateStoryAPI (story: Story) {
   .pipe(first())
   .subscribe(
       (data:any) => {
-
           this.alertService.success('Story Updated', true);
       },
       error => {
@@ -214,25 +220,29 @@ private updateStoryAPI (story: Story) {
 }
 
 // ZGODBA ZA SUBBMITAT SIZE
-public SubmitSizePts (story: Story) {
+public SubmitSizePts (story: Story, i) {
     this.submittedSize = true;
+    this.alertService.clear();
 
     if (this.formSetSize.invalid) {
       return;
   }
-    // reset alerts on submit
-    this.alertService.clear();
-    story.sizePts = this.formSetSize.value.sizePts;
 
+
+
+    // reset alerts on submit
+    story.sizePts = this.formSetSize.value.sizePts;
+    console.log("form", this.formSetSize.value.sizePts);
+    console.log(story.sizePts);
     this.loading = true;
     this.storyService.updateStory(story, this.projektID)
         .pipe(first())
         .subscribe(
-            (data:any) => {
-
-                this.alertService.success('Registration successful', true);
-                console.log("DATA", data);
-                
+            (data:Story) => {
+                console.log("story", (story));
+                console.log("story", (data));
+                this.alertService.success('Changed Size successful', true);
+                this.isSizeEnabled[i] = false; 
             },
             error => {
                 console.log("eeror");
@@ -242,7 +252,7 @@ public SubmitSizePts (story: Story) {
             });
 }
 
-get f() { return this.formSetSize.controls; }
+
 
 //UPDATE STORY ------------------------------------- TO DO ----------------------
 
@@ -261,12 +271,16 @@ public  isCurrentSprint(sprint) {
   // your date logic here, recommend moment.js;
   var currentDate  = new Date();
   var startDate = new Date(sprint.startDate);
+  startDate.setHours(0,0,0,0);
+  
   var endDate =  new Date(sprint.endDate);
-  // console.log ("Start", startDate, "current", currentDate);
+  endDate.setHours(0,0,0,0);  
   
 if ( startDate < currentDate && currentDate < endDate) 
   {
     console.log("TRENUTNISPRINT");
+    console.log ("Start", startDate, "current", currentDate, "end", endDate);
+
    return true; 
   }
 

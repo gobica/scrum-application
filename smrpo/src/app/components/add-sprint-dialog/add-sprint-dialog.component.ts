@@ -85,9 +85,7 @@ onSubmit() {
   this.loading = true;
   this.loading = true;
   // send last milisecond to datbase
-  this.form.value.startDate = new Date (this.form.value.startDate.getTime() + 23 *  60 * 60 * 1000 + 59* 60 * 1000 + 59 * 1000 +  999 );
-  this.form.value.endDate = new Date (this.form.value.endDate.getTime() + 23 *  60 * 60 * 1000 + 59* 60 * 1000 + 59 * 1000 +999 );
-
+  console.log(this.form.value);
   this.sprintService.addSprint(this.form.value, this.idProject)
       .pipe(first())
       .subscribe(

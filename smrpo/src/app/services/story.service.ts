@@ -25,6 +25,7 @@ export class StoryService {
 
   updateStory(story: Story, idProject: number) {
     var idStory = story.id;
+    console.log(this.projectUrl + `/${idProject}`+ '/story' +`/${idStory}`);
     return this.httpClient.put(this.projectUrl + `/${idProject}`+ '/story' +`/${idStory}`, story);
   }
   
