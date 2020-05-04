@@ -45,7 +45,7 @@
         </mat-toolbar>  
     
         <div *ngFor="let story of stories; let i = index"  >
-          <div *ngIf="'assigned' === story.category || 'unassigned' === story.category">
+          <div *ngIf="'assigned' === story.category || 'unassigned' === story.category || 'wont_have_this_time' === story.category">
             <div id = "story {{i}}" >
                 <mat-card >
 
@@ -102,7 +102,7 @@
                     </ul>
                     <!--<p>{{trenutniProjekt.id}}</p>-->
                     <!--<p>{{story.id}}</p>-->
-                    <!--Bo moralo it v sprint backlog!!!  TODO: dodat sprintId in menjat lokacijo v sprint backlog-->
+                    <!--Bo moralo it v sprint backlog!!!  -->
                     <!--<div *ngIf="globalnaUloga == 'admin' || trenutniProjekt.scrumMaster.username === trenutniUporabnik; else sicer">
                       <button mat-stroked-button color="accent"  (click)="btnShowStory(trenutniProjekt.id, story.id);">Show tasks</button>
                     </div>
@@ -139,7 +139,7 @@
       </mat-toolbar>  
       <div *ngFor="let story of stories; let i = index"  >
         <div *ngIf="'finished' === story.category">
-          <div id = "story {{i}}" >
+          <div id = "story_finished {{i}}" >
               <mat-card >
                 <mat-card-header>
                   <mat-card-title>Story {{story.index}}: {{story.name}} </mat-card-title>
@@ -160,7 +160,7 @@
                   </ul>
                   <!--<p>{{trenutniProjekt.id}}</p>-->
                   <!--<p>{{story.id}}</p>-->
-                  <!--Bo moralo it v sprint backlog!!!  TODO: dodat sprintId in menjat lokacijo v sprint backlog-->
+                  <!--Bo moralo it v sprint backlog!!!  -->
                  
                  <!-- <div *ngIf="globalnaUloga == 'admin' || trenutniProjekt.scrumMaster.username === trenutniUporabnik; else sicer">
                     <button mat-stroked-button color="accent"  (click)="btnShowStory(trenutniProjekt.id, story.id);">Show tasks</button>
@@ -282,10 +282,18 @@
                     <h3><u>Description:</u></h3><p>{{story.description}}</p>
                     <h3><u>Acceptance tests:</u></h3><p class="acceptance-tests">{{story.acceptanceTests}}</p>
                     <h3><u>Business value:</u> {{story.businessValue}}</h3>
+<<<<<<< HEAD
+=======
+                    <!--<h3><u>Tasks:</u> </h3>-->
+                    <!--<div></div>-->
+
+
+  
+>>>>>>> 57298fae179d38f1551fb18d50a91839d37fb46e
                   </ul>
                   <!--<p>{{trenutniProjekt.id}}</p>-->
                   <!--<p>{{story.id}}</p>-->
-                  <!--Bo moralo it v sprint backlog!!!  TODO: dodat sprintId in menjat lokacijo v sprint backlog-->
+                  <!--Bo moralo it v sprint backlog!!!  -->
                   <div *ngIf="globalnaUloga == 'admin' || trenutniProjekt.scrumMaster.username === trenutniUporabnik; else sicer">
                     <button mat-stroked-button color="accent"  (click)="btnShowStory(trenutniProjekt.id, story.id);">Show tasks</button>
                   </div>

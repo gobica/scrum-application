@@ -2,11 +2,11 @@
   <div class="container-fluid">
 
     <ul class="nav navbar-nav navbar-right">
-      <li ><a class="nav-item nav-link" routerLink="/">Dashboard</a> </li>
+      <li ><a class="nav-item nav-link" routerLink="/" (click)="this.alertService.clear();">Dashboard</a> </li>
 
 
       <li class="nav-item dropdown" dropdown>
-        <a dropdownToggle mdbWavesEffect type="button" class="nav-link dropdown-toggle waves-light" mdbWavesEffect>
+        <a dropdownToggle mdbWavesEffect type="button" class="nav-link dropdown-toggle waves-light" mdbWavesEffect (click)="this.alertService.clear();">
           Users <span class="caret"></span></a>
         <div *dropdownMenu class="dropdown-menu dropdown dropdown-primary" role="menu">
           <li *ngIf="authenticationService.currentUserValueFromToken.globalRole == 'admin'"><a class="nav-item nav-link" routerLink="/register">Register users</a></li> 
@@ -15,7 +15,7 @@
       </li>
 
       <li class="nav-item dropdown" dropdown>
-        <a dropdownToggle mdbWavesEffect type="button" class="nav-link dropdown-toggle waves-light" mdbWavesEffect>
+        <a dropdownToggle mdbWavesEffect type="button" class="nav-link dropdown-toggle waves-light" mdbWavesEffect (click)="this.alertService.clear();">
           Projects <span class="caret"></span></a>
         <div *dropdownMenu class="dropdown-menu dropdown dropdown-primary" role="menu">
           <!--<li *ngIf="authenticationService.currentUserValueFromToken.globalRole == 'admin'"><a (click)="refreshShowProject()" class="nav-item nav-link" routerLink="/showProject">Project lists</a> </li>-->
@@ -51,7 +51,7 @@
       <li class="nav-item ">  Logged in as {{authenticationService.currentUserValueFromToken.username}} </li>
       <li   class="nav-item " *ngIf="authenticationService.currentUserValueFromToken.lastLogin != null">Last login: {{authenticationService.currentUserValueFromToken.lastLogin * 1000 | date:'yyyy-MM-dd HH:mm'}}</li>
         <li class="nav-item " *ngIf="authenticationService.currentUserValueFromToken.lastLogin == null"> first login. </li>
-        <li><a class="nav-item nav-link nopadding   " (click)="logout()">Logout</a> </li>
+        <li><a class="nav-item nav-link nopadding   " (click)="logout(); this.alertService.clear();">Logout</a> </li>
 
 
       </div>
@@ -64,4 +64,5 @@
       <!--<div class=" col-sm-6 offset-sm-3">-->
           <alert></alert>
           <router-outlet></router-outlet>
+      <!--</div>-->
 </div>

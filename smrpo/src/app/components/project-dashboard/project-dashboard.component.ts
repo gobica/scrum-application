@@ -12,6 +12,7 @@ import {AuthenticationService} from "../../services/authentication.service";
 import { ProjectService } from '../../services/project.service';
 import { StoryService } from  '../../services/story.service';
 import { FormBuilder, FormGroup, Validators } from '@angular/forms';
+import {TaskService} from "../../services/task.service";
 
 @Component({
   selector: 'app-project-dashboard',
@@ -21,15 +22,16 @@ import { FormBuilder, FormGroup, Validators } from '@angular/forms';
 export class ProjectDashboardComponent implements OnInit {
   formSetSize: FormGroup;
   projektID;
+  sprintID;
   sprints = [];
   stories = [];
+  allTasks;
   submittedSize = false;
   loading = false; 
   isSizeEnabled = []; 
 
   selectedStories = 'all';
 
-  //TODO: premakni v sprintBacklog
   trenutniUporabnik = this.authenticationService.currentUserValueFromToken.username;
   globalnaUloga = this.authenticationService.currentUserValueFromToken.globalRole;
 
@@ -51,6 +53,7 @@ export class ProjectDashboardComponent implements OnInit {
     private route: ActivatedRoute,
     public authenticationService: AuthenticationService,  
     private projectService: ProjectService,
+    private taskService: TaskService,
     private router: Router,
     private alertService: AlertService,
     ) {
@@ -76,6 +79,10 @@ export class ProjectDashboardComponent implements OnInit {
     this.loadAllSprints();
     this.loadAllStories();
 
+    this.stories.forEach(s => {
+      this.getAllTasks(s.id);
+      console.log("---", this.allTasks);
+    });
   }
 
   openSprintDialog() {
@@ -158,6 +165,7 @@ private loadAllStories() {
           }
           else {
             s.priorityColor = "";
+            s.category = "wont_have_this_time"; //TODO: zbrisat
           }
           s.acceptanceTests = "# "+s.acceptanceTests;
           s.acceptanceTests = s.acceptanceTests.replace(/\n/g, "\n# ");
@@ -199,13 +207,15 @@ public addStoryToSprint (idOfStory: number) {
           this.alertService.success('Story added to sprint successful', true);
       },
       error => {
+          console.log("error");
+
           this.alertService.error(error);
       });
 }
 
 private updateStoryAPI (story: Story) {
   // get project by id
-  console.log("a sam pride?")
+  console.log("a sam pride?");
   this.storyService.updateStory(story, this.projektID)
   .pipe(first())
   .subscribe(
@@ -281,6 +291,7 @@ if ( startDate < currentDate && currentDate < endDate)
     console.log("TRENUTNISPRINT");
     console.log ("Start", startDate, "current", currentDate, "end", endDate);
 
+    // console.log("TRENUTNISPRINT");
    return true; 
   }
 
@@ -294,13 +305,38 @@ public getCurrentSprint() {
       return this.sprints[i];
     }
   }
+
   return null;
 }
 
-public btnShowStory = function(projectId, storyId) { // bo moralo it v sprint backlog!!!!!!!!!!!!!!!!! //TODO: mora it v sprint backlog
+getAllTasks(zgodbaID) {
+    // let projects = [];
+    var sprintId = this.getCurrentSprint().id;
+    this.taskService.getAllTasksOfStory(this.projektID, sprintId, zgodbaID).pipe(first()) // vrne vse naloge
+    .subscribe(
+      data => {
+          // console.log(data);
+          this.allTasks = {story: zgodbaID, tasks: data};
+
+          return data;
+      },
+      error => {
+          // if (error === 'Not Found') {
+          //   this.alertService.warning('No tasks to show :)');
+          // } else {
+          //   // this.alertService.error(error);
+          // }
+          this.allTasks = {story: zgodbaID, tasks: null};
+          this.loading = false;
+      }
+    );
+  }
+
+public btnShowStory = function(projectId, storyId) {
   // console.log(projectId, storyId);
+  var sprintId = this.getCurrentSprint().id;
   this.alertService.clear();
-  this.router.navigateByUrl('/projectDashboard/' + projectId + '/sprint/' + 1 + '/story/' + storyId + '/showTask');
+  this.router.navigateByUrl('/projectDashboard/' + projectId + '/sprint/' + sprintId + '/story/' + storyId + '/showTask');
 
     // console.log(id);
 };

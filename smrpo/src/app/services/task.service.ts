@@ -32,4 +32,9 @@ export class TaskService {
   addTasksToStory(idProject: number, idSprint: number, idStory: number, task: Task) {
     return this.httpClient.post(this.urlProject + `/${idProject}` + this.urlSprintById + `/${idSprint}` + this.urlStoryById + `/${idStory}` + this.urlTask, task);
   }
+
+  updateTask(idProject: number, idSprint: number, idStory: number, idTask: number, task: Task) {
+    // /project/:projectId/sprint/:sprintId/story/:storyId/task/:taskId
+    return this.httpClient.put(this.urlProject + `/${idProject}` + this.urlSprintById + `/${idSprint}` + this.urlStoryById + `/${idStory}` + this.urlTask + `/${idTask}`, task);
+  }
 }
