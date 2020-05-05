@@ -7,7 +7,8 @@
 .full-width-mat {
   width:95%;
   height: auto; 
-  margin: 10px; 
+  margin: 10px;
+  /*overflow: scroll;*/
 }
 
 
@@ -24,4 +25,8 @@
 
 .acceptance-tests{
   white-space:pre-wrap;
+}
+
+table {
+  width: 90%;
 }

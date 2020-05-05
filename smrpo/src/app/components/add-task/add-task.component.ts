@@ -301,7 +301,7 @@ export class AddTaskComponent implements OnInit {
       let end = new Date(sprint.endDate);
       let razlika = end.valueOf()-start.valueOf();
       razlika = razlika / (1000 * 3600 * 24);
-      let delovnihDni = razlika + 1;
+      let delovnihDni = razlika +1; // +1?? konec je po poteku dneva ali je še cel da?getAllTasksOfStory
       let delovneUre = delovnihDni * 8; // ce delas osem ur na dan
       // console.log(delovneUre);
       return delovneUre
@@ -460,7 +460,7 @@ export class AddTaskComponent implements OnInit {
           this.taskService.addTasksToStory(this.projektID, this.sprintID, this.zgodbaID, task).pipe(first()) // vrne vse naloge
           .subscribe(
             data => {
-                // console.log(data);
+                console.log(data);
                 // this.allTasks = data;
                 return data;
             },

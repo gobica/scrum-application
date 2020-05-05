@@ -1,4 +1,5 @@
-<div class="title-dashboard"><b>Project: </b> {{trenutniProjekt.name}}</div>
+<div class="title-dashboard"><b>Project: </b> {{trenutniProjektIme}}</div>
+
 <mat-tab-group>
   <mat-tab>
     <ng-template mat-tab-label>
@@ -30,7 +31,7 @@
                 <mat-card>
                   <mat-card-header>
                     <mat-card-title>
-                      Story {{story.index}}: {{story.name}}
+                      Story #{{story.id}}: {{story.name}}
                     </mat-card-title>
 
                     <mat-card-subtitle>
@@ -38,14 +39,14 @@
                       <button
                       *ngIf=" !isStoryInCurrentSprint(story) && (authenticationService.currentUserValueFromToken.username == trenutniProjekt.productOwner.username || trenutniProjekt.scrumMaster.username === authenticationService.currentUserValueFromToken.username) && story.sizePts && getCurrentSprint() "
                       mat-stroked-button color="warn" (click)="addStoryToSprint(story);">Add to sprint
-              
+
                     </button>
 
-                    
+
                     <button
                     *ngIf=" !isStoryInCurrentSprint(story) && (authenticationService.currentUserValueFromToken.username == trenutniProjekt.productOwner.username || trenutniProjekt.scrumMaster.username === authenticationService.currentUserValueFromToken.username) && !story.sizePts && getCurrentSprint() "
                     mat-stroked-button color="primary" disabled (click)="addStoryToSprint(story.id);">Add to sprint
-            
+
                   </button>
 
                     <button
@@ -65,12 +66,12 @@
                       <mat-chip-list>
                         <mat-chip color={{story.priorityColor}} selected>{{story.priority}}</mat-chip>
                       </mat-chip-list>
-                      
+
 
                       <h3><u>Description:</u></h3>
                       <p>{{story.description}}</p>
                       <h3><u>Acceptance tests:</u></h3>
-                      <p class="acceptance-tests">{{story.acceptanceTests}}</p>
+                      <p class="acceptance-tests">{{hashTest(story.acceptanceTests)}}</p>
                       <h3><u>Business value:</u> {{story.businessValue}}</h3>
 
                       <div class="d-flex flex-row" *ngIf="!isSizeEnabled[i] ">
@@ -114,7 +115,7 @@
                     <!--ADD TO CURRENT SPRINT-->
                     <br>
 
-               
+
                   </mat-card-content>
                 </mat-card>
                 <br>
@@ -123,8 +124,8 @@
           </div>
 
         <!-- ASSIGNED STORIES -->
-      
-     
+
+
         </div>
 
         <!-- FINISHED STORIES-->
@@ -137,7 +138,7 @@
               <div id="story_finished {{i}}">
                 <mat-card>
                   <mat-card-header>
-                    <mat-card-title>Story {{story.index}}: {{story.name}} </mat-card-title>
+                    <mat-card-title>Story #{{story.id}}: {{story.name}} </mat-card-title>
 
                   </mat-card-header>
                   <mat-card-content>
@@ -151,7 +152,7 @@
                       <h3><u>Description:</u></h3>
                       <p>{{story.description}}</p>
                       <h3><u>Acceptance tests:</u></h3>
-                      <p class="acceptance-tests">{{story.acceptanceTests}}</p>
+                      <p class="acceptance-tests">{{hashTest(story.acceptanceTests)}}</p>
                       <h3><u>Business value:</u> {{story.businessValue}}</h3>
                       <h3><u>Size:</u> {{story.sizePts}}</h3>
                     </ul>
@@ -169,11 +170,11 @@
 
 
 
-  <mat-tab>
-    <ng-template mat-tab-label>
-      <mat-icon class="example-tab-icon">av_timer</mat-icon>
-      Sprint Backlog
-    </ng-template>
+    <mat-tab>
+      <ng-template mat-tab-label >
+        <mat-icon class="example-tab-icon" (click)="loadTasksOfSprintStories()">av_timer</mat-icon>
+        <div (click)="print(sprints)" (click)="loadTasksOfSprintStories()">Sprint Backlog</div>
+      </ng-template>
 
 
     <div *ngFor="let sprint of sprints; let i = index">
@@ -201,33 +202,68 @@
             <mat-grid-tile>
               <mat-card class="full-width-mat">
                 <mat-card-header>
-                  <mat-card-title>Story {{story.index}}: {{story.name}} </mat-card-title>
+                  <mat-card-title>Story #{{story.id}}: {{story.name}} </mat-card-title>
                 </mat-card-header>
                 <mat-card-content>
                   <ul>
                     <!--<li>name : {{story.name}}</li>-->
-                
-                    <h3><u>Description:</u> {{story.description}}</h3>
+                    <h3><u>Description:</u></h3>
                     <p>{{story.description}}</p>
+
                     <h3><u>Acceptance tests:</u></h3>
+                    <p class="acceptance-tests">{{hashTest(story.acceptanceTests)}}</p>
 
-
-
-                    <p class="acceptance-tests">{{story.acceptanceTests}}</p>
                     <h3><u>Business value:</u> {{story.businessValue}}</h3>
                     <!--<h3><u>Tasks:</u> </h3>-->
                     <!--<div></div>-->
 
 
 
+
+                    <!--Bo moralo it v sprint backlog!!!  -->
+                    <div *ngFor="let t of allTasks">
+                      <div *ngIf="t.tasks !== null && t.story === story.id">
+
+                        <h3><u>Tasks:</u> </h3>
+                        <table mat-table [dataSource]="t.tasks" class="mat-elevation-z2">
+                          <!--<div *ngFor="let naloga of t.tasks">-->
+                            <ng-container matColumnDef="description">
+                              <th mat-header-cell *matHeaderCellDef> Description </th>
+                              <td mat-cell *matCellDef="let element"> {{element.description}} </td>
+                            </ng-container>
+
+                            <ng-container matColumnDef="state">
+                              <th mat-header-cell *matHeaderCellDef> State </th>
+                              <td mat-cell *matCellDef="let element">
+                                <div *ngIf="element.isReady == true">
+                                  Realized
+                                </div>
+                                <div *ngIf="element.isReady == false">
+                                  <div *ngIf="element.userConfirmed == false">
+                                    Unassigned
+                                  </div>
+                                  <div *ngIf="element.userConfirmed == true">
+                                    <!--TODO: work-->
+                                    <div *ngIf="element.userWork == null">
+                                      Assigned
+                                    </div>
+                                    <div *ngIf="element.userWork != null">
+                                      Active
+                                    </div>
+                                  </div>
+                                </div>
+                              </td>
+                            </ng-container>
+                          <tr mat-header-row *matHeaderRowDef="displayedColumns"></tr>
+                          <tr mat-row *matRowDef="let row; columns: displayedColumns;"></tr>
+                        </table>
+                       </div>
+                    </div>
+
                   </ul>
-                  <!--<p>{{trenutniProjekt.id}}</p>-->
-                  <!--<p>{{story.id}}</p>-->
-                  <!--Bo moralo it v sprint backlog!!!  -->
-                  <div
-                    *ngIf="globalnaUloga == 'admin' || trenutniProjekt.scrumMaster.username === trenutniUporabnik; else sicer">
-                    <button mat-stroked-button color="primary" (click)="btnShowStory(trenutniProjekt.id, story.id);">Show
-                      tasks</button>
+
+                  <div *ngIf="globalnaUloga == 'admin' || trenutniProjekt.scrumMaster.username === trenutniUporabnik; else sicer">
+                    <button mat-stroked-button color="accent"  (click)="btnShowStory(trenutniProjekt.id, story.id);">Show tasks</button>
                   </div>
                   <ng-template #sicer>
                     <div *ngFor="let member of trenutniProjekt.users; let i=index">
@@ -237,12 +273,9 @@
                       </div>
                     </div>
                   </ng-template>
-                
-          
-            
                 </mat-card-content>
-        
-          
+
+
             <mat-card-actions>
               <button
               *ngIf=" story.isAccepted == false && authenticationService.currentUserValueFromToken.username == trenutniProjekt.productOwner.username "
@@ -254,8 +287,8 @@
             *ngIf=" !story.isAccepted == false && authenticationService.currentUserValueFromToken.username == trenutniProjekt.productOwner.username "
             mat-stroked-button color="warn"  (click)="SubmitIsAccepted(story, false)">Undo
           </button>
-      
-        
+
+
             </mat-card-actions>
               </mat-card>
             </mat-grid-tile>
@@ -335,7 +368,7 @@
                         <button mat-stroked-button color="accent"  (click)="btnShowStory(trenutniProjekt.id, story.id);">Show tasks</button>
                       </div>
                     </div>
-                  
+
 
 
 
@@ -343,7 +376,7 @@
                 -->
 
 
-                
+
 
     <!--
     <div *ngFor="let story of stories; let i = index" class="panel panel-default" >
@@ -365,7 +398,7 @@
 
 
                 </ul>
-             
+
                 <div *ngIf="globalnaUloga == 'admin' || trenutniProjekt.scrumMaster.username === trenutniUporabnik; else sicer">
                   <button mat-stroked-button color="accent"  (click)="btnShowStory(trenutniProjekt.id, story.id);">Show tasks</button>
                 </div>
