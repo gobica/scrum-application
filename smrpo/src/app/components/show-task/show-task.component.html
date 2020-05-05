@@ -90,6 +90,37 @@
 
 
           <div *ngIf="task.user === trenutniUporabnik" class="btn-right">
+            <div *ngIf="task.userConfirmed === true">
+              <div *ngIf="task.userWork === false">
+                <button mat-stroked-button color="accent" class="btn-right btn-margin" title='Start work' (click)="startWork(i)">
+                  <span class="mat-button-wrapper" class="glyphicon glyphicon-play">  </span>
+                </button>
+              </div>
+              <div *ngIf="task.userWork === true">
+                <button mat-stroked-button color="accent" class="btn-right btn-margin" title='Stop work' (click)="stopWork(i)">
+                  <span class="mat-button-wrapper" class="glyphicon glyphicon-stop">  </span>
+                </button>
+              </div>
+            </div>
+          </div>
+
+          <!--blank space ------------------------------------------------------>
+          <div *ngIf="task.user != trenutniUporabnik" class="btn-right">
+              <button mat-stroked-button class="white-block btn-right btn-margin" disabled>
+                <span class="mat-button-wrapper" class="glyphicon glyphicon-play">  </span>
+              </button>
+          </div>
+
+           <!--blank space ---------------------------------------------------->
+          <div *ngIf="task.user === trenutniUporabnik" class="btn-right">
+            <div *ngIf="task.userConfirmed === false">
+              <button mat-stroked-button class="white-block btn-right btn-margin" disabled>
+                <span class="mat-button-wrapper" class="glyphicon glyphicon-play">  </span>
+              </button>
+            </div>
+          </div>
+
+          <div *ngIf="task.user === trenutniUporabnik" class="btn-right">
             <div *ngIf="task.userConfirmed === false">
               <button mat-stroked-button color="accent" class="btn-right btn-margin" title='Accept the assignment' (click)="acceptTask(i, task.id)" >
                 <span class="mat-button-wrapper" class="glyphicon glyphicon-thumbs-up">  </span>
@@ -99,7 +130,7 @@
 
           <div *ngIf="task.user === trenutniUporabnik" class="btn-right">
             <div *ngIf="task.userConfirmed === true">
-              <button mat-stroked-button color="accent" class="btn-right btn-margin" title='Give up the task' (click)="giveUpTask(i, task.id)" disabled>
+              <button mat-stroked-button color="accent" class="btn-right btn-margin" title='Give up the task' (click)="giveUpTask(i, task.id)">
                 <span class="mat-button-wrapper" class="glyphicon glyphicon-thumbs-down">  </span>
               </button>
             </div>
@@ -113,7 +144,7 @@
             </div>
           </div>
 
-          <!--blank space-->
+          <!--blank space ------------------------------------------------------------>
           <div *ngIf="task.user != trenutniUporabnik" class="btn-right">
             <div *ngIf="task.userConfirmed === true || jeTeamMember === false">
               <button mat-stroked-button class="white-block btn-right btn-margin" disabled>

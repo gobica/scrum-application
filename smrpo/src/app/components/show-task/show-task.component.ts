@@ -34,7 +34,7 @@ export class ShowTaskComponent implements OnInit {
   public projektID;
   public sprintID;
   public zgodbaID;
-  public zgodbaIme;
+  zgodbaIme = "";
 
   trenutniUporabnik = this.authenticationService.currentUserValueFromToken.username;
   trenutniUporabnikId = this.authenticationService.currentUserValueFromToken.id;
@@ -218,16 +218,17 @@ export class ShowTaskComponent implements OnInit {
               }
             });
             // console.log(t);
+            t.userWork = false; //TODO: zbriši ko bo v bazi :)
           });
           // console.log(this.allProjects);
-          this.zgodbaIme = this.allStories.find(x => {
+          const ime = this.allStories.find(x => {
             // console.log(x);
             // console.log(this.zgodbaID);
             if(x.id === parseInt(this.zgodbaID)){
               return x;
             }
           });
-          this.zgodbaIme = this.zgodbaIme.name;
+          this.zgodbaIme = ime.name;
           // console.log("---"+this.zgodbaIme);
           return data;
       },
@@ -239,14 +240,14 @@ export class ShowTaskComponent implements OnInit {
           }
           this.loading = false;
           // console.log(this.allProjects);
-          this.zgodbaIme = this.allStories.find(x => {
+          const ime = this.allStories.find(x => {
             // console.log(x);
             // console.log(this.zgodbaID);
             if(x.id === parseInt(this.zgodbaID)){
               return x;
             }
           });
-          this.zgodbaIme = this.zgodbaIme.name;
+          this.zgodbaIme = ime.name;
           // console.log("---"+this.zgodbaIme);
       }
     );
@@ -266,46 +267,57 @@ export class ShowTaskComponent implements OnInit {
 
   taskDone(i, taskID): void {
     if(this.allTasks[i].userConfirmed === true) {
-      const dialogRef = this.dialog.open(DialogCompletedTaskComponent, {
-        width: '50vw',
-        // data: {checked: this.name, animal: this.animal}
-        // data: {checked: this.allTasks[i].check},
-        // data: {checked: this.allTasks[i].isReady}
-      });
+      if(this.allTasks[i].userWork === false) {
+        this.alertService.clear();
+        const dialogRef = this.dialog.open(DialogCompletedTaskComponent, {
+          width: '50vw',
+          // data: {checked: this.name, animal: this.animal}
+          // data: {checked: this.allTasks[i].check},
+          // data: {checked: this.allTasks[i].isReady}
+        });
 
-      dialogRef.afterClosed().subscribe(result => {
-        // console.log(result);
-        if (result === true) {
-          // this.allTasks[i].check = result;
-          // console.log(this.allTasks[i].check);
-          this.allTasks[i].isReady = result;
+        dialogRef.afterClosed().subscribe(result => {
+          // console.log(result);
+          if (result === true) {
+            // this.allTasks[i].check = result;
+            // console.log(this.allTasks[i].check);
+            this.allTasks[i].isReady = result;
 
-          let taskFull = this.findTask(taskID);
-          // console.log(taskFull);
-          if(taskFull) {
-            const task = {id: taskFull.id, description: taskFull.description, timeEstimateHrs: taskFull.timeEstimateHrs,
-              idAssignedUser: taskFull.idAssignedUser, idSprintStory: taskFull.idSprintStory, userConfirmed: taskFull.userConfirmed,
-              isReady: true
-            };
-            this.taskService.updateTask(this.projektID, this.sprintID, this.zgodbaID, taskID, task).pipe(first()) // vrne vse naloge
-              .subscribe(
-                data => {
-                  // console.log(data);
-                  // this.allTasks = data;
-                  return data;
-                },
-                error => {
-                  this.alertService.error(error);
-                  this.loading = false;
-                }
-              );
+            let taskFull = this.findTask(taskID);
+            // console.log(taskFull);
+            if (taskFull) {
+              const task = {
+                id: taskFull.id,
+                description: taskFull.description,
+                timeEstimateHrs: taskFull.timeEstimateHrs,
+                idAssignedUser: taskFull.idAssignedUser,
+                idSprintStory: taskFull.idSprintStory,
+                userConfirmed: taskFull.userConfirmed,
+                isReady: true
+              };
+              this.taskService.updateTask(this.projektID, this.sprintID, this.zgodbaID, taskID, task).pipe(first()) // vrne vse naloge
+                .subscribe(
+                  data => {
+                    // console.log(data);
+                    // this.allTasks = data;
+                    return data;
+                  },
+                  error => {
+                    this.alertService.error(error);
+                    this.loading = false;
+                  }
+                );
+            }
+          } else {
+            // this.allTasks[i].check = false;
+            // console.log(this.allTasks[i].check);
           }
-        } else {
-          // this.allTasks[i].check = false;
-          // console.log(this.allTasks[i].check);
-        }
-        // console.log('The dialog was closed: '+ result);
-      });
+          // console.log('The dialog was closed: '+ result);
+        });
+      } else {
+        this.alertService.clear();
+       this.alertService.error('First stop work on task.');
+      }
     } else {
        this.alertService.clear();
        this.alertService.error('Task is not already accepted.');
@@ -374,6 +386,7 @@ export class ShowTaskComponent implements OnInit {
             userConfirmed: true,
             isReady: taskFull.isReady
           };
+          // console.log(task);
           this.taskService.updateTask(this.projektID, this.sprintID, this.zgodbaID, taskID, task).pipe(first()) // vrne vse naloge
             .subscribe(
               data => {
@@ -395,44 +408,60 @@ export class ShowTaskComponent implements OnInit {
   }
 
   giveUpTask(i, taskID) {
-    this.alertService.clear();
-    const dialogRef = this.dialog.open(DialogGiveupTaskComponent, {
-      width: '50vw',
-      data: {userConfirmed: this.allTasks[i].userConfirmed}
-    });
+    if(this.allTasks[i].userWork === false) {
+      this.alertService.clear();
+      const dialogRef = this.dialog.open(DialogGiveupTaskComponent, {
+        width: '50vw',
+        data: {userConfirmed: this.allTasks[i].userConfirmed}
+      });
 
-    dialogRef.afterClosed().subscribe(result => {
-      if (result === false) {
-        this.allTasks[i].userConfirmed = result;
-        this.allTasks[i].idAssignedUser = undefined;
-        this.allTasks[i].user = "";
-        let taskFull = this.findTask(taskID);
-        // console.log(taskFull);
-        if(taskFull) {
-          const task = {id: taskFull.id, description: taskFull.description, timeEstimateHrs: taskFull.timeEstimateHrs,
-            idAssignedUser: undefined,
-            idSprintStory: taskFull.idSprintStory,
-            userConfirmed: false,
-            isReady: taskFull.isReady
-          };
-          this.taskService.updateTask(this.projektID, this.sprintID, this.zgodbaID, taskID, task).pipe(first()) // vrne vse naloge
-            .subscribe(
-              data => {
-                console.log(data);
-                // this.allTasks = data;
-                return data;
-              },
-              error => {
-                this.alertService.error(error);
-                this.loading = false;
-              }
-            );
+      dialogRef.afterClosed().subscribe(result => {
+        if (result === false) {
+          this.allTasks[i].userConfirmed = result;
+          this.allTasks[i].idAssignedUser = null;
+          this.allTasks[i].user = "";
+          let taskFull = this.findTask(taskID);
+          // console.log(taskFull);
+          if (taskFull) {
+            const task = {
+              id: taskFull.id, description: taskFull.description, timeEstimateHrs: taskFull.timeEstimateHrs,
+              idAssignedUser: null,
+              idSprintStory: taskFull.idSprintStory,
+              userConfirmed: false,
+              isReady: taskFull.isReady
+            };
+            this.taskService.updateTask(this.projektID, this.sprintID, this.zgodbaID, taskID, task).pipe(first()) // vrne vse naloge
+              .subscribe(
+                data => {
+                  // console.log(data);
+                  // this.allTasks = data;
+                  return data;
+                },
+                error => {
+                  this.alertService.error(error);
+                  this.loading = false;
+                }
+              );
+          }
+        } else {
+          this.allTasks[i].userConfirmed = true;
         }
-      } else {
-        this.allTasks[i].userConfirmed = true;
-      }
-      // console.log('The dialog was closed: '+ this.allTasks[i].userConfirmed);
-    });
+        // console.log('The dialog was closed: '+ this.allTasks[i].userConfirmed);
+      });
+    } else {
+       this.alertService.clear();
+       this.alertService.error('First stop work on task.');
+    }
+  }
+
+  startWork(i){ // TODO: popravi ko bo v bazi
+    this.alertService.clear();
+    this.allTasks[i].userWork = true;
+  }
+
+  stopWork(i){ // TODO: popravi ko bo v bazi
+    this.alertService.clear();
+    this.allTasks[i].userWork = false;
   }
 
   redirectTask(i, taskID) {

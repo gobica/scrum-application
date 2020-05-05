@@ -25,7 +25,7 @@ export class ProjectDashboardComponent implements OnInit {
   sprintID;
   sprints = [];
   stories = [];
-  allTasks;
+  allTasks = [];
   submittedSize = false;
   loading = false; 
   isSizeEnabled = []; 
@@ -36,8 +36,11 @@ export class ProjectDashboardComponent implements OnInit {
   globalnaUloga = this.authenticationService.currentUserValueFromToken.globalRole;
 
   trenutniProjekt;
+  trenutniProjektIme = "";
   userLoaded = false;
-  jeTreuntuniSprint; 
+  jeTreuntuniSprint;
+
+  displayedColumns: string[] = ['description','state'];
 
 
   constructor(
@@ -79,10 +82,10 @@ export class ProjectDashboardComponent implements OnInit {
     this.loadAllSprints();
     this.loadAllStories();
 
-    this.stories.forEach(s => {
-      this.getAllTasks(s.id);
-      console.log("---", this.allTasks);
-    });
+    // this.stories.forEach(s => {
+    //   this.getAllTasks(s.id);
+    //   console.log("---", this.allTasks);
+    // });
   }
 
   openSprintDialog() {
@@ -154,27 +157,25 @@ private loadAllStories() {
         this.stories.forEach(s => {
           if(s.priority === "must have"){
             s.priorityColor = "warn";
-            s.category = "finished"; //TODO: zbrisat
           }
           else if(s.priority === "should have"){
             s.priorityColor = "primary";
-            s.category = "assigned"; //TODO: zbrisat
           }
           else if(s.priority === "could have"){
             s.priorityColor = "primary";
-            s.category = "unassigned"; //TODO: zbrisat
           }
           else {
-            s.priorityColor = "";
-            s.category = "wont_have_this_time"; //TODO: zbrisat
+            s.priorityColor = "secondary";
           }
-          s.acceptanceTests = "# "+s.acceptanceTests;
-          s.acceptanceTests = s.acceptanceTests.replace(/\n/g, "\n# ");
           s.index = index;
           index += 1;
         });
         this.stories = this.stories.sort((a, b) => (a.businessValue < b.businessValue) ? 1 : -1);
+        this.loadTasksOfSprintStories();
+
       });
+
+
 
 
 }
@@ -314,7 +315,10 @@ private getCurrentProject (id: number) {
     // get project by id
     this.projectService.getProject(this.projektID)
     .pipe(first())
-    .subscribe(project => this.trenutniProjekt =  project);
+    .subscribe(project => {
+      this.trenutniProjekt =  project;
+      this.trenutniProjektIme = this.trenutniProjekt.name;
+    });
 }
 public  isCurrentSprint(sprint) {
   // your date logic here, recommend moment.js;
@@ -347,28 +351,67 @@ public getCurrentSprint() {
   return null;
 }
 
+loadTasksOfSprintStories(){
+  this.stories.forEach(s => {
+      this.getAllTasks(s.id);
+  });
+  console.log(this.allTasks);
+}
+
 getAllTasks(zgodbaID) {
     // let projects = [];
-    var sprintId = this.getCurrentSprint().id;
-    this.taskService.getAllTasksOfStory(this.projektID, sprintId, zgodbaID).pipe(first()) // vrne vse naloge
-    .subscribe(
-      data => {
-          // console.log(data);
-          this.allTasks = {story: zgodbaID, tasks: data};
-
-          return data;
-      },
-      error => {
-          // if (error === 'Not Found') {
-          //   this.alertService.warning('No tasks to show :)');
-          // } else {
-          //   // this.alertService.error(error);
-          // }
-          this.allTasks = {story: zgodbaID, tasks: null};
-          this.loading = false;
+    var sprint = this.getCurrentSprint();
+    if(sprint != null) {
+      var sprintId = sprint.id;
+      this.taskService.getAllTasksOfStory(this.projektID, sprintId, zgodbaID).pipe(first()) // vrne vse naloge
+        .subscribe(
+          data => {
+            // console.log(data);
+            let ze = false;
+            this.allTasks.forEach(t => {
+              if(t.story === zgodbaID){
+                ze = true;
+              }
+            });
+            if(ze === false){
+              this.allTasks.push({story: zgodbaID, tasks: data});
+            }
+            return data;
+          },
+          error => {
+            let ze = false;
+            this.allTasks.forEach(t => {
+              if(t.story === zgodbaID){
+                ze = true;
+              }
+            });
+            if(ze === false){
+              this.allTasks.push({story: zgodbaID, tasks: null});
+            }
+            // console.log(error);
+            console.log("Story with ID ", zgodbaID, " doesn't have tasks :)");
+            this.loading = false;
+          }
+        );
+    } else {
+      let ze = false;
+      this.allTasks.forEach(t => {
+        if(t.story === zgodbaID){
+          ze = true;
+        }
+      });
+      if(ze === false){
+        this.allTasks.push({story: zgodbaID, tasks: null});
       }
-    );
+
+    }
   }
+
+hashTest(text){
+  text = "# "+text;
+  text = text.replace(/\n/g, "\n# ");
+  return text;
+}
 
 public btnShowStory = function(projectId, storyId) {
   // console.log(projectId, storyId);
@@ -378,5 +421,9 @@ public btnShowStory = function(projectId, storyId) {
 
     // console.log(id);
 };
+
+print(nekaj){
+  console.log(nekaj);
+}
 
 }
