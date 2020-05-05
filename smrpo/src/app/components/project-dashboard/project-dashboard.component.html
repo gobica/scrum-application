@@ -175,29 +175,25 @@
       Sprint Backlog
     </ng-template>
 
-    <div *ngIf=" trenutniProjekt ">
-      <button *ngIf="trenutniProjekt.scrumMaster.username === authenticationService.currentUserValueFromToken.username"
-        mat-stroked-button color="accent" (click)="openSprintDialog();">Add Sprint</button>
-      <br>
-    </div>
 
     <div *ngFor="let sprint of sprints; let i = index">
-      <p class="text-success" *ngIf="isCurrentSprint(sprint)">
-        Start date: {{beautifySprints(sprint.startDate)}}
-        <br>
-        End date: {{beautifySprints(sprint.endDate)}}
-        <br>
-        Velocity: {{sprint.velocity}}
-      </p>
-      <p *ngIf="!isCurrentSprint(sprint)">
-        Start date: {{beautifySprints(sprint.startDate)}}
-        <br>
-        End date: {{beautifySprints(sprint.endDate)}}
-        <br>
-        Velocity: {{sprint.velocity}}
-      </p>
-      <div *ngIf="isCurrentSprint(sprint)" class="container-fluid">
+      <div class="text-success" *ngIf="isCurrentSprint(sprint)">
 
+        <mat-toolbar>
+          <span>Current sprint</span>
+        <br>
+        </mat-toolbar>
+
+        <p>
+          start date: {{beautifySprints(sprint.startDate)}}
+          <br>
+          End date: {{beautifySprints(sprint.endDate)}}
+          <br>
+          Velocity: {{sprint.velocity}}
+        <p> 
+        </div>
+     
+      <div *ngIf="isCurrentSprint(sprint)" class="container-fluid">
         <mat-grid-list cols="2">
 
           <div *ngFor="let story of sprint.stories; let i = index">
@@ -256,7 +252,7 @@
 
             <button
             *ngIf=" !story.isAccepted == false && authenticationService.currentUserValueFromToken.username == trenutniProjekt.productOwner.username "
-            mat-stroked-button color="primary" disabled (click)="SubmitIsAccepted(story, false)">Story is accepted!
+            mat-stroked-button color="warn"  (click)="SubmitIsAccepted(story, false)">Undo
           </button>
       
         
@@ -267,6 +263,31 @@
         </mat-grid-list>
       </div>
     </div>
+
+
+    <mat-toolbar>
+      <span>All sprints</span>
+      <span class="example-fill-remaining-space"></span>
+      <span *ngIf=" trenutniProjekt ">
+            <button *ngIf="trenutniProjekt.scrumMaster.username === authenticationService.currentUserValueFromToken.username"
+              mat-stroked-button color="primary" (click)="openSprintDialog();">Add Sprint
+              <mat-icon>add</mat-icon>
+            </button>
+      </span>
+    </mat-toolbar>
+
+    <div *ngFor="let sprint of sprints; let i = index">
+      <div  *ngIf="!isCurrentSprint(sprint)">
+        <p>
+          start date: {{beautifySprints(sprint.startDate)}}
+          <br>
+          End date: {{beautifySprints(sprint.endDate)}}
+          <br>
+          Velocity: {{sprint.velocity}}
+        <p> 
+        </div>
+        </div>
+     
   </mat-tab>
 
 

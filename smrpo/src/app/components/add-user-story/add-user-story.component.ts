@@ -38,7 +38,7 @@ export class AddUserStoryComponent implements OnInit {
       description: [''],
       acceptanceTests: ['', Validators.required],
       priority: ['', Validators.required],
-      businessValue: ['', [Validators.min(1), Validators.required]],
+      businessValue: [, [Validators.min(1), Validators.required]],
       sizePts: [,   [Validators.min(1), Validators.max(1000)]]
 
       

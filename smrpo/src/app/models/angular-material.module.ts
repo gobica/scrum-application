@@ -23,8 +23,10 @@ import { MatCardModule } from '@angular/material/card';
 import { MatDialogModule } from '@angular/material/dialog';
 import { MatTabsModule } from '@angular/material/tabs';
 import { MatCheckboxModule } from "@angular/material/checkbox";
+import {MatSnackBarModule} from '@angular/material/snack-bar';
+import {MatExpansionModule} from '@angular/material/expansion';
 
-import {MatAutocompleteModule} from '@angular/material/autocomplete'
+import {MatAutocompleteModule} from '@angular/material/autocomplete';
 
 @NgModule({
    imports: [
@@ -50,7 +52,9 @@ import {MatAutocompleteModule} from '@angular/material/autocomplete'
       MatDialogModule, 
       MatTabsModule,
       MatAutocompleteModule,
-      MatCheckboxModule
+      MatCheckboxModule,
+      MatSnackBarModule,
+      MatExpansionModule
    ],
    exports: [
       MatButtonModule,
@@ -73,7 +77,9 @@ import {MatAutocompleteModule} from '@angular/material/autocomplete'
       MatDialogModule,
       MatTabsModule,
       MatAutocompleteModule,
-      MatCheckboxModule
+      MatCheckboxModule,
+      MatSnackBarModule, 
+      MatExpansionModule
 
    ],
    providers: [

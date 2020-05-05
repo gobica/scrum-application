@@ -1,5 +1,6 @@
 import { Component, OnInit, OnDestroy,  ViewChild, ElementRef } from '@angular/core';
 import { Subscription } from 'rxjs';
+import {MatSnackBar, MatSnackBarModule, MatSnackBarConfig } from '@angular/material/snack-bar';
 
 import { AlertService } from '../../services/alert.service';
 
@@ -11,25 +12,41 @@ export class AlertComponent implements OnInit, OnDestroy {
     @ViewChild('alert', { static: true }) alert: ElementRef;
 
 
-    constructor(private alertService: AlertService) { }
+    constructor(
+      private alertService: AlertService,
+      private _snackBar: MatSnackBar) { }
+
+  
+
+      openSnackBar(message: any, action: string) {
+        let config = new MatSnackBarConfig();
+        config.panelClass   = message.cssClass;
+        config.duration = 2000;
+        this._snackBar.open(message.text, action, config);
+      }
 
     ngOnInit() {
         this.subscription = this.alertService.getAlert()
             .subscribe(message => {
                 switch (message && message.type) {
                     case 'success':
-                        message.cssClass = 'alert alert-success';
+                        message.cssClass = ['mat-toolbar', 'mat-primary'];
                         break;
                     case 'error':
-                        message.cssClass = 'alert alert-danger';
+                        message.cssClass = ['mat-toolbar', 'mat-warn'];
                         break;
                     case 'warning':
-                        message.cssClass = 'alert alert-warning';
+                        message.cssClass = ['mat-toolbar', 'mat-accent']
                         break;
                 }
 
                 this.message = message;
+                console.log("yes, yes pokazal se bo zej", this.message);
+                if (this.message)
+                this.openSnackBar(this.message, "Close");
+                console.log
             });
+
     }
 
     ngOnDestroy() {
@@ -41,6 +58,8 @@ export class AlertComponent implements OnInit, OnDestroy {
     if (this.isVisible) { // if the alert is visible return
       return;
     } 
+   
+
     this.isVisible = true;
     setTimeout(()=> this.isVisible = false,2500); // hide the alert after 2.5s
   }

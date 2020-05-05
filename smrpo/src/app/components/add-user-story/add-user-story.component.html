@@ -1,6 +1,7 @@
-<form [formGroup]="formStory" (ngSubmit)="onSubmit()" >
-    <mat-dialog-content >
-        <mat-form-field>
+<div class="container-fluid">
+<form [formGroup]="formStory" (ngSubmit)="onSubmit()" class = " d-flex justify-content-center">
+    <mat-dialog-content class = "w-100 " >
+        <mat-form-field  class = "w-100" >
             <input matInput placeholder="*Name" type ="text"  formControlName="name"       
             [ngClass]="{ 'is-invalid': submitted && f.name.errors }" 
             >
@@ -10,12 +11,12 @@
             </div>
         </mat-form-field>
         <br>
-        <mat-form-field>
+        <mat-form-field class = "w-100">
             <textarea  rows="4" cols="50" matInput placeholder="Description" type ="text"  formControlName="description"    
             [ngClass]="{ 'is-invalid': submitted && f.description.errors }" ></textarea>
         </mat-form-field>
         <br>
-        <mat-form-field>
+        <mat-form-field class = "w-100">
             <textarea rows="4" cols="50" matInput placeholder="*Acceptance Tests" type ="text"  formControlName="acceptanceTests"       
             [ngClass]="{ 'is-invalid': submitted && f.priority.errors }" 
             ></textarea>
@@ -27,7 +28,7 @@
 
         <br>
     
-        <mat-form-field class="example-full-width ">
+        <mat-form-field class = "w-100">
             <div class="form-group">
               
               <mat-select   formControlName="priority" placeholder="*Priority" 
@@ -48,8 +49,8 @@
           <br>
     
     
-        <mat-form-field>
-            <input matInput placeholder="*Business Value" type ="number"  formControlName="businessValue"  
+        <mat-form-field class = "w-100"> 
+            <input matInput placeholder="*Business Value" min="0"  type ="number"  formControlName="businessValue"  
             [ngClass]="{ 'is-invalid': submitted && f.businessValue.errors }" 
             
             >
@@ -63,7 +64,7 @@
         <br>
 
 
-        <mat-form-field>
+        <mat-form-field class = "w-100">
             <input matInput placeholder="Size" type ="number"  min="0" formControlName="sizePts" 
             [ngClass]="{ 'is-invalid': submitted && f.sizePts.errors }" 
 
@@ -105,4 +106,4 @@
     
     
                    
-          
+</div>

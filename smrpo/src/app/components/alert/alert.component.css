@@ -3,3 +3,16 @@
   width: 50vw !important;
   left: -30vw !important;
 }
+
+.toolbar-success {
+	background: lightgreen !important;
+}
+
+.toolbar-warning{
+	background: orange !important;
+}
+
+.toolbar-error{
+	background: rgb(75, 29, 29) !important;
+}
+

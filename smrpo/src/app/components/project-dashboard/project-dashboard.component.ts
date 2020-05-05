@@ -289,8 +289,9 @@ public SubmitIsAccepted (story: Story, valueIsAccepted) {
       .pipe(first())
       .subscribe(
           (data:Story) => {
+            console.log(data);
             if (valueIsAccepted == true) this.alertService.success('Story is Accepted!', true);
-            if (valueIsAccepted == false) this.alertService.success('Redu story accept!', true);
+            if (valueIsAccepted == false) this.alertService.success('Story is "unfinished"!', true);
             this.loadAllStories();
             
           },

@@ -23,17 +23,10 @@ a {
 	padding: 0 !important;
 	margin: 0 !important;
  }
-
-.login-wrapper {
-	display: flex;
-	margin-top: 20vh;
-	max-height: 60vh;
-	width: 50vh;
-	max-width: 80vh;
-	position: absolute;
-	justify-content: center;
-	align-items: center;
+.login-fullheight {
+	height:100vh;
 }
+
 
 .title {
 	font-size: 30px;
@@ -60,9 +53,20 @@ a {
 	background-color: #ffffff;
 	border-radius: 5px;
 	color: black;	
-	display: flex;
 	width: 100%;
-	max-width: 80vh;
+	text-align: center;
+}
+
+.box-login {
+	/* bring your own prefixes */
+	justify-content: center;
+	align-items: center;
+	opacity: 50;
+	padding: 5vh 5vh 5vh 5vh;
+	background-color: #ffffff;
+	border-radius: 5px;
+	color: black;	
+	width: 40%;
 	text-align: center;
 }
 
