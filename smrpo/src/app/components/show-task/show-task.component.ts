@@ -218,7 +218,7 @@ export class ShowTaskComponent implements OnInit {
               }
             });
             // console.log(t);
-            t.userWork = false; //TODO: zbriši ko bo v bazi :)
+            // t.userWork = false; //TODO: zbriši ko bo v bazi :)
           });
           // console.log(this.allProjects);
           const ime = this.allStories.find(x => {
@@ -267,7 +267,7 @@ export class ShowTaskComponent implements OnInit {
 
   taskDone(i, taskID): void {
     if(this.allTasks[i].userConfirmed === true) {
-      if(this.allTasks[i].userWork === false) {
+      // if(this.allTasks[i].userWork === false) {
         this.alertService.clear();
         const dialogRef = this.dialog.open(DialogCompletedTaskComponent, {
           width: '50vw',
@@ -314,13 +314,13 @@ export class ShowTaskComponent implements OnInit {
           }
           // console.log('The dialog was closed: '+ result);
         });
-      } else {
-        this.alertService.clear();
-       this.alertService.error('First stop work on task.');
-      }
+      // } else {
+      //   this.alertService.clear();
+      //  this.alertService.error('First stop work on task.');
+      // }
     } else {
        this.alertService.clear();
-       this.alertService.error('Task is not already accepted.');
+       this.alertService.error('Cannot mark an unaccepted task as ready');
     }
   }
 
@@ -408,7 +408,9 @@ export class ShowTaskComponent implements OnInit {
   }
 
   giveUpTask(i, taskID) {
-    if(this.allTasks[i].userWork === false) {
+    // if(this.allTasks[i].userWork === false) {
+    this.alertService.clear();
+    if(this.allTasks[i].isReady === false) {
       this.alertService.clear();
       const dialogRef = this.dialog.open(DialogGiveupTaskComponent, {
         width: '50vw',
@@ -448,21 +450,33 @@ export class ShowTaskComponent implements OnInit {
         }
         // console.log('The dialog was closed: '+ this.allTasks[i].userConfirmed);
       });
+    // } else {
+    //    this.alertService.clear();
+    //    this.alertService.error('First stop work on task.');
+    // }
     } else {
-       this.alertService.clear();
-       this.alertService.error('First stop work on task.');
+      this.alertService.error('First uncheck the task.');
     }
   }
 
-  startWork(i){ // TODO: popravi ko bo v bazi
+  time(i){ // TODO: zbrisi ko bo dodano beleženje časa
     this.alertService.clear();
-    this.allTasks[i].userWork = true;
+    if(this.allTasks[i].isReady === false) {
+      this.alertService.warning('Time logging is not yet implemented.');
+    } else {
+      this.alertService.error('First uncheck the task.');
+    }
   }
 
-  stopWork(i){ // TODO: popravi ko bo v bazi
-    this.alertService.clear();
-    this.allTasks[i].userWork = false;
-  }
+  // startWork(i){ // TODO: popravi ko bo v bazi
+  //   this.alertService.clear();
+  //   this.allTasks[i].userWork = true;
+  // }
+  //
+  // stopWork(i){ // TODO: popravi ko bo v bazi
+  //   this.alertService.clear();
+  //   this.allTasks[i].userWork = false;
+  // }
 
   redirectTask(i, taskID) {
     this.alertService.clear();

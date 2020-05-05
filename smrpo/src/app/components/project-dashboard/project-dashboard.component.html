@@ -186,7 +186,7 @@
         </mat-toolbar>
 
         <p>
-          start date: {{beautifySprints(sprint.startDate)}}
+          Start date: {{beautifySprints(sprint.startDate)}}
           <br>
           End date: {{beautifySprints(sprint.endDate)}}
           <br>
@@ -244,12 +244,14 @@
                                   </div>
                                   <div *ngIf="element.userConfirmed == true">
                                     <!--TODO: work-->
-                                    <div *ngIf="element.userWork == null">
+                                    <!--<div *ngIf="element.userWork == null">-->
+
                                       Assigned
-                                    </div>
-                                    <div *ngIf="element.userWork != null">
-                                      Active
-                                    </div>
+
+                                    <!--</div>-->
+                                    <!--<div *ngIf="element.userWork != null">-->
+                                      <!--Active-->
+                                    <!--</div>-->
                                   </div>
                                 </div>
                               </td>

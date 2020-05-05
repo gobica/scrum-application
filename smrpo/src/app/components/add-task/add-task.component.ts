@@ -489,6 +489,8 @@ export class AddTaskComponent implements OnInit {
         this.taskForm.get('task').get('tasks').get([0]).get('taskDescription').setValue('');
         this.taskForm.get('task').get('tasks').get([0]).get('taskSize').setValue('');
         this.taskForm.get('task').get('tasks').get([0]).get('memberName').setValue('');
+
+        this.router.navigateByUrl('/projectDashboard/' + this.projektID + '/sprint/' + this.sprintID + '/story/' + this.zgodbaID + '/showTask');
       } else {
 
         // console.log("manjse enako 1");
