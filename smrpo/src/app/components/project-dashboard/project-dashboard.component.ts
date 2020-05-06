@@ -407,7 +407,7 @@ loadTasksOfSprintStories(){
   this.stories.forEach(s => {
       this.getAllTasks(s.id);
   });
-  console.log(this.allTasks);
+  // console.log(this.allTasks);
 }
 
 getAllTasks(zgodbaID) {
