@@ -21,7 +21,7 @@ export class AlertComponent implements OnInit, OnDestroy {
       openSnackBar(message: any, action: string) {
         let config = new MatSnackBarConfig();
         config.panelClass   = message.cssClass;
-        config.duration = 2000;
+        config.duration = 3000;
         this._snackBar.open(message.text, action, config);
       }
 

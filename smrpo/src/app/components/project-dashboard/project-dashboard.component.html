@@ -71,7 +71,7 @@
                       <h3><u>Description:</u></h3>
                       <p>{{story.description}}</p>
                       <h3><u>Acceptance tests:</u></h3>
-                      <p class="acceptance-tests">{{hashTest(story.acceptanceTests)}}</p>
+                      <p class="text-break acceptance-tests">{{hashTest(story.acceptanceTests)}}</p>
                       <h3><u>Business value:</u> {{story.businessValue}}</h3>
 
                       <div class="d-flex flex-row" *ngIf="!isSizeEnabled[i] ">
@@ -152,7 +152,7 @@
                       <h3><u>Description:</u></h3>
                       <p class="text-break">{{story.description}}</p>
                       <h3><u>Acceptance tests:</u></h3>
-                      <p class="acceptance-tests">{{hashTest(story.acceptanceTests)}}</p>
+                      <p class="text-break acceptance-tests">{{hashTest(story.acceptanceTests)}}</p>
                       <h3><u>Business value:</u> {{story.businessValue}}</h3>
                       <h3><u>Size:</u> {{story.sizePts}}</h3>
                     </ul>
@@ -207,11 +207,11 @@
 
                 <mat-card-subtitle>
                   <button
-                  *ngIf=" story.SprintStory.isReady == false && authenticationService.currentUserValueFromToken.username == trenutniProjekt.productOwner.username "
+                  *ngIf=" story.SprintStory.isReady == false  "
                   mat-stroked-button color="primary" (click)="SubmitIsReady(story, getCurrentSprint().id, true)">Ready Story
                 </button>  
                 <button
-                *ngIf="  story.SprintStory.isReady == true    && authenticationService.currentUserValueFromToken.username == trenutniProjekt.productOwner.username "
+                *ngIf="  story.SprintStory.isReady == true  "
                 mat-stroked-button color="warn"  (click)="SubmitIsReady(story, getCurrentSprint().id, false)">Undo Ready
               </button>
     
@@ -222,11 +222,11 @@
                 <mat-card-content>
                   <ul>
                     <!--<li>name : {{story.name}}</li>-->
-                    <h3><u>Description:</u></h3>
-                    <p>{{story.description}}</p>
+                    <h3 ><u>Description:</u></h3>
+                    <p class="text-break">{{story.description}}</p>
 
                     <h3><u>Acceptance tests:</u></h3>
-                    <p class="acceptance-tests">{{hashTest(story.acceptanceTests)}}</p>
+                    <p class="text-break acceptance-tests">{{hashTest(story.acceptanceTests)}}</p>
 
                     <h3><u>Business value:</u> {{story.businessValue}}</h3>
                     <!--<h3><u>Tasks:</u> </h3>-->
