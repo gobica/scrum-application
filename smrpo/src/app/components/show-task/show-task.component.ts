@@ -390,7 +390,8 @@ export class ShowTaskComponent implements OnInit {
           this.taskService.updateTask(this.projektID, this.sprintID, this.zgodbaID, taskID, task).pipe(first()) // vrne vse naloge
             .subscribe(
               data => {
-                // console.log(data);
+                console.log(data);
+                console.log("----");
                 // this.allTasks = data;
                 return data;
               },
@@ -404,6 +405,7 @@ export class ShowTaskComponent implements OnInit {
         this.allTasks[i].userConfirmed = false;
       }
       // console.log('The dialog was closed: '+ this.allTasks[i].userConfirmed);
+      console.log(this.allTasks);
     });
   }
 
