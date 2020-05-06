@@ -41,7 +41,6 @@ export class AlertComponent implements OnInit, OnDestroy {
                 }
 
                 this.message = message;
-                console.log("yes, yes pokazal se bo zej", this.message);
                 if (this.message)
                 this.openSnackBar(this.message, "Close");
                 console.log

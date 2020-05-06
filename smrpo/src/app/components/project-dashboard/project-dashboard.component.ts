@@ -196,16 +196,34 @@ public isStoryInCurrentSprint(story) {
    // console.log("ternnutni sprint", this.getCurrentSprint());
     for (var i = 0; i < this.getCurrentSprint().stories.length; i++) {
       if (story.id == this.getCurrentSprint().stories[i].id) { 
-        return true;      }
+        return true;      
+      }
     }
   }      
   return false; 
+}/*
 
-  
+public isStoryInSprintReady (idStory) {
+  // get project by id
+  var isReady_;
+  var sprint = this.getCurrentSprint();
+  var idSprint = sprint.id;
 
+    this.sprintService.getSprint(this.projektID, idSprint)
+        .pipe(first())
+        .subscribe(data => {
+          for (var i = 0; i < data.stories.length; i++) {
+            if (idStory == data.stories[i].id) { 
+              isReady_ = data.stories[i].SprintStory.isReady;   
+            }
+          } 
+          console.log(isReady_);
+        }
+        
+        );
+  return isReady_;
 }
-
-
+*/
 
 public addStoryToSprint (story: Story) {
   console.log(story);
@@ -226,7 +244,6 @@ public addStoryToSprint (story: Story) {
           
       },
       error => {
-          console.log("error");
 
           this.alertService.error(error);
       });
@@ -237,7 +254,6 @@ public addStoryToSprint (story: Story) {
 
 private updateStoryAPI (story: Story) {
   // get project by id
-  console.log("a sam pride?");
   this.storyService.updateStory(story, this.projektID)
   .pipe(first())
   .subscribe(
@@ -245,7 +261,6 @@ private updateStoryAPI (story: Story) {
           this.alertService.success('Story Updated', true);
       },
       error => {
-          console.log("eeror");
 
           this.alertService.error(error);
       });
@@ -273,28 +288,65 @@ public SubmitSizePts (story: Story, i) {
                 this.isSizeEnabled[i] = false; 
             },
             error => {
-                console.log("eeror");
 
                 this.alertService.error(error);
                 this.loading = false;
             });
 }
 
-// ZGODBA ZA SUBBMITAT isAccepted
-public SubmitIsAccepted (story: Story, valueIsAccepted) {
-  this.alertService.clear();
 
-  // reset alerts on submit
-  story.isAccepted = valueIsAccepted;
-  this.storyService.updateStory(story, this.projektID)
+// ZGODBA ZA SUBBMITAT isAccepted
+public SubmitIsAccepted (story,  sprintID, valueIsAccepted) {
+  this.alertService.clear();
+  var storyID = story.id
+  console.log("to se posle",this.sprints);
+  
+  var values = {
+    isAccepted: valueIsAccepted
+    };
+  
+  this.storyService.updateIsAcceptedOrIsReady(values, this.projektID, sprintID, storyID)
       .pipe(first())
       .subscribe(
-          (data:Story) => {
-            console.log(data);
+          (data:any) => {
             if (valueIsAccepted == true) this.alertService.success('Story is Accepted!', true);
             if (valueIsAccepted == false) this.alertService.success('Story is "unfinished"!', true);
             this.loadAllStories();
+            this.loadAllSprints();
             
+          },
+          error => {
+              console.log("eeror");
+
+              this.alertService.error(error);
+          });
+}
+
+//set story to read
+
+
+public SubmitIsReady (story, sprintID, valueIsReady ) {
+  this.alertService.clear();
+  console.log(sprintID);
+  var storyID = story.id;
+ 
+  // reset alerts on submit
+  console.log("story", story);
+  var values = {
+    isReady: valueIsReady
+    };
+  story.isReady = valueIsReady;
+  
+  this.storyService.updateIsAcceptedOrIsReady(values, this.projektID, sprintID, storyID)
+      .pipe(first())
+      .subscribe(
+          (data:any) => {
+            console.log(data);
+            if (valueIsReady == true) this.alertService.success('Story is ready!', true);
+            if (valueIsReady == false) this.alertService.success('Story is not ready!', true);
+            this.loadAllStories();
+            this.loadAllSprints();
+
           },
           error => {
               console.log("eeror");

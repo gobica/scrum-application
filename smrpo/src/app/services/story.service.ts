@@ -28,7 +28,12 @@ export class StoryService {
     console.log(this.projectUrl + `/${idProject}`+ '/story' +`/${idStory}`);
     return this.httpClient.put(this.projectUrl + `/${idProject}`+ '/story' +`/${idStory}`, story);
   }
-  
+
+  updateIsAcceptedOrIsReady(values, idProject: number, idSprint: number, idStory: number) {
+    return this.httpClient.put(this.projectUrl + `/${idProject}`+  '/sprint'  + `/${idSprint}`+ '/story' +`/${idStory}`, values);
+  }
+
+
 }
 
 

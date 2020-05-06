@@ -6,6 +6,8 @@ export class Sprint {
     idProject: number; 
     createdAt: number;
     updatedAt: number;
+    SprintStory: any;
+    stories: any;
  
     
   }

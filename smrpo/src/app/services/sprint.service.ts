@@ -33,8 +33,8 @@ export class SprintService {
   delete(id: number) {
     return this.httpClient.delete(this.getSprintsUrl + `/${id}`);
   }
-  getSprint(id: number) {
-    return this.httpClient.get(this.getSprintsUrl + `/${id}`);
+  getSprint(idProject: number, idSprint: number) {
+    return this.httpClient.get<Sprint>(this.projectUrl + `/${idProject}` + '/sprint' + `/${idSprint}`);
   }
   getAll(idProject: number) {
     return this.httpClient.get<Sprint[]>(this.projectUrl + `/${idProject}` + '/sprint');

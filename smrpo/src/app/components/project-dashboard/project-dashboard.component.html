@@ -150,7 +150,7 @@
                       </mat-chip-list>
 
                       <h3><u>Description:</u></h3>
-                      <p>{{story.description}}</p>
+                      <p class="text-break">{{story.description}}</p>
                       <h3><u>Acceptance tests:</u></h3>
                       <p class="acceptance-tests">{{hashTest(story.acceptanceTests)}}</p>
                       <h3><u>Business value:</u> {{story.businessValue}}</h3>
@@ -200,10 +200,25 @@
 
           <div *ngFor="let story of sprint.stories; let i = index">
 
-              <mat-card class="full-width-mat flex-grow-1">
+              <mat-card >
                 <mat-card-header>
                   <mat-card-title>Story #{{story.id}}: {{story.name}} </mat-card-title>
+
+
+                <mat-card-subtitle>
+                  <button
+                  *ngIf=" story.SprintStory.isReady == false && authenticationService.currentUserValueFromToken.username == trenutniProjekt.productOwner.username "
+                  mat-stroked-button color="primary" (click)="SubmitIsReady(story, getCurrentSprint().id, true)">Ready Story
+                </button>  
+                <button
+                *ngIf="  story.SprintStory.isReady == true    && authenticationService.currentUserValueFromToken.username == trenutniProjekt.productOwner.username "
+                mat-stroked-button color="warn"  (click)="SubmitIsReady(story, getCurrentSprint().id, false)">Undo Ready
+              </button>
+    
+
+                  </mat-card-subtitle>
                 </mat-card-header>
+
                 <mat-card-content>
                   <ul>
                     <!--<li>name : {{story.name}}</li>-->
@@ -273,22 +288,24 @@
                       </div>
                     </div>
                   </ng-template>
+
+                  
+
+    
                 </mat-card-content>
 
 
             <mat-card-actions>
-              <button
-              *ngIf=" story.isAccepted == false && authenticationService.currentUserValueFromToken.username == trenutniProjekt.productOwner.username "
-              mat-stroked-button color="accent" (click)="SubmitIsAccepted(story, true)">Accept Story
+            <button  *ngIf="story.isAccepted == false && authenticationService.currentUserValueFromToken.username == trenutniProjekt.productOwner.username " 
+    
+              mat-stroked-button color="primary" (click)="SubmitIsAccepted(story, getCurrentSprint().id, true)">Accept Story
 
             </button>
 
             <button
-            *ngIf=" !story.isAccepted == false && authenticationService.currentUserValueFromToken.username == trenutniProjekt.productOwner.username "
-            mat-stroked-button color="warn"  (click)="SubmitIsAccepted(story, false)">Undo
+            *ngIf=" story.isAccepted == true  && authenticationService.currentUserValueFromToken.username == trenutniProjekt.productOwner.username "
+            mat-stroked-button color="warn"  (click)="SubmitIsAccepted(story, getCurrentSprint().id, false)">Undo Accept
           </button>
-
-
             </mat-card-actions>
               </mat-card>
             </div>
