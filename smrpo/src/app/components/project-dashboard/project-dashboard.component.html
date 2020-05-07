@@ -73,7 +73,7 @@
                       <h3><u>Business value:</u> {{story.businessValue}}</h3>
 
                       <div class="d-flex flex-row" *ngIf="!isSizeEnabled[i] ">
-                        <h3><u>Size:</u> {{story.sizePts}} pts.</h3>
+                        <h3><u>Size (pts):</u> {{story.sizePts}} </h3>
                         <button
                           *ngIf="!isStoryInCurrentSprint(story) && story.sizePts && trenutniProjekt.scrumMaster.username == authenticationService.currentUserValueFromToken.username"
                           mat-icon-button color="primary" (click)="isSizeEnabled[i]=true">
@@ -133,10 +133,9 @@
           </mat-toolbar>
           <div *ngFor="let sprint of sprints; let j = index">
             <div *ngIf = "isFinishedInSprint(sprint.id) == true">
-              <div class="text-success" *ngIf="isCurrentSprint(sprint)">
 
             Sprint #{{sprint.id}}; from {{beautifySprints(sprint.startDate)}} to {{beautifySprints(sprint.endDate)}}
-              </div>
+
               <mat-divider></mat-divider>
             </div>
 
@@ -159,7 +158,7 @@
                           <h3><u>Acceptance tests:</u></h3>
                           <p class="text-break acceptance-tests">{{hashTest(story.acceptanceTests)}}</p>
                           <h3><u>Business value:</u> {{story.businessValue}}</h3>
-                          <h3><u>Size:</u> {{story.sizePts}} pts.</h3>
+                          <h3><u>Size (pts):</u> {{story.sizePts}} </h3>
                         </ul>
                       </mat-card-content>
                     </mat-card>
