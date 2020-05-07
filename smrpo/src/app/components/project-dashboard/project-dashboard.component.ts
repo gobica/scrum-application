@@ -149,6 +149,7 @@ private loadAllStories() {
       .subscribe(stories => {
 
         this.stories = stories;
+        this.loadTasksOfSprintStories(stories);
         for (var i = 0; i<stories.length; i++) {
           this.isSizeEnabled.push(false);
         }
@@ -171,7 +172,6 @@ private loadAllStories() {
           index += 1;
         });
         this.stories = this.stories.sort((a, b) => (a.businessValue < b.businessValue) ? 1 : -1);
-        this.loadTasksOfSprintStories();
 
       });
 
@@ -420,11 +420,11 @@ public getCurrentSprint() {
   return null;
 }
 
-loadTasksOfSprintStories(){
-  this.stories.forEach(s => {
+loadTasksOfSprintStories(sto){
+  sto.forEach(s => {
       this.getAllTasks(s.id);
   });
-  // console.log(this.allTasks);
+  console.log(this.allTasks);
 }
 
 getAllTasks(zgodbaID) {
