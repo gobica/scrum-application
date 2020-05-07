@@ -29,7 +29,7 @@ export class ProjectDashboardComponent implements OnInit {
   submittedSize = false;
   loading = false; 
   isSizeEnabled = []; 
-
+  
   selectedStories = 'all';
 
   trenutniUporabnik = this.authenticationService.currentUserValueFromToken.username;
@@ -201,7 +201,24 @@ public isStoryInCurrentSprint(story) {
     }
   }      
   return false; 
-}/*
+}
+
+public isFinishedInSprint( sprintID) {
+   // console.log("ternnutni sprint", this.getCurrentSprint());
+    for (var i = 0; i <this.stories.length; i++) {
+      if (this.stories[i].idSprintCompleted == sprintID) { 
+        console.log("ja je");
+        return true;      
+      }
+    }
+      
+  return false; 
+}
+
+
+
+/*
+
 
 public isStoryInSprintReady (idStory) {
   // get project by id

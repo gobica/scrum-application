@@ -8,5 +8,5 @@ export class Story {
     sizePts: number;
     isAccepted: number;
     idProject: number; 
-    
+    idSprintCompleted: number;
   }
