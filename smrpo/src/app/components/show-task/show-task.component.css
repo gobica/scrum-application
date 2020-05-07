@@ -204,10 +204,10 @@
 }
 
 .green-block {
-  color: #b4ff8f !important;
-  background: #b4ff8f !important;
-  border-color: #b4ff8f;
-  text-decoration-color: #b4ff8f;
+  color: #d9ffc7 !important;
+  background: #d9ffc7 !important;
+  border-color: #d9ffc7;
+  text-decoration-color: #d9ffc7;
 }
 
 .title-tasks {
@@ -221,7 +221,7 @@
 }
 
 .greenBackground {
-  background: #b4ff8f;
+  background: #d9ffc7;
   border-radius: 5px;
   padding-top: 5px;
   padding-bottom: 8px;
