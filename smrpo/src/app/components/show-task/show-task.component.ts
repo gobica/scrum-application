@@ -391,7 +391,7 @@ export class ShowTaskComponent implements OnInit {
             .subscribe(
               data => {
                 console.log(data);
-                console.log("----");
+                // console.log("----");
                 // this.allTasks = data;
                 return data;
               },

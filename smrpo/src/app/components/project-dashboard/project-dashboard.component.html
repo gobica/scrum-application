@@ -244,12 +244,14 @@
                           <!--<div *ngFor="let naloga of t.tasks">-->
                             <ng-container matColumnDef="description">
                               <th mat-header-cell *matHeaderCellDef> Description </th>
-                              <td mat-cell *matCellDef="let element"> {{element.description}} </td>
+                              <td mat-cell *matCellDef="let element" [ngClass]="(element.isReady == true) ? 'greenBackground': 'whiteBackground'">
+                                {{element.description}}
+                              </td>
                             </ng-container>
 
                             <ng-container matColumnDef="state">
                               <th mat-header-cell *matHeaderCellDef> State </th>
-                              <td mat-cell *matCellDef="let element">
+                              <td mat-cell *matCellDef="let element" [ngClass]="(element.isReady == true) ? 'greenBackground': 'whiteBackground'">
                                 <div *ngIf="element.isReady == true">
                                   Realized
                                 </div>

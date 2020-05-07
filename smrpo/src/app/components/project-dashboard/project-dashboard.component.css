@@ -30,3 +30,11 @@
 table {
   width: 90%;
 }
+
+.greenBackground {
+  background: #b4ff8f;
+}
+
+.whiteBackground {
+  background: white;
+}

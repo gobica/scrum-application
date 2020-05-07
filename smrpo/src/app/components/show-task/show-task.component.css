@@ -71,6 +71,10 @@
   display: inline-block;
 }
 
+.marginLeft {
+  margin-left: 10px;
+}
+
 .index-tag {
   margin-right: 10px;
   margin-left: 10px;
@@ -199,6 +203,13 @@
   text-decoration-color: white;
 }
 
+.green-block {
+  color: #b4ff8f !important;
+  background: #b4ff8f !important;
+  border-color: #b4ff8f;
+  text-decoration-color: #b4ff8f;
+}
+
 .title-tasks {
 	font-size: 30px;
 	margin: 20px;
@@ -207,4 +218,23 @@
   text-align:center;
   justify-content: center;
 	align-items: center;
+}
+
+.greenBackground {
+  background: #b4ff8f;
+  border-radius: 5px;
+  padding-top: 5px;
+  padding-bottom: 8px;
+  padding-left: 10px;
+}
+
+.whiteBackground {
+  background: white;
+  border-radius: 5px;
+  padding-top: 5px;
+  padding-bottom: 5px;
+  padding-left: 10px;
+}
+.whiteButton {
+  background: white;
 }

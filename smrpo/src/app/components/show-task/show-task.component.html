@@ -8,7 +8,7 @@
 
       <div *ngIf="allTasks.length > 0">
 
-        <div class="checkbox "><b>Done</b></div>
+        <div class="checkbox marginLeft"><b>Done</b></div>
 
         <div class="index-tag " ><b>#</b></div>
 
@@ -19,7 +19,7 @@
         <div class="member" ><b>Team member</b></div>
 
 
-        <div *ngFor="let task of allTasks; let i=index" class="panel panel-default" >
+        <div *ngFor="let task of allTasks; let i=index" class="panel panel-default" [ngClass]="(task.isReady == true) ? 'greenBackground': 'whiteBackground'">
 
 
           <!--<mat-checkbox [ngModel]="false" class="btn-check"></mat-checkbox>-->
@@ -38,7 +38,7 @@
           </div>
           <div *ngIf="task.isReady === true" class="checkbox">
             <div *ngIf="task.user === trenutniUporabnik">
-              <button class="btn-check" (click)="taskNotDone(i, task.id)">
+              <button class="btn-check " (click)="taskNotDone(i, task.id)" >
                 <span class="glyphicon glyphicon-check glyphicon-color">  </span>
               </button>
             </div>
@@ -64,7 +64,7 @@
           <div class="index " >{{i+1}}. </div>
 
 
-          <div class="description " >{{task.description}}</div>
+          <div class="description ">{{task.description}}</div>
 
 
           <div class="select-time" >{{task.timeEstimateHrs}}</div>
@@ -72,7 +72,7 @@
           <!--<div class="member" >{{task.user}}</div>-->
           <div *ngIf="task.user != undefined && task.user != null && task.user != ''" class="member" >
             <div *ngIf="task.userConfirmed === false" >
-              <div class="memberGray">{{task.user}}
+              <div class="memberGray">{{task.user}} <i>(pending)</i>
                 <span class="tooltiptext">The task is not yet accepted</span>
               </div>
             </div>
@@ -106,7 +106,7 @@
 
           <div *ngIf="task.user === trenutniUporabnik" class="btn-right">
             <div *ngIf="task.userConfirmed === true">
-              <button mat-stroked-button color="accent" class="btn-right btn-margin" title='Sorry, currently unavailable :(' (click)="time(i)">
+              <button mat-stroked-button color="accent" class="btn-right btn-margin whiteButton" title='Sorry, currently unavailable :(' (click)="time(i)">
                 <span class="mat-button-wrapper" class="glyphicon glyphicon-time">  </span>
               </button>
             </div>
@@ -114,7 +114,7 @@
 
           <!--blank space ------------------------------------------------------>
           <div *ngIf="task.user != trenutniUporabnik" class="btn-right">
-              <button mat-stroked-button class="white-block btn-right btn-margin" disabled>
+              <button mat-stroked-button class="btn-right btn-margin" [ngClass]="(task.isReady == true) ? 'green-block': 'white-block'" disabled>
                 <span class="mat-button-wrapper" class="glyphicon glyphicon-play">  </span>
               </button>
           </div>
@@ -122,7 +122,7 @@
            <!--blank space ---------------------------------------------------->
           <div *ngIf="task.user === trenutniUporabnik" class="btn-right">
             <div *ngIf="task.userConfirmed === false">
-              <button mat-stroked-button class="white-block btn-right btn-margin" disabled>
+              <button mat-stroked-button class="btn-right btn-margin" [ngClass]="(task.isReady == true) ? 'green-block': 'white-block'" disabled>
                 <span class="mat-button-wrapper" class="glyphicon glyphicon-play">  </span>
               </button>
             </div>
@@ -138,7 +138,7 @@
 
           <div *ngIf="task.user === trenutniUporabnik" class="btn-right">
             <div *ngIf="task.userConfirmed === true">
-              <button mat-stroked-button color="accent" class="btn-right btn-margin" title='Give up the task' (click)="giveUpTask(i, task.id)">
+              <button mat-stroked-button color="accent" class="btn-right btn-margin whiteButton" title='Give up the task' (click)="giveUpTask(i, task.id)">
                 <span class="mat-button-wrapper" class="glyphicon glyphicon-thumbs-down">  </span>
               </button>
             </div>
@@ -146,30 +146,34 @@
 
           <div *ngIf="task.user != trenutniUporabnik && jeTeamMember === true" class="btn-right">
             <div *ngIf="task.userConfirmed === false">
-              <button mat-stroked-button color="accent" class="btn-right btn-margin" title='Redirect to yourself the unaccepted task' (click)="redirectTask(i, task.id)" >
-                <span class="mat-button-wrapper" class="glyphicon glyphicon-bell">  </span>
-              </button>
+              <!--{{task.user}}-->
+              <div *ngIf="!task.user">
+                <button mat-stroked-button color="accent" class="btn-right btn-margin" title='Redirect to yourself' (click)="redirectTask(i, task.id)" >
+                  <span class="mat-button-wrapper" class="glyphicon glyphicon-bell">  </span>
+                </button>
+              </div>
+              <div *ngIf="task.user"> <!--blank space ------------------------------------------------------------>
+                <button mat-stroked-button class="btn-right btn-margin" [ngClass]="(task.isReady == true) ? 'green-block': 'white-block'" disabled>
+                  <span class="mat-button-wrapper" class="glyphicon glyphicon-bell">  </span>
+                </button>
+              </div>
             </div>
           </div>
 
           <!--blank space ------------------------------------------------------------>
           <div *ngIf="task.user != trenutniUporabnik" class="btn-right">
             <div *ngIf="task.userConfirmed === true || jeTeamMember === false">
-              <button mat-stroked-button class="white-block btn-right btn-margin" disabled>
+              <button mat-stroked-button class="btn-right btn-margin" [ngClass]="(task.isReady == true) ? 'green-block': 'white-block'" disabled>
                 <span class="mat-button-wrapper" class="glyphicon glyphicon-bell">  </span>
               </button>
             </div>
           </div>
 
-          <button mat-stroked-button color="accent" class="btn-right btn-margin" disabled  title='Sorry, currently unavailable :(' >
-             <!--<span id="btn-remove" class="glyphicon glyphicon-remove"></span>-->
-            <!--X-->
+          <button mat-stroked-button color="accent" class="btn-right btn-margin whiteButton" disabled  title='Sorry, currently unavailable :(' >
             <span class="mat-button-wrapper" class="glyphicon glyphicon-pencil">  </span>
           </button>
 
-          <button mat-stroked-button color="accent" class="btn-right btn-margin" disabled title='Sorry, currently unavailable :(' >
-             <!--<span id="btn-remove" class="glyphicon glyphicon-remove"></span>-->
-            <!--X-->
+          <button mat-stroked-button color="accent" class="btn-right btn-margin whiteButton" disabled title='Sorry, currently unavailable :(' >
             <span class="mat-button-wrapper"> X </span>
           </button>
 
