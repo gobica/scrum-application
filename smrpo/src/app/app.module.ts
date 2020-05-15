@@ -45,6 +45,9 @@ import { ResetByMailComponent } from "./components/reset-password/reset-by-mail.
 import { NewPasswordComponent } from "./components/reset-password/new-password.component";
 import { AddUserStoryComponent } from './components/add-user-story/add-user-story.component'
 
+import { FullCalendarModule } from '@fullcalendar/angular'; // for FullCalendar!
+import {DatePipe} from '@angular/common';
+
 
 @NgModule({
   declarations: [
@@ -88,6 +91,9 @@ import { AddUserStoryComponent } from './components/add-user-story/add-user-stor
     BrowserAnimationsModule,
     AngularMaterialModule,
     HttpClientModule,
+
+    FullCalendarModule, // for FullCalendar!
+
     JwtModule.forRoot({
       config: {
         tokenGetter: function  tokenGetter() {
@@ -101,7 +107,8 @@ import { AddUserStoryComponent } from './components/add-user-story/add-user-stor
     { provide: HTTP_INTERCEPTORS, useClass: JwtInterceptor, multi: true },
     { provide: HTTP_INTERCEPTORS, useClass: ErrorInterceptor, multi: true },
     
-    UserService
+    UserService,
+    DatePipe
   ],
   bootstrap: [AppComponent],
   entryComponents: [AddSprintDialogComponent],

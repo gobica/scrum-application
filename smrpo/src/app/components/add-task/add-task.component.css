@@ -84,3 +84,11 @@ btn-margin {
 	width: 30%  !important;
 }
 
+.btn-back-out {
+  margin-top: 15px !important;
+  margin-bottom: 10px !important;
+}
+
+.btn-back-in {
+	padding-bottom: 3px !important;
+}

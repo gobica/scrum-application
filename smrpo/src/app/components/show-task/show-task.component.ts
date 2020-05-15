@@ -520,6 +520,12 @@ export class ShowTaskComponent implements OnInit {
     this.router.navigateByUrl('/projectDashboard/' + this.projektID + '/sprint/' + this.sprintID + '/story/' + this.zgodbaID + '/addTask');
         // console.log(id);
   };
+
+  backToBacklog() {
+    //http://localhost:4200/projectDashboard/1
+    this.router.navigateByUrl('/projectDashboard/' + this.projektID);
+  }
+
 }
 
 

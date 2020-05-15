@@ -238,3 +238,11 @@
 .whiteButton {
   background: white;
 }
+
+.btn-back-out {
+  margin-top: 15px !important;
+}
+
+.btn-back-in {
+	padding-bottom: 3px !important;
+}

@@ -490,7 +490,7 @@ export class AddTaskComponent implements OnInit {
         this.taskForm.get('task').get('tasks').get([0]).get('taskSize').setValue('');
         this.taskForm.get('task').get('tasks').get([0]).get('memberName').setValue('');
 
-        this.router.navigateByUrl('/projectDashboard/' + this.projektID + '/sprint/' + this.sprintID + '/story/' + this.zgodbaID + '/showTask');
+        // this.router.navigateByUrl('/projectDashboard/' + this.projektID + '/sprint/' + this.sprintID + '/story/' + this.zgodbaID + '/showTask');
       } else {
 
         // console.log("manjse enako 1");
@@ -651,6 +651,10 @@ export class AddTaskComponent implements OnInit {
 
     document.body.scrollTop = document.documentElement.scrollTop = 0;
 
+  }
+
+  backToShowTasks() {
+    this.router.navigateByUrl('/projectDashboard/' + this.projektID + '/sprint/' + this.sprintID + '/story/' + this.zgodbaID + '/showTask');
   }
 
 

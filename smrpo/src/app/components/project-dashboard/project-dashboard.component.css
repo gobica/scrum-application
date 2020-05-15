@@ -1,3 +1,5 @@
+@import url("//netdna.bootstrapcdn.com/bootstrap/3.0.0/css/bootstrap-glyphicons.css");
+
 .title-dashboard {
 	font-size: 30px;
 	margin: 20px;
@@ -37,4 +39,48 @@ table {
 
 .whiteBackground {
   background: white;
+}
+
+.currentSprint {
+  font-size: 13px;
+  display: table !important;
+}
+
+.duration {
+  display: inline-block;
+  width: 30vw;
+}
+
+.velocity {
+  display: inline-block;
+  width: 15vw;
+}
+
+.used {
+  display: inline-block;
+  width: 15vw;
+}
+
+.remaning {
+  display: inline-block;
+  width: 15vw;
+}
+
+.card-margin {
+  margin-top: 20px;
+  margin-bottom: 20px;
+}
+
+/*.fc-view-container {*/
+  /*height: 50% !important;*/
+  /*margin: 10px !important;*/
+/*}*/
+
+.calendar {
+  height: 80vh;
+  margin: 15px !important;
+}
+
+.show-hide-btn {
+  width: 79vw;
 }

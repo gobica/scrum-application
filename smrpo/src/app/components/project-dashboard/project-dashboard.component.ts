@@ -14,6 +14,11 @@ import { StoryService } from  '../../services/story.service';
 import { FormBuilder, FormGroup, Validators } from '@angular/forms';
 import {TaskService} from "../../services/task.service";
 
+import {DatePipe} from '@angular/common';
+
+import dayGridPlugin from '@fullcalendar/daygrid';
+import {orange} from "color-name";
+
 @Component({
   selector: 'app-project-dashboard',
   templateUrl: './project-dashboard.component.html',
@@ -28,9 +33,15 @@ export class ProjectDashboardComponent implements OnInit {
   allTasks = [];
   submittedSize = false;
   loading = false; 
-  isSizeEnabled = []; 
+  isSizeEnabled = [];
+  remainingPtsSize = 0;
   
   selectedStories = 'all';
+
+  calendarPlugins = [dayGridPlugin];
+  showHideCalendar = false;
+  showHideSprintStories = true;
+  sprintsInCalendar = [];
 
   trenutniUporabnik = this.authenticationService.currentUserValueFromToken.username;
   globalnaUloga = this.authenticationService.currentUserValueFromToken.globalRole;
@@ -41,6 +52,7 @@ export class ProjectDashboardComponent implements OnInit {
   jeTreuntuniSprint;
 
   displayedColumns: string[] = ['description','state'];
+  // displayedColumnsSprint: string[] = ['duration','velocity'];
 
 
   constructor(
@@ -59,6 +71,8 @@ export class ProjectDashboardComponent implements OnInit {
     private taskService: TaskService,
     private router: Router,
     private alertService: AlertService,
+
+    private datePipe: DatePipe
     ) {
     
   }
@@ -150,6 +164,7 @@ private loadAllStories() {
 
         this.stories = stories;
         this.loadTasksOfSprintStories(stories);
+
         for (var i = 0; i<stories.length; i++) {
           this.isSizeEnabled.push(false);
         }
@@ -172,6 +187,7 @@ private loadAllStories() {
           index += 1;
         });
         this.stories = this.stories.sort((a, b) => (a.businessValue < b.businessValue) ? 1 : -1);
+        this.remainingPts(this.getCurrentSprint());
 
       });
 
@@ -183,7 +199,47 @@ private loadAllStories() {
 private loadAllSprints() {
   this.sprintService.getAll(this.projektID)
       .pipe(first())
-      .subscribe(sprints => this.sprints = sprints);
+      .subscribe(sprints => {
+        this.sprints = sprints;
+
+        // sprinti v coledarju
+        this.sprints.forEach(s => {
+          // console.log(s);
+          let startDay = s.startDate;
+          startDay = new Date(startDay); //new Date().setDate(todayDate.getDate()+1)
+          startDay.setDate(startDay.getDate());
+          startDay = this.datePipe.transform(startDay,"yyyy-MM-dd");
+          // console.log(startDay);
+          let endDay = s.endDate; //.substr(0, 10);
+          endDay = new Date(endDay); //new Date().setDate(todayDate.getDate()+1)
+          endDay.setDate(endDay.getDate());
+          endDay = this.datePipe.transform(endDay,"yyyy-MM-dd"); //this.datePipe.transform(date,"yyyy-MM-dd")
+          // console.log(endDay);
+          let ze = false;
+          this.sprintsInCalendar.forEach(c => {
+            if(s.id === c.id) {
+              ze = true;
+            }
+          });
+          if(ze === false) {
+            this.sprintsInCalendar.push({
+              id: s.id,
+              title: 'Velocity ' + s.velocity,
+              start: startDay,
+              end: endDay,
+              backgroundColor: '#fc7b03',
+              borderColor: '#fc7b03',
+              textColor: '#ffffff'
+            });
+          }
+        });
+        // console.log("---");
+        // console.log(this.sprintsInCalendar);
+
+      });
+
+
+
 }
 public beautifySprints(date) {
   var currentDate  = new Date(date);
@@ -424,7 +480,7 @@ loadTasksOfSprintStories(sto){
   sto.forEach(s => {
       this.getAllTasks(s.id);
   });
-  console.log(this.allTasks);
+  // console.log(this.allTasks);
 }
 
 getAllTasks(zgodbaID) {
@@ -485,11 +541,53 @@ hashTest(text){
 public btnShowStory = function(projectId, storyId) {
   // console.log(projectId, storyId);
   var sprintId = this.getCurrentSprint().id;
+  console.log(this.getCurrentSprint());
   this.alertService.clear();
   this.router.navigateByUrl('/projectDashboard/' + projectId + '/sprint/' + sprintId + '/story/' + storyId + '/showTask');
 
     // console.log(id);
 };
+
+remainingPts(sprint) {
+  let allPts = 0;
+  if(sprint != null && sprint != undefined) {
+    let zgodbe = sprint.stories;
+    let velocity = sprint.velocity;
+    zgodbe.forEach(z => {
+      allPts += z.sizePts;
+    });
+    this.remainingPtsSize = velocity - allPts;
+  }
+
+}
+
+showCalendar() {
+  this.showHideCalendar = true;
+
+  //v koledarju bo zelen, ce je current sprint
+  console.log(this.sprintsInCalendar);
+  let currentSprint = this.getCurrentSprint();
+  this.sprintsInCalendar.forEach(c =>{
+    if(c.id === currentSprint.id) {
+      c.backgroundColor =  "#12a102";
+      c.borderColor = "#12a102";
+      console.log(c);
+    }
+  });
+
+}
+
+hideCalendar() {
+  this.showHideCalendar = false;
+}
+
+showSprintStories() {
+  this.showHideSprintStories = true;
+}
+
+hideSprintStories() {
+  this.showHideSprintStories = false;
+}
 
 print(nekaj){
   console.log(nekaj);
