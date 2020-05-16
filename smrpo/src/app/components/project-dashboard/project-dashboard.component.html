@@ -1,6 +1,69 @@
 <div class="title-dashboard"><b>Project: </b> {{trenutniProjektIme}}</div>
 
 <mat-tab-group>
+
+   <!--vvvvvvv WALL vvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvv-->
+
+  <mat-tab>
+    <ng-template mat-tab-label >
+      <mat-icon class="example-tab-icon">message</mat-icon>
+      <div (click)="print(sprints)">Wall</div>
+    </ng-template>
+
+    <div id="allComments">
+      <div *ngFor="let comment of commentsOnWall; let i = index">
+        <div id = "comment {{i}}" fxLayout="row" >
+          <div class="login-wrapper " fxLayout="row" flex
+          [ngClass]="(comment.user != trenutniUporabnik) ? 'show-comment-wrapper-left': 'show-comment-wrapper-right'">
+            <mat-card class="box-comment"
+            [ngClass]="(comment.user != trenutniUporabnik) ? 'box-comment-left': 'box-comment-right'">
+              <mat-card-header>
+                <mat-card-title class="comment-title">{{comment.user}}</mat-card-title>
+                 {{comment.date}}
+              </mat-card-header>
+
+              <form class="example-form">
+
+                <mat-card-content>
+                  <form class="example-form comment-text">
+                    <p class="text-break acceptance-tests">
+                     {{enterText(comment.comment)}}
+                    </p>
+                  </form>
+                </mat-card-content>
+
+              </form>
+            </mat-card>
+          </div>
+
+        </div>
+
+      </div>
+
+      {{scrollDown('allComments')}}
+
+    </div>
+
+    <div [formGroup]="commentForm" id="footer">
+
+      <mat-form-field class="commentArea">
+        <textarea class="cdk-textarea" matInput rows="1" formControlName="commentWall"  ></textarea>
+      </mat-form-field>
+
+      <button mat-stroked-button color="accent" class="btn-right btn-margin" (click)="addComment()">
+        <span class="mat-button-wrapper" class="glyphicon glyphicon-send"></span>
+      </button>
+
+    </div>
+
+  </mat-tab>
+
+  <!--^^^^^^^ WALL ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^-->
+
+
+
+  <!--vvvvvvv PRODUCT BACKLOG vvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvv-->
+
   <mat-tab>
     <ng-template mat-tab-label>
       <mat-icon class="example-tab-icon">assignment</mat-icon>
@@ -173,6 +236,11 @@
     </div>
   </mat-tab>
 
+  <!--^^^^^^^ PRODUCT BACKLOG ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^-->
+
+
+
+  <!--vvvvvvv SPRINT BACKLOG vvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvv-->
 
   <mat-tab>
     <ng-template mat-tab-label >
@@ -417,6 +485,10 @@
 
 
   </mat-tab>
+
+  <!--^^^^^^^ SPRINT BACKLOG ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^-->
+
+
 
 
 </mat-tab-group>

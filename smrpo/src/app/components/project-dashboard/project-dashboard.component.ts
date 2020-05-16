@@ -26,6 +26,7 @@ import {orange} from "color-name";
 })
 export class ProjectDashboardComponent implements OnInit {
   formSetSize: FormGroup;
+  commentForm: FormGroup;
   projektID;
   sprintID;
   sprints = [];
@@ -52,7 +53,11 @@ export class ProjectDashboardComponent implements OnInit {
   jeTreuntuniSprint;
 
   displayedColumns: string[] = ['description','state'];
-  // displayedColumnsSprint: string[] = ['duration','velocity'];
+
+  commentsOnWall = [{comment: 'Prvi komentar', user: 'marko', date: '2020-05-07 22:00'},
+    {comment: 'Drugi komentar', user: 'erica', date: '2020-05-07 22:00'},
+    {comment: 'Tretji komentar', user: 'marko', date: '2020-05-07 22:00'},
+    {comment: 'Četerti komentar', user: 'tomaz', date: '2020-05-07 22:00'}];
 
 
   constructor(
@@ -80,11 +85,12 @@ export class ProjectDashboardComponent implements OnInit {
 
   ngOnInit(): void {
 
+    this.commentForm = this.formBuilder.group({
+      commentWall: ['',  Validators.required],
+    });
+
     this.formSetSize = this.formBuilder.group({
       sizePts: [,   [Validators.min(1), Validators.max(1000)]]
-
-
-
       }),
     //get project ID
     this.route.params.subscribe(params => {
@@ -95,11 +101,8 @@ export class ProjectDashboardComponent implements OnInit {
     this.getCurrentProject(this.projektID);
     this.loadAllSprints();
     this.loadAllStories();
+    this.loadAllComments();
 
-    // this.stories.forEach(s => {
-    //   this.getAllTasks(s.id);
-    //   console.log("---", this.allTasks);
-    // });
   }
 
   openSprintDialog() {
@@ -206,14 +209,14 @@ private loadAllSprints() {
         this.sprints.forEach(s => {
           // console.log(s);
           let startDay = s.startDate;
-          startDay = new Date(startDay); //new Date().setDate(todayDate.getDate()+1)
+          startDay = new Date(startDay);
           startDay.setDate(startDay.getDate());
           startDay = this.datePipe.transform(startDay,"yyyy-MM-dd");
           // console.log(startDay);
-          let endDay = s.endDate; //.substr(0, 10);
+          let endDay = s.endDate;
           endDay = new Date(endDay); //new Date().setDate(todayDate.getDate()+1)
           endDay.setDate(endDay.getDate());
-          endDay = this.datePipe.transform(endDay,"yyyy-MM-dd"); //this.datePipe.transform(date,"yyyy-MM-dd")
+          endDay = this.datePipe.transform(endDay,"yyyy-MM-dd");
           // console.log(endDay);
           let ze = false;
           this.sprintsInCalendar.forEach(c => {
@@ -587,6 +590,46 @@ showSprintStories() {
 
 hideSprintStories() {
   this.showHideSprintStories = false;
+}
+
+get form() {
+  return this.commentForm.controls;
+}
+
+loadAllComments() {
+  // ko bodo komentarji v bazi
+}
+
+addComment() {
+  const comment = this.form.commentWall.value;
+  if (comment != "") {
+    const user = this.trenutniUporabnik;
+    const dateString = new Date();
+    const date = this.datePipe.transform(dateString, "yyyy-MM-dd HH:mm");
+    this.commentsOnWall.push({comment: comment, user: user, date: date});
+
+    this.commentForm.get('commentWall').setValue('');
+  }
+
+  console.log(comment);
+
+}
+
+
+scrollDown(ime) {
+  const objDiv = document.getElementById(ime);
+  if(objDiv != null) {
+    const visina = objDiv.scrollHeight;
+    objDiv.scrollTop = visina;
+    // console.log("---");
+    // return objDiv;
+  }
+}
+
+enterText(text){
+  // text = " "+text;
+  text = text.replace(/\n/g, "\n ");
+  return text;
 }
 
 print(nekaj){
