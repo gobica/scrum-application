@@ -19,6 +19,8 @@ import {DatePipe} from '@angular/common';
 
 import dayGridPlugin from '@fullcalendar/daygrid';
 import {orange} from "color-name";
+import {DialogAcceptTaskComponent} from "../show-task/dialog-accept-task.component";
+import { DialogDeleteCommentComponent } from './dialog-delete-comment.component';
 
 @Component({
   selector: 'app-project-dashboard',
@@ -79,7 +81,8 @@ export class ProjectDashboardComponent implements OnInit {
     private router: Router,
     private alertService: AlertService,
     private datePipe: DatePipe,
-     private commentService: CommentService,
+    private commentService: CommentService,
+    public dialog: MatDialog,
     ) {
     
   }
@@ -646,11 +649,29 @@ addComment() {
           this.loading = false;
       }
     );
-
     this.commentForm.get('commentWall').setValue('');
   }
+  // console.log(comment);
+}
 
-  console.log(comment);
+deleteComment(id) {
+  this.alertService.clear();
+  const dialogRef = this.dialog.open(DialogDeleteCommentComponent, {
+    width: '50vw',
+    // data: {userConfirmed: this.allTasks[i].userConfirmed}
+  });
+
+  dialogRef.afterClosed().subscribe(result => {
+    if (result === true) {
+      this.commentService.deleteComment(this.projektID, id).pipe(first())
+      .subscribe(data => {
+        // console.log(data);
+        this.loadAllComments()
+      });
+    }
+  });
+
+
 
 }
 

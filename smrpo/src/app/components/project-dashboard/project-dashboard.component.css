@@ -112,7 +112,7 @@ table {
   position: relative;
   display: table;
   margin: 10px;
-  margin-left: 31vw;
+  /*margin-left: 31vw;*/
 }
 
 .box-comment {
@@ -152,6 +152,25 @@ table {
 
 .comment-title {
   padding-top: 8px;
+}
+
+.commentsWall{
+  display: table;
+}
+
+.comment-inline {
+   display: inline-block;
+}
+
+.btn-delete-comment {
+  margin-left: 27vw;
+  margin-top: 0px;
+  display: inline-block;
+}
+
+.margin-btn-delete {
+  vertical-align: top;
+  margin-top: 6vh;
 }
 
 #footer {

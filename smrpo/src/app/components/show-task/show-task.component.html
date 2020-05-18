@@ -183,7 +183,7 @@
 
           <div *ngIf="task.user === trenutniUporabnik" class="btn-right">
             <div *ngIf="task.userConfirmed === true">
-              <button mat-stroked-button color="accent" class="btn-right btn-margin whiteButton" title='Sorry, currently unavailable :(' (click)="time(i)">
+              <button mat-stroked-button color="accent" class="btn-right btn-margin whiteButton" (click)="time(i)">
                 <span class="mat-button-wrapper" class="glyphicon glyphicon-time">  </span>
               </button>
             </div>
