@@ -13,6 +13,7 @@ import { ProjectService } from '../../services/project.service';
 import { StoryService } from  '../../services/story.service';
 import { FormBuilder, FormGroup, Validators } from '@angular/forms';
 import {TaskService} from "../../services/task.service";
+import {CommentService} from "../../services/comment.service";
 
 import {DatePipe} from '@angular/common';
 
@@ -54,10 +55,11 @@ export class ProjectDashboardComponent implements OnInit {
 
   displayedColumns: string[] = ['description','state'];
 
-  commentsOnWall = [{comment: 'Prvi komentar', user: 'marko', date: '2020-05-07 22:00'},
-    {comment: 'Drugi komentar', user: 'erica', date: '2020-05-07 22:00'},
-    {comment: 'Tretji komentar', user: 'marko', date: '2020-05-07 22:00'},
-    {comment: 'Četerti komentar', user: 'tomaz', date: '2020-05-07 22:00'}];
+  // commentsOnWall = [{comment: 'Prvi komentar', user: 'marko', date: '2020-05-07 22:00'},
+  //   {comment: 'Drugi komentar', user: 'erica', date: '2020-05-07 22:00'},
+  //   {comment: 'Tretji komentar', user: 'marko', date: '2020-05-07 22:00'},
+  //   {comment: 'Četerti komentar', user: 'tomaz', date: '2020-05-07 22:00'}];
+  commentsOnWall = [];
 
 
   constructor(
@@ -76,8 +78,8 @@ export class ProjectDashboardComponent implements OnInit {
     private taskService: TaskService,
     private router: Router,
     private alertService: AlertService,
-
-    private datePipe: DatePipe
+    private datePipe: DatePipe,
+     private commentService: CommentService,
     ) {
     
   }
@@ -597,7 +599,27 @@ get form() {
 }
 
 loadAllComments() {
-  // ko bodo komentarji v bazi
+  this.commentService.getAllCommentsOfProject(this.projektID).pipe(first()) // vrne vse komentarje projekta
+  .subscribe(
+    data => {
+      // console.log(data);
+      this.commentsOnWall = data;
+      if(data) {
+        this.commentsOnWall.forEach( c => {
+          c.date = this.datePipe.transform(c.updatedAt, "yyyy-MM-dd HH:mm");
+        });
+      }
+    },
+    error => {
+      if (error === 'Not Found') {
+        this.alertService.warning('No comments to show :)');
+      } else {
+        this.alertService.error(error);
+      }
+      // console.log(error);
+      this.loading = false;
+    }
+  );
 }
 
 addComment() {
@@ -605,8 +627,25 @@ addComment() {
   if (comment != "") {
     const user = this.trenutniUporabnik;
     const dateString = new Date();
-    const date = this.datePipe.transform(dateString, "yyyy-MM-dd HH:mm");
-    this.commentsOnWall.push({comment: comment, user: user, date: date});
+    const updatedAt = this.datePipe.transform(dateString, "yyyy-MM-dd HH:mm");
+    // this.commentsOnWall.push({comment: comment, user: user, date: date});
+    const id = 0;
+    const idUser = 0;
+    const idProject = this.projektID;
+
+    const komentar = {id, comment, idUser, idProject, updatedAt};
+    this.commentService.addCommentToProject(idProject, komentar).pipe(first()) // doda komentar
+    .subscribe(
+      data => {
+        // console.log(data);
+        this.loadAllComments();
+        return data;
+      },
+      error => {
+          this.alertService.error(error);
+          this.loading = false;
+      }
+    );
 
     this.commentForm.get('commentWall').setValue('');
   }
@@ -614,7 +653,6 @@ addComment() {
   console.log(comment);
 
 }
-
 
 scrollDown(ime) {
   const objDiv = document.getElementById(ime);

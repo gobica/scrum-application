@@ -41,6 +41,7 @@ import { DialogUncompletedTaskComponent } from "./components/show-task/dialog-un
 import { DialogAcceptTaskComponent } from "./components/show-task/dialog-accept-task.component";
 import { DialogGiveupTaskComponent } from "./components/show-task/dialog-giveup-task.component";
 import { DialogRedirectTaskComponent } from "./components/show-task/dialog-redirect-task.component";
+import { DialogTimeComponent } from "./components/show-task/dialog-time.component";
 import { ResetByMailComponent } from "./components/reset-password/reset-by-mail.component";
 import { NewPasswordComponent } from "./components/reset-password/new-password.component";
 import { AddUserStoryComponent } from './components/add-user-story/add-user-story.component'
@@ -73,6 +74,7 @@ import {DatePipe} from '@angular/common';
     DialogAcceptTaskComponent,
     DialogGiveupTaskComponent,
     DialogRedirectTaskComponent,
+    DialogTimeComponent,
     ResetByMailComponent,
     NewPasswordComponent,
     AddUserStoryComponent

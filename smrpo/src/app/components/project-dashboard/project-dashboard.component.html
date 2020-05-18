@@ -14,11 +14,11 @@
       <div *ngFor="let comment of commentsOnWall; let i = index">
         <div id = "comment {{i}}" fxLayout="row" >
           <div class="login-wrapper " fxLayout="row" flex
-          [ngClass]="(comment.user != trenutniUporabnik) ? 'show-comment-wrapper-left': 'show-comment-wrapper-right'">
+          [ngClass]="(comment.user.username != trenutniUporabnik) ? 'show-comment-wrapper-left': 'show-comment-wrapper-right'">
             <mat-card class="box-comment"
-            [ngClass]="(comment.user != trenutniUporabnik) ? 'box-comment-left': 'box-comment-right'">
+            [ngClass]="(comment.user.username != trenutniUporabnik) ? 'box-comment-left': 'box-comment-right'">
               <mat-card-header>
-                <mat-card-title class="comment-title">{{comment.user}}</mat-card-title>
+                <mat-card-title class="comment-title">{{comment.user.username}}</mat-card-title>
                  {{comment.date}}
               </mat-card-header>
 
@@ -345,7 +345,7 @@
 
 
 
-                      <!--Bo moralo it v sprint backlog!!!  -->
+
                       <div *ngFor="let t of allTasks">
                         <div *ngIf="t.tasks !== null && t.story === story.id">
 
