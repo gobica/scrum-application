@@ -70,11 +70,6 @@ table {
   margin-bottom: 20px;
 }
 
-/*.fc-view-container {*/
-  /*height: 50% !important;*/
-  /*margin: 10px !important;*/
-/*}*/
-
 .calendar {
   height: 80vh;
   margin: 15px !important;
@@ -82,4 +77,107 @@ table {
 
 .show-hide-btn {
   width: 79vw;
+}
+
+.commentArea {
+  margin: 5px;
+  margin-left: 20px;
+  width: 90%;
+}
+
+.cdk-textarea {
+  display: inline-block !important;
+  height: 30px;
+  resize: none;
+  overflow-x: hidden !important;
+  /*overflow-y: hidden !important;*/
+  white-space: nowrap;
+  /*margin-bottom: 20px;*/
+}
+
+.show-comment-wrapper-left {
+  width: 100vh !important;
+  margin-top: 5px;
+  /*padding: 0px 20px 10px !important;*/
+  position: relative;
+  display: table;
+  margin: 10px;
+}
+
+.show-comment-wrapper-right {
+  width: 100vh !important;
+  margin-top: 5px;
+  /*padding: 0px 20px 10px !important;*/
+  position: relative;
+  display: table;
+  margin: 10px;
+  /*margin-left: 31vw;*/
+}
+
+.box-comment {
+  align-self: flex-start;
+  opacity: 50;
+  /*padding: 60px 50px 40px 50px;*/
+  width: 100%;
+  border-radius: 5px;
+  max-width: 700px;
+  min-height: 30px;
+  /*margin-top: 5%;*/
+  position: relative;
+  display: table-cell;
+  padding: 0px;
+  /*margin: 10px;*/
+}
+
+.box-comment-left {
+  background-color: #ffffff;
+  color: black;
+}
+
+.box-comment-right {
+  background-color: #c9e3ff;
+  color: black;
+}
+
+#allComments {
+  overflow-y: auto;
+  height: 50vh;
+}
+
+.comment-text {
+  padding-left: 20px;
+  padding-top: 3px;
+}
+
+.comment-title {
+  padding-top: 8px;
+}
+
+.commentsWall{
+  display: table;
+}
+
+.comment-inline {
+   display: inline-block;
+}
+
+.btn-delete-comment {
+  margin-left: 27vw;
+  margin-top: 0px;
+  display: inline-block;
+}
+
+.margin-btn-delete {
+  vertical-align: top;
+  margin-top: 6vh;
+}
+
+#footer {
+  display: table;
+  position: fixed;
+  /*padding: 10px 10px 10px 10px;*/
+  bottom: 10px;
+  width: 81vw;
+  /*height: 10px;*/
+  background: lightgrey;
 }

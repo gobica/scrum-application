@@ -457,7 +457,7 @@ export class AddTaskComponent implements OnInit {
           const userConfirmed = false;
 
           const task = {id, description, timeEstimateHrs, idAssignedUser, idSprintStory, userConfirmed};
-          this.taskService.addTasksToStory(this.projektID, this.sprintID, this.zgodbaID, task).pipe(first()) // vrne vse naloge
+          this.taskService.addTasksToStory(this.projektID, this.sprintID, this.zgodbaID, task).pipe(first()) // doda nalogo
           .subscribe(
             data => {
                 console.log(data);

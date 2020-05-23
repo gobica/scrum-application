@@ -14,9 +14,9 @@
 
         <div class="checkbox marginLeft"><b>Done</b></div>
 
-        <div class="index-tag " ><b>#</b></div>
+        <div class="index-tag" ><b>#</b></div>
 
-        <div class="description " ><b>Task</b></div>
+        <div class="description" ><b>Task</b></div>
 
         <div class="select-time" ><b>Time (hrs)</b></div>
 
@@ -93,28 +93,28 @@
           </div>
 
 
-          <!--<div *ngIf="task.user === trenutniUporabnik" class="btn-right">-->
-            <!--<div *ngIf="task.userConfirmed === true">-->
-              <!--<div *ngIf="task.userWork === false">-->
-                <!--<button mat-stroked-button color="accent" class="btn-right btn-margin" title='Start work' (click)="startWork(i)">-->
-                  <!--<span class="mat-button-wrapper" class="glyphicon glyphicon-play">  </span>-->
-                <!--</button>-->
-              <!--</div>-->
-              <!--<div *ngIf="task.userWork === true">-->
-                <!--<button mat-stroked-button color="accent" class="btn-right btn-margin" title='Stop work' (click)="stopWork(i)">-->
-                  <!--<span class="mat-button-wrapper" class="glyphicon glyphicon-stop">  </span>-->
-                <!--</button>-->
-              <!--</div>-->
-            <!--</div>-->
-          <!--</div>-->
-
           <div *ngIf="task.user === trenutniUporabnik" class="btn-right">
             <div *ngIf="task.userConfirmed === true">
-              <button mat-stroked-button color="accent" class="btn-right btn-margin whiteButton" title='Sorry, currently unavailable :(' (click)="time(i)">
-                <span class="mat-button-wrapper" class="glyphicon glyphicon-time">  </span>
-              </button>
+              <div *ngIf="task.userWork === false">
+                <button mat-stroked-button color="accent" class="btn-right btn-margin whiteButton" title='Start work' (click)="startWork(i)" >
+                  <span class="mat-button-wrapper" class="glyphicon glyphicon-play">  </span>
+                </button>
+              </div>
+              <div *ngIf="task.userWork === true">
+                <button mat-stroked-button color="accent" class="btn-right btn-margin whiteButton" title='Stop work' (click)="stopWork(i)" >
+                  <span class="mat-button-wrapper" class="glyphicon glyphicon-stop">  </span>
+                </button>
+              </div>
             </div>
           </div>
+
+          <!--<div *ngIf="task.user === trenutniUporabnik" class="btn-right">-->
+            <!--<div *ngIf="task.userConfirmed === true">-->
+              <!--<button mat-stroked-button color="accent" class="btn-right btn-margin whiteButton" title='Sorry, currently unavailable :(' (click)="time(i)">-->
+                <!--<span class="mat-button-wrapper" class="glyphicon glyphicon-time">  </span>-->
+              <!--</button>-->
+            <!--</div>-->
+          <!--</div>-->
 
           <!--blank space ------------------------------------------------------>
           <div *ngIf="task.user != trenutniUporabnik" class="btn-right">
@@ -180,6 +180,14 @@
           <button mat-stroked-button color="accent" class="btn-right btn-margin whiteButton" disabled title='Sorry, currently unavailable :(' >
             <span class="mat-button-wrapper"> X </span>
           </button>
+
+          <div *ngIf="task.user === trenutniUporabnik" class="btn-right">
+            <div *ngIf="task.userConfirmed === true">
+              <button mat-stroked-button color="accent" class="btn-right btn-margin whiteButton" (click)="time(i)">
+                <span class="mat-button-wrapper" class="glyphicon glyphicon-time">  </span>
+              </button>
+            </div>
+          </div>
 
         </div>
 
