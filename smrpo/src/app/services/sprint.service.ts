@@ -25,10 +25,9 @@ export class SprintService {
   }
 
 
-  updateSprint (sprint: Sprint) {
-    var id = sprint.id;
-    console.log ("tok je id;", id)
-    return this.httpClient.put(this.getSprintsUrl + `/${id}`, sprint);
+  updateSprint (idProject: number, idSprint: number,  sprint: Sprint)  {
+    return this.httpClient.put<Sprint>(this.projectUrl + `/${idProject}` + '/sprint' + `/${idSprint}`, sprint);
+
   }
   delete(id: number) {
     return this.httpClient.delete(this.getSprintsUrl + `/${id}`);

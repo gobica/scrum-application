@@ -1,0 +1,77 @@
+<form [formGroup]="form" (ngSubmit)="onSubmit()" class="example-form">
+
+    <mat-dialog-content >
+    
+      
+        <mat-form-field>
+            <mat-label>Choose Start date</mat-label>
+            <input  [ngClass]="{ 'is-invalid': submitted && f.startDate.errors }"  
+            matInput [min]="currentDate" [matDatepicker]="picker"  formControlName="startDate"  (click)="picker.open()"readonly
+            (dateChange)="addEvent('change', $event)"
+            [ngModel] = "oldSprint.startDate"
+            >
+    
+            <mat-datepicker-toggle matSuffix [for]="picker" ></mat-datepicker-toggle>
+            <mat-datepicker [startAt] = "oldSprint.endDate" #picker readonly></mat-datepicker>
+    
+            <div *ngIf=" submitted && f.startDate.errors" class="invalid-feedback">
+                <div *ngIf="f.startDate.errors.required">Start date is required</div>
+            </div>
+        </mat-form-field>
+    
+        
+    
+        <br>
+    
+        <mat-form-field >
+            <mat-label>Choose End date</mat-label> 
+            <input         [ngClass]="{ 'is-invalid': submitted && f.endDate.errors }" 
+            matInput [matDatepicker]="picker1"  formControlName="endDate"  (focus)="picker1.open()" and (click)="picker1.open()" 
+            readonly  [min]="incrementDay(form.controls.startDate.value)" 
+            [ngModel] = "oldSprint.endDate"
+            >
+           
+            <div *ngIf=" submitted && f.endDate.errors" class="invalid-feedback">
+                <div *ngIf="f.endDate.errors.required">End date is required</div>
+            </div>
+    
+            <mat-datepicker-toggle matSuffix [for]="picker1" ></mat-datepicker-toggle>
+            <mat-datepicker  #picker1 readonly></mat-datepicker>
+    
+    
+    
+    
+        </mat-form-field>
+        <br>
+    
+        <mat-form-field>
+            <input matInput
+            min="1"
+            type="number"
+            [ngModel] = "oldSprint.velocity"
+
+            formControlName="velocity"
+            [ngClass]="{ 'is-invalid': submitted && f.velocity.errors }" 
+            placeholder="Velocity"
+            formControlName="velocity">
+    
+            <div *ngIf=" submitted && f.velocity.errors" class="invalid-feedback">
+                <div *ngIf="f.velocity.errors.required">Valid velocity is required</div>
+                <div *ngIf="f.velocity.errors.min">Must be a positive number</div>
+    
+            </div>
+    
+        </mat-form-field>
+      
+        <br>
+        <button [disabled]="loading"  mat-stroked-button color="accent">Save</button>
+        <button class="mat-raised-button"(click)="close()">Close</button>
+    
+    
+    </mat-dialog-content>
+    </form>
+    
+    
+    
+                   
+          

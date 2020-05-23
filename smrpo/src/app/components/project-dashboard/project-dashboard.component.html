@@ -189,7 +189,26 @@
           <!--<br>-->
         </mat-toolbar>
         <mat-toolbar>
-          <span>
+
+        <div class="marginRight">
+          <div  class="h4">Duration:</div>
+          <p  class="h5" >{{beautifySprints(sprint.startDate)}} - {{beautifySprints(sprint.endDate)}}</p>
+        </div>
+        <div class="marginRight">
+          <div  class="h4">Velocity:</div>
+          <p  class="h5">{{sprint.velocity}}</p>
+        </div>
+  
+        <div class="marginRight">
+          <div  class="h4">In sprint (pts):</div>
+          <p   class="h5">{{ sprint.velocity - remainingPtsSize }}</p>
+        </div>
+        <div class="marginRight">
+          <div  class="h4">Remaining (pts):</div>
+          <p   class="h5">{{remainingPtsSize}}</p>
+        </div>
+    
+          <!--<span>
             <div class="currentSprint"><b>
               <div class="duration">Duration:</div>
               <div class="velocity">Velocity:</div>
@@ -203,17 +222,19 @@
               <div class="used">{{ sprint.velocity - remainingPtsSize }}</div>
               <div class="remaning">{{remainingPtsSize}}</div>
             </div>
+      
           </span>
+        -->
           <br>
         </mat-toolbar>
         <mat-toolbar>
           <span *ngIf=" trenutniProjekt && showHideSprintStories === false">
-            <button mat-stroked-button color="primary" class="show-hide-btn" (click)="showSprintStories()">
+            <button mat-stroked-button color="primary" (click)="showSprintStories()">
               <span class="glyphicon glyphicon-chevron-down">  </span>
             </button>
           </span>
           <span *ngIf=" trenutniProjekt && showHideSprintStories === true">
-            <button mat-stroked-button color="primary" class="show-hide-btn" (click)="hideSprintStories()">
+            <button mat-stroked-button color="primary" (click)="hideSprintStories()">
               <span class="glyphicon glyphicon-chevron-up">  </span>
             </button>
           </span>
@@ -382,36 +403,46 @@
 
     <mat-toolbar>
       <span *ngIf=" trenutniProjekt && showHideCalendar === false">
-        <button mat-stroked-button color="primary" class="show-hide-btn" (click)="showCalendar()">
+        <button mat-stroked-button color="primary"  (click)="showCalendar()">
           <span class="glyphicon glyphicon-chevron-down">  </span>
         </button>
       </span>
       <span *ngIf=" trenutniProjekt && showHideCalendar === true">
-        <button mat-stroked-button color="primary" class="show-hide-btn" (click)="hideCalendar()">
+        <button mat-stroked-button color="primary" (click)="hideCalendar()">
           <span class="glyphicon glyphicon-chevron-up">  </span>
         </button>
       </span>
     </mat-toolbar>
 
-    <!--<div *ngFor="let sprint of sprints; let i = index">-->
-      <!--<div *ngIf="!isCurrentSprint(sprint)">-->
-        <!--<p>-->
-          <!--Start date: {{beautifySprints(sprint.startDate)}}-->
-          <!--<br>-->
-          <!--End date: {{beautifySprints(sprint.endDate)}}-->
-          <!--<br>-->
-          <!--Velocity: {{sprint.velocity}}-->
-          <!--<p>-->
-      <!--</div>-->
-    <!--</div>-->
+    <div *ngFor="let sprint of sprints; let i = index">
+
+     <div *ngIf="!isCurrentSprint(sprint)">
+      <button
+      *ngIf="trenutniProjekt.scrumMaster.username === authenticationService.currentUserValueFromToken.username"
+      mat-stroked-button color="primary" (click)="openEditSprintDialog(sprint);">Edit Sprint
+      <mat-icon>edit</mat-icon>
+    </button>
+      <p>
+          Start date: {{beautifySprints(sprint.startDate)}}
+         <br>
+          End date: {{beautifySprints(sprint.endDate)}}
+          <br>
+          Velocity: {{sprint.velocity}}
+          <p>
+      </div>
+    </div>
 
     <div  *ngIf="showHideCalendar === true" class="calendar">
       <full-calendar
+
         height="parent"
         defaultView="dayGridMonth"
         [firstDay]="1"
         [plugins]="calendarPlugins"
         [events]="sprintsInCalendar"
+        selectable= "true"
+        (dateClick)="selectDate($event)"
+
       ></full-calendar>
     </div>
 

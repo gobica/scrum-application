@@ -46,9 +46,8 @@ table {
   display: table !important;
 }
 
-.duration {
-  display: inline-block;
-  width: 30vw;
+.marginRight {
+  margin-right: 5vh;
 }
 
 .velocity {

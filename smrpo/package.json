@@ -30,6 +30,7 @@
     "@fullcalendar/angular": "^4.4.5-beta",
     "@fullcalendar/core": "^4.4.0",
     "@fullcalendar/daygrid": "^4.4.0",
+    "@fullcalendar/interaction": "^4.4.0",
     "@ng-bootstrap/ng-bootstrap": "^6.0.2",
     "angular-popper": "^2.0.1",
     "angular-util": "0.0.4",

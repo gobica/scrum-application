@@ -1,6 +1,8 @@
 import { Component, OnInit } from '@angular/core';
 import {MatDialog, MatDialogConfig, MAT_DIALOG_DATA} from '@angular/material/dialog';
 import { AddSprintDialogComponent } from '../add-sprint-dialog/add-sprint-dialog.component';
+import { EditSprintDialogComponent } from '../edit-sprint-dialog/edit-sprint-dialog.component';
+
 import { AddUserStoryComponent } from '../add-user-story/add-user-story.component';
 import { AlertService } from '../../services/alert.service';
 import { Story } from '../../models/story'
@@ -13,6 +15,7 @@ import { ProjectService } from '../../services/project.service';
 import { StoryService } from  '../../services/story.service';
 import { FormBuilder, FormGroup, Validators } from '@angular/forms';
 import {TaskService} from "../../services/task.service";
+import interactionPlugin from '@fullcalendar/interaction'; // for selectable
 
 import {DatePipe} from '@angular/common';
 
@@ -38,7 +41,7 @@ export class ProjectDashboardComponent implements OnInit {
   
   selectedStories = 'all';
 
-  calendarPlugins = [dayGridPlugin];
+  calendarPlugins = [dayGridPlugin, interactionPlugin];
   showHideCalendar = false;
   showHideSprintStories = true;
   sprintsInCalendar = [];
@@ -71,7 +74,6 @@ export class ProjectDashboardComponent implements OnInit {
     private taskService: TaskService,
     private router: Router,
     private alertService: AlertService,
-
     private datePipe: DatePipe
     ) {
     
@@ -102,6 +104,33 @@ export class ProjectDashboardComponent implements OnInit {
     // });
   }
 
+  selectDate(info) {
+    console.log(info.dateStr, "selectusmneki");
+
+  }
+
+  openEditSprintDialog(sprint) {
+    this.alertService.clear();
+    const dialogConfigEditSprint = new MatDialogConfig();
+    dialogConfigEditSprint.disableClose = true;
+    dialogConfigEditSprint.autoFocus = true;
+  //  console.log("USERNAME", this.trenutniProjekt.scrumMaster.username);
+    //console.log(" PROJEKT V DIALOG", this.trenutniProjekt);
+    //passing data
+    dialogConfigEditSprint.data = {
+      projectId: this.projektID,
+      sprintOld: sprint
+  };
+    //this.dialog.open(AddSprintDialogComponent, dialogConfig);
+    const dialogRefSprint = this.dialogSprint.open(EditSprintDialogComponent, dialogConfigEditSprint);
+    dialogRefSprint.afterClosed().subscribe(
+        data => {
+          ;
+        this.loadAllSprints();
+    }
+    );    
+}
+
   openSprintDialog() {
     this.alertService.clear();
 
@@ -117,7 +146,8 @@ export class ProjectDashboardComponent implements OnInit {
     //this.dialog.open(AddSprintDialogComponent, dialogConfig);
     const dialogRefSprint = this.dialogSprint.open(AddSprintDialogComponent, dialogConfigSprint);
     dialogRefSprint.afterClosed().subscribe(
-        data => {console.log("Dialog output:", data);
+        data => {
+          ;
         this.loadAllSprints();
     }
     );    
@@ -147,7 +177,7 @@ openStoryDialog() {
 
   const dialogRefStory = this.dialogStory.open(AddUserStoryComponent, dialogConfigStory);
   dialogRefStory.afterClosed().subscribe(
-      data => {console.log("Dialog output:", data);
+      data => {
       this.loadAllStories() 
   }
   );    
@@ -247,6 +277,9 @@ public beautifySprints(date) {
   return izpis;
 }
 
+
+
+
 public isStoryInCurrentSprint(story) {
   if(this.getCurrentSprint()) {
    // console.log("ternnutni sprint", this.getCurrentSprint());
@@ -263,7 +296,6 @@ public isFinishedInSprint( sprintID) {
    // console.log("ternnutni sprint", this.getCurrentSprint());
     for (var i = 0; i <this.stories.length; i++) {
       if (this.stories[i].idSprintCompleted == sprintID) { 
-        console.log("ja je");
         return true;      
       }
     }
@@ -299,7 +331,6 @@ public isStoryInSprintReady (idStory) {
 */
 
 public addStoryToSprint (story: Story) {
-  console.log(story);
   // get project by id
   var sprint = this.getCurrentSprint();
   var idSprint = sprint.id;
@@ -312,7 +343,6 @@ public addStoryToSprint (story: Story) {
         this.loadAllStories();
         this.loadAllSprints();
 
-        console.log(this.getCurrentSprint());
           this.alertService.success('Story added to sprint successful', true);
           
       },
@@ -349,8 +379,6 @@ public SubmitSizePts (story: Story, i) {
   }
     // reset alerts on submit
     story.sizePts = this.formSetSize.value.sizePts;
-    console.log("form", this.formSetSize.value.sizePts);
-    console.log(story.sizePts);
     this.loading = true;
     this.storyService.updateStory(story, this.projektID)
         .pipe(first())
@@ -372,7 +400,6 @@ public SubmitSizePts (story: Story, i) {
 public SubmitIsAccepted (story,  sprintID, valueIsAccepted) {
   this.alertService.clear();
   var storyID = story.id
-  console.log("to se posle",this.sprints);
   
   var values = {
     isAccepted: valueIsAccepted
@@ -389,7 +416,6 @@ public SubmitIsAccepted (story,  sprintID, valueIsAccepted) {
             
           },
           error => {
-              console.log("eeror");
 
               this.alertService.error(error);
           });
@@ -400,11 +426,9 @@ public SubmitIsAccepted (story,  sprintID, valueIsAccepted) {
 
 public SubmitIsReady (story, sprintID, valueIsReady ) {
   this.alertService.clear();
-  console.log(sprintID);
   var storyID = story.id;
  
   // reset alerts on submit
-  console.log("story", story);
   var values = {
     isReady: valueIsReady
     };
@@ -414,7 +438,6 @@ public SubmitIsReady (story, sprintID, valueIsReady ) {
       .pipe(first())
       .subscribe(
           (data:any) => {
-            console.log(data);
             if (valueIsReady == true) this.alertService.success('Story is ready!', true);
             if (valueIsReady == false) this.alertService.success('Story is not ready!', true);
             this.loadAllStories();
@@ -422,7 +445,6 @@ public SubmitIsReady (story, sprintID, valueIsReady ) {
 
           },
           error => {
-              console.log("eeror");
 
               this.alertService.error(error);
           });
@@ -514,7 +536,7 @@ getAllTasks(zgodbaID) {
               this.allTasks.push({story: zgodbaID, tasks: null});
             }
             // console.log(error);
-            console.log("Story with ID ", zgodbaID, " doesn't have tasks :)");
+          //  console.log("Story with ID ", zgodbaID, " doesn't have tasks :)");
             this.loading = false;
           }
         );
@@ -541,7 +563,6 @@ hashTest(text){
 public btnShowStory = function(projectId, storyId) {
   // console.log(projectId, storyId);
   var sprintId = this.getCurrentSprint().id;
-  console.log(this.getCurrentSprint());
   this.alertService.clear();
   this.router.navigateByUrl('/projectDashboard/' + projectId + '/sprint/' + sprintId + '/story/' + storyId + '/showTask');
 
@@ -565,13 +586,13 @@ showCalendar() {
   this.showHideCalendar = true;
 
   //v koledarju bo zelen, ce je current sprint
-  console.log(this.sprintsInCalendar);
+  //console.log(this.sprintsInCalendar);
   let currentSprint = this.getCurrentSprint();
   this.sprintsInCalendar.forEach(c =>{
     if(c.id === currentSprint.id) {
       c.backgroundColor =  "#12a102";
       c.borderColor = "#12a102";
-      console.log(c);
+    //  console.log(c);
     }
   });
 
@@ -590,7 +611,7 @@ hideSprintStories() {
 }
 
 print(nekaj){
-  console.log(nekaj);
+ // console.log(nekaj);
 }
 
 }

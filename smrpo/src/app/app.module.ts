@@ -46,7 +46,10 @@ import { NewPasswordComponent } from "./components/reset-password/new-password.c
 import { AddUserStoryComponent } from './components/add-user-story/add-user-story.component'
 
 import { FullCalendarModule } from '@fullcalendar/angular'; // for FullCalendar!
+import interactionPlugin from '@fullcalendar/interaction'; // for selectable
+
 import {DatePipe} from '@angular/common';
+import { EditSprintDialogComponent } from './components/edit-sprint-dialog/edit-sprint-dialog.component';
 
 
 @NgModule({
@@ -75,7 +78,9 @@ import {DatePipe} from '@angular/common';
     DialogRedirectTaskComponent,
     ResetByMailComponent,
     NewPasswordComponent,
-    AddUserStoryComponent
+    AddUserStoryComponent,
+    EditSprintDialogComponent,
+    
    // LoginComponent,
    //  AlertComponent
   ],
