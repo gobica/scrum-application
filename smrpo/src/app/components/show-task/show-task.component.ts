@@ -54,7 +54,7 @@ export class ShowTaskComponent implements OnInit {
 
   allTime = [{date: "2020-05-16", hour: 7}, {date: "2020-05-16", hour: 7}, {date: "2020-05-16", hour: 7}, {date: "2020-05-16", hour: 7}, {date: "2020-05-15", hour: 5}, {date: "2020-05-16", hour: 7},
     {date: "2020-05-16", hour: 7}, {date: "2020-05-16", hour: 7}, {date: "2020-05-16", hour: 7}, {date: "2020-05-16", hour: 7}, {date: "2020-05-15", hour: 5}, {date: "2020-05-16", hour: 7}];
-
+  // allTime = [];
 
   userNameTeamMember: string[] = [];
   // filteredOptionsTeamMember: Observable<string[]>[] = [];
@@ -468,18 +468,46 @@ export class ShowTaskComponent implements OnInit {
   time(i){
     
     //TODO: klici getAllTime :)
+
+    //sortedTime --> ce je vec ur v istem dnevu jih sesteje ter sortira po datumih
+    const sortedTime = [];
+    let jeZe = false;
+    this.allTime.forEach(t => {
+      jeZe = false;
+      sortedTime.forEach(s=> {
+        if(s && s.date) {
+          if (t.date === s.date) {
+            jeZe = true;
+          }
+        }
+      });
+      if(!jeZe) {
+        sortedTime.push({date: t.date, hour: 0});
+      }
+    });
+    if(sortedTime.length>0) {
+      this.allTime.forEach(t => {
+        sortedTime.forEach(s => {
+          if (t.date === s.date) {
+            s.hour = s.hour + t.hour;
+          }
+        });
+      });
+      sortedTime.sort((a, b) => (a.date > b.date) ? 1 : -1);
+    }
+    // console.log(sortedTime);
     
     this.alertService.clear();
     // this.alertService.warning('Time logging is not yet implemented.');
 
     const dialogRef = this.dialog.open(DialogTimeComponent, {
         width: '50vw',
-        data: {name: this.allTasks[i].description, time: this.allTime, closed: false}
+        data: {name: this.allTasks[i].description, time: sortedTime, closed: false}
       });
 
     dialogRef.afterClosed().subscribe(result => {
 
-      console.log('The dialog was closed: '+ result);
+      // console.log('The dialog was closed: '+ result);
     });
 
   }
