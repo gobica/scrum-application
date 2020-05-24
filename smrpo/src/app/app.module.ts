@@ -52,6 +52,7 @@ import interactionPlugin from '@fullcalendar/interaction'; // for selectable
 
 import {DatePipe} from '@angular/common';
 import { EditSprintDialogComponent } from './components/edit-sprint-dialog/edit-sprint-dialog.component';
+import { DialogDeleteSprintComponent } from './components/project-dashboard/dialog-delete-sprint/dialog-delete-sprint.component';
 
 
 @NgModule({
@@ -84,6 +85,7 @@ import { EditSprintDialogComponent } from './components/edit-sprint-dialog/edit-
     NewPasswordComponent,
     AddUserStoryComponent,
     EditSprintDialogComponent,
+    DialogDeleteSprintComponent,
     
    // LoginComponent,
    //  AlertComponent

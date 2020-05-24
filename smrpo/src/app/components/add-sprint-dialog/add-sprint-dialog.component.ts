@@ -85,7 +85,8 @@ onSubmit() {
   this.loading = true;
   this.loading = true;
   // send last milisecond to datbase
-  console.log(this.form.value);
+  var sprint = this.form.value;
+  console.log("ta sprint se doda", sprint)
   this.sprintService.addSprint(this.form.value, this.idProject)
       .pipe(first())
       .subscribe(

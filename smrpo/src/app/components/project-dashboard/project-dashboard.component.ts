@@ -24,6 +24,7 @@ import dayGridPlugin from '@fullcalendar/daygrid';
 import {orange} from "color-name";
 import {DialogAcceptTaskComponent} from "../show-task/dialog-accept-task.component";
 import { DialogDeleteCommentComponent } from './dialog-delete-comment.component';
+import {DialogDeleteSprintComponent} from './dialog-delete-sprint/dialog-delete-sprint.component'
 
 @Component({
   selector: 'app-project-dashboard',
@@ -360,6 +361,67 @@ public addStoryToSprint (story: Story) {
           this.alertService.error(error);
       });
 }
+
+
+
+//  deleteSprint(idProject: number, idSprint: number) {
+
+
+public deleteSprint ( idSprint: number) {
+  // get project by id
+  this.alertService.clear();
+  const dialogRef = this.dialog.open(DialogDeleteSprintComponent, {
+    width: '50vw',
+    // data: {userConfirmed: this.allTasks[i].userConfirmed}
+  });
+      dialogRef.afterClosed().subscribe(result => {
+        if (result === true) {
+          this.sprintService.deleteSprint(this.projektID, idSprint).pipe(first())
+          .subscribe(data => {
+            this.loadAllStories();
+            this.loadAllSprints();
+
+          this.alertService.success('Sprint is deleted!', true);
+          
+          }, 
+          
+          error => {
+
+            this.alertService.error(error);
+        });
+          
+        }
+      });
+    
+}
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
 
 
 
