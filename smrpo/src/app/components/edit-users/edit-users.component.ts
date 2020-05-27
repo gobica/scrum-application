@@ -4,9 +4,12 @@ import { UserService } from '../../services/user.service';
 import { AuthenticationService } from  '../../services/authentication.service';
 import { first } from 'rxjs/operators';
 import { ThrowStmt } from '@angular/compiler';
-import {MatDialog, MatDialogConfig } from '@angular/material/dialog';
 import {EditUserDialogComponent} from '../edit-user-dialog/edit-user-dialog.component'
 import { AlertService,  } from '../../services/alert.service';
+import {MatDialog, MatDialogConfig, MAT_DIALOG_DATA} from '@angular/material/dialog';
+
+
+import { LogoutDialogComponent } from './logout-dialog/logout-dialog.component';
 
 @Component({
   selector: 'app-edit-users',
@@ -20,13 +23,16 @@ export class EditUsersComponent implements OnInit {
   users = [];
   user;
   isDataLoaded ;
+   
 
 
   constructor(
     private authenticationService: AuthenticationService,
     private userService: UserService,
     private matDialog: MatDialog,
-    private alertService: AlertService
+    private alertService: AlertService,
+    public dialog: MatDialog
+
     ) {
       this.currentUserValue = this.authenticationService.currentUserValueFromToken;
       console.log("current user v dashboard", this.currentUserValue);
@@ -68,6 +74,8 @@ export class EditUsersComponent implements OnInit {
             error => {
                 this.alertService.error(error);
                 this.loading = false;
+                this.loadAllUsers();
+
             });
   }
 
@@ -75,7 +83,8 @@ export class EditUsersComponent implements OnInit {
     this.userService.getAll(true)
         .pipe(first())
         .subscribe(users => {
-          this.users = users
+          this.users = users;
+          console.log("vsi userji",users);
         });
   }
 
@@ -112,5 +121,40 @@ changeValue(i: number,userId:number, property: string, event: any) {
 }
 
 
+
+public changeCurrentUser ( user) {
+  // get project by id
+  this.alertService.clear();
+  const dialogRef = this.dialog.open(LogoutDialogComponent, {
+    width: '50vw',
+    // data: {userConfirmed: this.allTasks[i].userConfirmed}
+  });
+      dialogRef.afterClosed().subscribe(result => {
+        if (result === true) {
+          this.updateCurrentUser(user);
+              
+        }
+      });
+    
+}
+
+updateCurrentUser(user: User) {
+
+  this.loading = true;
+  this.userService.updateUser(user)
+      .pipe(first())
+      .subscribe(
+          data => {
+              this.alertService.success('Update successful', true);
+              this.authenticationService.logout();
+
+          },
+          error => {
+              this.alertService.error(error);
+              this.loading = false;
+              this.loadAllUsers();
+
+          });
+}
 
 }

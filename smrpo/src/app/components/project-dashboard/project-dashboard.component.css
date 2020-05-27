@@ -13,7 +13,9 @@
   /*overflow: scroll;*/
 }
 
-
+.currentSprintBackground {
+  background-color: hsla(120, 100%, 75%, 0.3);
+}
 .half-width-right {
 	width: 45%;
   padding-right: 6px;

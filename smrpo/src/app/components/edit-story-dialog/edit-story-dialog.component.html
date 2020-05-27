@@ -1,0 +1,114 @@
+<div class="container-fluid">
+    <form [formGroup]="formStory" (ngSubmit)="onSubmit()" class=" d-flex justify-content-center">
+        <mat-dialog-content class="w-100 ">
+            <mat-form-field class="w-100">
+                <input matInput placeholder="*Name" type="text" formControlName="name"
+                    [ngClass]="{ 'is-invalid': submitted && f.name.errors }"
+                    [ngModel] = "storyOld.name">
+
+                <div *ngIf=" submitted && f.name.errors" class="invalid-feedback">
+                    <div *ngIf="f.name.errors.required">Name is required</div>
+                </div>
+            </mat-form-field>
+            <br>
+            <mat-form-field class="w-100">
+                <textarea rows="4" cols="50" matInput placeholder="Description" type="text"
+                    formControlName="description"
+                    [ngClass]="{ 'is-invalid': submitted && f.description.errors }"
+                    [ngModel] = "storyOld.description">
+
+                </textarea>
+            </mat-form-field>
+            <br>
+            <mat-form-field class="w-100">
+                <textarea rows="4" cols="50" matInput placeholder="*Acceptance Tests" type="text"
+                    formControlName="acceptanceTests"
+                    [ngClass]="{ 'is-invalid': submitted && f.priority.errors }"                  
+                      [ngModel] = "storyOld.acceptanceTests">
+                </textarea>
+
+                <div *ngIf=" submitted && f.acceptanceTests.errors" class="invalid-feedback">
+                    <div *ngIf="f.acceptanceTests.errors.required">Acceptance Tests is required</div>
+                </div>
+            </mat-form-field>
+
+            <br>
+
+            <mat-form-field class="w-100">
+                <div class="form-group">
+
+                    <mat-select formControlName="priority" placeholder="*Priority"
+                        [ngClass]="{ 'is-invalid': submitted && f.priority.errors }"
+                        [ngModel] = "storyOld.priority">
+
+
+                        <mat-option value="must have">Must have</mat-option>
+                        <mat-option value="could have">Could have</mat-option>
+                        <mat-option value="should have">Should have</mat-option>
+                        <mat-option value="won't have this time">Won't have this time</mat-option>
+                    </mat-select>
+
+                    <div *ngIf=" submitted && f.priority.errors" class="invalid-feedback">
+                        <div *ngIf="f.priority.errors.required">Priority is required</div>
+                    </div>
+
+                </div>
+            </mat-form-field>
+            <br>
+
+
+            <mat-form-field class="w-100">
+                <input matInput placeholder="*Business Value" min="0" type="number" formControlName="businessValue"
+                    [ngClass]="{ 'is-invalid': submitted && f.businessValue.errors }"
+                    [ngModel] = "storyOld.businessValue">
+
+                <div *ngIf=" submitted && f.businessValue.errors" class="invalid-feedback">
+                    <div *ngIf="f.businessValue.errors.required">Business Value is required</div>
+                    <div *ngIf="f.businessValue.errors.min">Must be a positive number</div>
+
+                </div>
+            </mat-form-field>
+            <br>
+
+
+            <mat-form-field class="w-100">
+                <input matInput placeholder="Size" type="number" min="0" formControlName="sizePts"
+                    [ngClass]="{ 'is-invalid': submitted && f.sizePts.errors }"
+                    [ngModel] = "storyOld.sizePts">
+                <div *ngIf=" submitted && f.sizePts.errors" class="invalid-feedback">
+                    <div *ngIf="f.sizePts.errors.min">Must be a positive number</div>
+                    <div *ngIf="f.sizePts.errors.max">Number is too high. Pick lower than 1000.</div>
+
+
+                </div>
+            </mat-form-field>
+
+
+            <br>
+
+
+            <br>
+            <!--
+            <mat-form-field>
+                <input matInput type="number"  formControlName="velocity"
+                [ngClass]="{ 'is-invalid': submitted && f.velocity.errors }" 
+                placeholder="Velocity"
+                formControlName="velocity">
+        
+                <div *ngIf=" submitted && f.velocity.errors" class="invalid-feedback">
+                    <div *ngIf="f.velocity.errors.required">Valid velocity is required</div>
+                </div>
+        
+            </mat-form-field>
+        -->
+
+            <button mat-stroked-button color="accent">Save</button>
+            <button class="mat-raised-button" (click)="close()">Close</button>
+
+
+        </mat-dialog-content>
+    </form>
+
+
+
+</div>

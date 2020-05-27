@@ -2,6 +2,7 @@ import { Component, OnInit } from '@angular/core';
 import {MatDialog, MatDialogConfig, MAT_DIALOG_DATA} from '@angular/material/dialog';
 import { AddSprintDialogComponent } from '../add-sprint-dialog/add-sprint-dialog.component';
 import { EditSprintDialogComponent } from '../edit-sprint-dialog/edit-sprint-dialog.component';
+import { EditStoryDialogComponent } from '../edit-story-dialog/edit-story-dialog.component';
 
 import { AddUserStoryComponent } from '../add-user-story/add-user-story.component';
 import { AlertService } from '../../services/alert.service';
@@ -15,7 +16,7 @@ import { ProjectService } from '../../services/project.service';
 import { StoryService } from  '../../services/story.service';
 import { FormBuilder, FormGroup, Validators } from '@angular/forms';
 import {TaskService} from "../../services/task.service";
-import interactionPlugin from '@fullcalendar/interaction'; // for selectable
+import interactionPlugin, { ThirdPartyDraggable } from '@fullcalendar/interaction'; // for selectable
 import {CommentService} from "../../services/comment.service";
 
 import {DatePipe} from '@angular/common';
@@ -25,6 +26,9 @@ import {orange} from "color-name";
 import {DialogAcceptTaskComponent} from "../show-task/dialog-accept-task.component";
 import { DialogDeleteCommentComponent } from './dialog-delete-comment.component';
 import {DialogDeleteSprintComponent} from './dialog-delete-sprint/dialog-delete-sprint.component'
+import {DialogDeleteStoryComponent} from './dialog-delete-story/dialog-delete-story.component'
+
+
 
 @Component({
   selector: 'app-project-dashboard',
@@ -73,9 +77,13 @@ export class ProjectDashboardComponent implements OnInit {
 
     //sprint dialog
     private dialogSprint: MatDialog,
+    private dialogEditStory: MatDialog,
+
     private sprintService: SprintService,
     //story dialog
     private dialogStory: MatDialog,
+    private dialogStoryDelete: MatDialog,
+
     private storyService: StoryService,
     // to get Project ID
     private route: ActivatedRoute,
@@ -118,6 +126,27 @@ export class ProjectDashboardComponent implements OnInit {
     console.log(info.dateStr, "selectusmneki");
 
   }
+  openEditStoryDialog(story) {
+    this.alertService.clear();
+    const dialogConfigEditStory = new MatDialogConfig();
+    dialogConfigEditStory.disableClose = true;
+    dialogConfigEditStory.autoFocus = true;
+  //  console.log("USERNAME", this.trenutniProjekt.scrumMaster.username);
+    //console.log(" PROJEKT V DIALOG", this.trenutniProjekt);
+    //passing data
+    dialogConfigEditStory.data = {
+      projectId: this.projektID,
+      storyOld: story
+  };
+    //this.dialog.open(AddSprintDialogComponent, dialogConfig);
+    const dialogRefStory = this.dialogEditStory.open(EditStoryDialogComponent, dialogConfigEditStory);
+    dialogRefStory.afterClosed().subscribe(
+        data => {
+          ;
+        this.loadAllStories();
+    }
+    );    
+}
 
   openEditSprintDialog(sprint) {
     this.alertService.clear();
@@ -137,6 +166,7 @@ export class ProjectDashboardComponent implements OnInit {
         data => {
           ;
         this.loadAllSprints();
+
     }
     );    
 }
@@ -396,39 +426,40 @@ public deleteSprint ( idSprint: number) {
 }
 
 
+public deleteStory ( idStory: number) {
+  // get project by id
+  this.alertService.clear();
+  const dialogRef = this.dialog.open(DialogDeleteStoryComponent, {
+    width: '50vw',
+    // data: {userConfirmed: this.allTasks[i].userConfirmed}
+  });
+      dialogRef.afterClosed().subscribe(result => {
+        if (result === true) {
+          this.storyService.deleteStory(this.projektID, idStory).pipe(first())
+          .subscribe(data => {
+            this.loadAllStories();
+            this.loadAllSprints();
 
+          this.alertService.success('Story is deleted!', true);
+          
+          }, 
+          
+          error => {
 
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
+            this.alertService.error(error);
+        });
+          
+        }
+      });
+    
+}
 
 
 
 
 private updateStoryAPI (story: Story) {
   // get project by id
-  this.storyService.updateStory(story, this.projektID)
+  this.storyService.updateStory(this.projektID, story.id,  story)
   .pipe(first())
   .subscribe(
       (data:any) => {
@@ -451,7 +482,7 @@ public SubmitSizePts (story: Story, i) {
     // reset alerts on submit
     story.sizePts = this.formSetSize.value.sizePts;
     this.loading = true;
-    this.storyService.updateStory(story, this.projektID)
+    this.storyService.updateStory(this.projektID, story.id,  story)
         .pipe(first())
         .subscribe(
             (data:Story) => {
@@ -640,7 +671,8 @@ public btnShowStory = function(projectId, storyId) {
     // console.log(id);
 };
 
-remainingPts(sprint) {
+public remainingPts(sprint) {
+  let  remainingPtsSize = 0; 
   let allPts = 0;
   if(sprint != null && sprint != undefined) {
     let zgodbe = sprint.stories;
@@ -648,8 +680,10 @@ remainingPts(sprint) {
     zgodbe.forEach(z => {
       allPts += z.sizePts;
     });
-    this.remainingPtsSize = velocity - allPts;
+    remainingPtsSize = velocity - allPts;
   }
+
+  return remainingPtsSize
 
 }
 

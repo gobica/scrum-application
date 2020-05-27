@@ -23,11 +23,17 @@ export class StoryService {
     return this.httpClient.get<Story[]>(this.projectUrl + `/${idProject}` + '/story');
   }
 
-  updateStory(story: Story, idProject: number) {
-    var idStory = story.id;
-    console.log(this.projectUrl + `/${idProject}`+ '/story' +`/${idStory}`);
+  updateStory(idProject: number, idStory: number, story: Story) {
     return this.httpClient.put(this.projectUrl + `/${idProject}`+ '/story' +`/${idStory}`, story);
   }
+
+  deleteStory(idProject: number, idStory: number) {
+    return this.httpClient.delete(this.projectUrl + `/${idProject}`+ '/story' +`/${idStory}`);
+  }
+
+
+
+
 
   updateIsAcceptedOrIsReady(values, idProject: number, idSprint: number, idStory: number) {
     return this.httpClient.put(this.projectUrl + `/${idProject}`+  '/sprint'  + `/${idSprint}`+ '/story' +`/${idStory}`, values);
