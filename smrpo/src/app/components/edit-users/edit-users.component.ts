@@ -19,15 +19,17 @@ import { LogoutDialogComponent } from './logout-dialog/logout-dialog.component';
 export class EditUsersComponent implements OnInit {
   loading = false;
   editField: string;
+  editFieldCurrent: string;
   currentUserValue: User;
   users = [];
+  currentUser;
   user;
   isDataLoaded ;
    
 
 
   constructor(
-    private authenticationService: AuthenticationService,
+    public authenticationService: AuthenticationService,
     private userService: UserService,
     private matDialog: MatDialog,
     private alertService: AlertService,
@@ -107,6 +109,17 @@ export class EditUsersComponent implements OnInit {
     this.users[i][property] = editField;
   }
 
+  updateListCurrent(property: string, event: any) {
+    const editFieldCurrent = event.target.textContent;
+    console.log("editFieldCurrent", editFieldCurrent);
+    console.log("currentUserValue",this.currentUserValue);
+
+    console.log("property",property);
+
+    this.currentUserValue[property]  = editFieldCurrent;
+  }
+
+
   remove(i: any) {
     //this.awaitingPersonList.push(this.users[id]);
     this.users.splice(i, 1);
@@ -120,7 +133,9 @@ changeValue(i: number,userId:number, property: string, event: any) {
 
 }
 
-
+changeValueOfCurrentUser(event: any) {
+  this.editFieldCurrent = event.target.textContent;
+}
 
 public changeCurrentUser ( user) {
   // get project by id

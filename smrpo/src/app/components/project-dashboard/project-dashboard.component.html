@@ -89,8 +89,9 @@
                       <!--<li>name : {{story.name}}</li>-->
                       <mat-chip-list>
                         <mat-chip color={{story.priorityColor}} selected>{{story.priority}}</mat-chip>
-                      </mat-chip-list>
 
+                      </mat-chip-list>
+                      
 
                       <h3><u>Description:</u></h3>
                       <p>{{story.description}}</p>
@@ -224,6 +225,8 @@
                       <!--<li>name : {{story.name}}</li>-->
                       <mat-chip-list>
                         <mat-chip color={{story.priorityColor}} selected>{{story.priority}}</mat-chip>
+                        <mat-chip  *ngIf = "story.isAccepted == 0" color="warn"  selected >Rejected</mat-chip>
+
                       </mat-chip-list>
 
 
@@ -413,8 +416,6 @@
       <div (click)="print(sprints)">Sprint Backlog</div>
     </ng-template>
 
-    <div class="row">
-      <div class="col-7">
         <mat-toolbar>
           <span>Stories in Current Sprint</span>
         </mat-toolbar>
@@ -481,9 +482,9 @@
 
 
       </div>
-    -->
+    --> 
 
-          <div *ngIf="showHideSprintStories === true">
+          <div  >
             <div *ngIf="isCurrentSprint(sprint)" class="container-fluid">
 
               <!--<ngx-loading [show]="loadTasksOfSprintStories(sprint.stories)"></ngx-loading>-->
@@ -527,8 +528,6 @@
 
                       <!--<h3><u>Tasks:</u> </h3>-->
                       <!--<div></div>-->
-
-
 
 
 
@@ -593,17 +592,16 @@
                     </ng-template>
 
                     <div
-                    *ngIf="( story.isAccepted == 0 )">
-                      Storry is rejected because of: "{{story.reviewComment}}""
+                    *ngIf=" story.isAccepted == 0 ">
+                      Story is rejected because of: {{story.SprintStory.reviewComment}}
                   </div>
-
-
+               
                   </mat-card-content>
 
 
                   <mat-card-actions>
                     <button
-                      *ngIf="( story.isAccepted == null ) &&  authenticationService.currentUserValueFromToken.username == trenutniProjekt.productOwner.username "
+                      *ngIf="( story.isAccepted == null || story.isAccepted == 0 ) &&  authenticationService.currentUserValueFromToken.username == trenutniProjekt.productOwner.username "
                       mat-stroked-button color="primary"
                       (click)="SubmitIsAccepted(story, getCurrentSprint().id, true)">Accept Story
 
@@ -612,7 +610,7 @@
                     <button
                       *ngIf="( story.isAccepted == null ) && authenticationService.currentUserValueFromToken.username == trenutniProjekt.productOwner.username "
                       mat-stroked-button color="warn"
-                      (click)="SubmitRejectComment(getCurrentSprint().id, story.id,  0)">Reject Story
+                      (click)="SubmitRejectComment(getCurrentSprint().id, story,  0)">Reject Story
                     </button>
 
 
@@ -638,8 +636,9 @@
           </div>
         </div>
 
-      </div>
-      <div class="col-5">
+      
+      <!--
+    <div class="col-5">
         <mat-toolbar>
           <span>All sprints</span>
 
@@ -759,7 +758,7 @@
 
 
 
-            <!--<span>
+            <span>
             <div class="currentSprint"><b>
               <div class="duration">Duration:</div>
               <div class="velocity">Velocity:</div>
@@ -775,10 +774,10 @@
             </div>
       
           </span>
-        -->
+        
 
 
-            <!--
+            
       <p>
           Start date: {{beautifySprints(sprint.startDate)}}
          <br>
@@ -786,7 +785,7 @@
           <br>
           Velocity: {{sprint.velocity}}
           <p>
-            -->
+            
             <br>
 
           </div>
@@ -798,8 +797,223 @@
             [events]="sprintsInCalendar" selectable="true" (dateClick)="selectDate($event)"></full-calendar>
         </div>
       </div>
-    </div>
+    -->
   </mat-tab>
+
+
+
+<!--##############################SPRINTS######################-->
+
+
+<mat-tab>
+  <ng-template mat-tab-label>
+    <mat-icon class="example-tab-icon">date_range</mat-icon>
+    <div (click)="print(sprints)">Sprints</div>
+  </ng-template>
+    <mat-toolbar>
+      <span>All sprints</span>
+
+      <span class=" ml-4 " *ngIf=" trenutniProjekt && showHideCalendar === false">
+        <button mat-stroked-button color="primary" (click)="showCalendar()">
+          Show Calendar
+          <mat-icon>calendar_today</mat-icon>
+        </button>
+      </span>
+      <span class=" ml-4 " *ngIf=" trenutniProjekt && showHideCalendar === true">
+        <button mat-stroked-button color="primary" (click)="hideCalendar()">
+          Hide Calendar
+          <mat-icon>calendar_today</mat-icon>
+        </button>
+      </span>
+
+      <span class="example-fill-remaining-space"></span>
+      <span *ngIf=" trenutniProjekt ">
+        <button
+          *ngIf="trenutniProjekt.scrumMaster.username === authenticationService.currentUserValueFromToken.username"
+          mat-stroked-button color="primary" (click)="openSprintDialog();">Add Sprint
+          <mat-icon>add</mat-icon>
+        </button>
+      </span>
+
+
+    </mat-toolbar>
+
+    <div *ngFor="let sprint of sprints; let i = index">
+      <div *ngIf="isCurrentSprint(sprint)">
+
+        <div class="container currentSprintBackground">
+          <br>
+
+          <div class="row">
+            <div class="col-sm">
+              <div class="h4">Duration:</div>
+              <p class="h5">{{beautifySprints(sprint.startDate)}} - {{beautifySprints(sprint.endDate)}}</p>
+            </div>
+            <div class="col-sm">
+              <div class="h4">Velocity:</div>
+              <p class="h5">{{ sprint.velocity}}</p>
+            </div>
+            <div class="col-sm">
+              <div class="h4">In sprint (pts):</div>
+              <p class="h5">{{ sprint.velocity - remainingPts(sprint) }}</p>
+            </div>
+            <div class="col-sm">
+              <div class="h4">Remaining (pts):</div>
+              <p class="h5">{{remainingPts(sprint)}}</p>
+            </div>
+
+
+          </div>
+          <br>
+
+        </div>
+      </div>
+      <mat-divider></mat-divider>
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+      <div *ngIf="!isCurrentSprint(sprint)">
+        <br>
+
+        <div class="container">
+          <div class="row">
+            <div class="col-sm">
+              <div class="h4">Duration:</div>
+              <p class="h5">{{beautifySprints(sprint.startDate)}} - {{beautifySprints(sprint.endDate)}}</p>
+            </div>
+            <div class="col-sm">
+              <div class="h4">Velocity:</div>
+              <p class="h5">{{sprint.velocity}}</p>
+            </div>
+
+
+            <div class="col-sm">
+              <button
+                *ngIf="trenutniProjekt.scrumMaster.username === authenticationService.currentUserValueFromToken.username"
+                mat-stroked-button color="primary" (click)="openEditSprintDialog(sprint);">Edit
+                <mat-icon>edit</mat-icon>
+              </button>
+
+            </div>
+
+            <div class="col-sm">
+              <button
+                *ngIf="trenutniProjekt.scrumMaster.username === authenticationService.currentUserValueFromToken.username"
+                mat-stroked-button color="primary" (click)="deleteSprint(sprint.id);">Delete
+                <mat-icon>delete</mat-icon>
+              </button>
+
+            </div>
+          </div>
+
+
+
+        </div>
+
+
+
+        <!--<span>
+        <div class="currentSprint"><b>
+          <div class="duration">Duration:</div>
+          <div class="velocity">Velocity:</div>
+          <div class="used">In sprint (pts):</div>
+          <div class="remaning">Remaining (pts):</div>
+        </b></div>
+
+        <div class="currentSprint">
+          <div class="duration">{{beautifySprints(sprint.startDate)}} - {{beautifySprints(sprint.endDate)}}</div>
+          <div class="velocity">{{sprint.velocity}}</div>
+          <div class="used">{{ sprint.velocity - remainingPtsSize }}</div>
+          <div class="remaning">{{remainingPtsSize}}</div>
+        </div>
+  
+      </span>
+    -->
+
+
+        <!--
+  <p>
+      Start date: {{beautifySprints(sprint.startDate)}}
+     <br>
+      End date: {{beautifySprints(sprint.endDate)}}
+      <br>
+      Velocity: {{sprint.velocity}}
+      <p>
+        -->
+        <br>
+
+      </div>
+
+    </div>
+
+    <div *ngIf="showHideCalendar === true" class="calendar">
+      <full-calendar height="parent" defaultView="dayGridMonth" [firstDay]="1" [plugins]="calendarPlugins"
+        [events]="sprintsInCalendar" selectable="true" (dateClick)="selectDate($event)"></full-calendar>
+    </div>
+</mat-tab>
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
   <mat-tab>
     <ng-template mat-tab-label>
       <mat-icon class="example-tab-icon">message</mat-icon>

@@ -503,7 +503,7 @@ public SubmitSizePts (story: Story, i) {
 public SubmitIsAccepted (story,  sprintID, valueIsAccepted) {
   this.alertService.clear();
   var storyID = story.id
-  
+  console.log("to je iz sprinta zgodba", story);
   var values = {
     isAccepted: valueIsAccepted
     };
@@ -525,10 +525,9 @@ public SubmitIsAccepted (story,  sprintID, valueIsAccepted) {
 }
 
 
-public SubmitRejectComment(sprintID,  storyID, isAcceptedValue) {
+public SubmitRejectComment(sprintID,  story, isAcceptedValue) {
 
-
-  
+  var storyID = story.id; 
   this.alertService.clear();
   const dialogRef = this.dialog.open(AddRejectCommentComponent, {
     width: '50vw',
@@ -538,25 +537,26 @@ public SubmitRejectComment(sprintID,  storyID, isAcceptedValue) {
   dialogRef.afterClosed().subscribe(result => {
     if (result !== false) {
       var getreviewCommentValue = result;
-      console.log("to je result", result);
-  
-  this.sprintService.updateStoryinSprint(this.projektID, sprintID, storyID, isAcceptedValue , getreviewCommentValue)
-      .pipe(first())
-      .subscribe(
-          (data:any) => {
-         //   if (valueIsAccepted == true) this.alertService.success('Story is Accepted!', true);
-         //   if (valueIsAccepted == false) this.alertService.success('Story is "unfinished"!', true);
-            this.loadAllStories();
-            this.loadAllSprints();
-            
-            this.alertService.success('Story is "Rejected"!', true);
-            
-          },
-          error => {
+    
 
-              this.alertService.error(error);
-          });
-}
+      this.sprintService.updateStoryinSprint(this.projektID, sprintID, storyID, isAcceptedValue , getreviewCommentValue)
+          .pipe(first())
+          .subscribe(
+              (data:any) => {
+            //   if (valueIsAccepted == true) this.alertService.success('Story is Accepted!', true);
+            //   if (valueIsAccepted == false) this.alertService.success('Story is "unfinished"!', true);
+                this.loadAllStories();
+                this.loadAllSprints();
+                console.log("story sadasdrejectan", story);
+
+                this.alertService.success('Story is "Rejected"!', true);
+                
+              },
+              error => {
+
+                  this.alertService.error(error);
+              });
+      } 
   });
 
 }

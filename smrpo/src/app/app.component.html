@@ -10,7 +10,7 @@
           Users <span class="caret"></span></a>
         <div *dropdownMenu class="dropdown-menu dropdown dropdown-primary" role="menu">
           <li *ngIf="authenticationService.currentUserValueFromToken.globalRole == 'admin'"><a class="nav-item nav-link" routerLink="/register">Register users</a></li> 
-          <li *ngIf="authenticationService.currentUserValueFromToken.globalRole == 'admin'"><a class="nav-item nav-link" routerLink="/editUsers">Edit users</a></li> 
+          <li ><a class="nav-item nav-link" routerLink="/editUsers">Edit users</a></li> 
         </div >
       </li>
 
