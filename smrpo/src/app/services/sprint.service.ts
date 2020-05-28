@@ -51,6 +51,16 @@ export class SprintService {
   }
  
 
+  updateStoryinSprint ( idProject: number, idSprint: number, idOfStory: number, isAcceptedValue:any,reviewCommentValue:any ) {
+    //object 
+    var object = {
+     "isAccepted": isAcceptedValue,
+     "reviewComment": reviewCommentValue
+ 
+   }
+      return this.httpClient.put(this.projectUrl + `/${idProject}` + '/sprint'+ `/${idSprint}` + '/story' + `/${idSprint}`, object );
+   }
+
    //project/<idProject>/sprint
 
 

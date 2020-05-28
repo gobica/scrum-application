@@ -523,6 +523,33 @@ public SubmitIsAccepted (story,  sprintID, valueIsAccepted) {
           });
 }
 
+
+public SubmitRejectComment(sprintID,  storyID, isAcceptedValue, reviewCommentValue) {
+
+  this.alertService.clear();
+
+  reviewCommentValue =" poskusni comment "
+
+
+  
+  this.sprintService.updateStoryinSprint(this.projektID, sprintID, storyID, isAcceptedValue , reviewCommentValue)
+      .pipe(first())
+      .subscribe(
+          (data:any) => {
+         //   if (valueIsAccepted == true) this.alertService.success('Story is Accepted!', true);
+         //   if (valueIsAccepted == false) this.alertService.success('Story is "unfinished"!', true);
+            this.loadAllStories();
+            this.loadAllSprints();
+            this.alertService.success('Story is "Rejected"!', true);
+            
+          },
+          error => {
+
+              this.alertService.error(error);
+          });
+}
+
+
 //set story to read
 
 
@@ -579,11 +606,13 @@ public  isCurrentSprint(sprint) {
   endDate.setHours(0,0,0,0);  
   currentDate.setHours(0,0,0,0);
 
+
   
   
 if ( startDate <= currentDate && currentDate <= endDate) 
   {
    return true; 
+   console.log("ja je current")
   }
 
   else return false; 
@@ -733,7 +762,7 @@ loadAllComments() {
     },
     error => {
       if (error === 'Not Found') {
-        this.alertService.warning('No comments to show :)');
+        //this.alertService.warning('No comments to show :)');
       } else {
         this.alertService.error(error);
       }
