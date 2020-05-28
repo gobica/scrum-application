@@ -455,8 +455,13 @@ export class AddTaskComponent implements OnInit {
           });
           const idSprintStory = 0;
           const userConfirmed = false;
+          const isReady = false;
+          const isActive = false;
+          const assignedUser = {};
 
-          const task = {id, description, timeEstimateHrs, idAssignedUser, idSprintStory, userConfirmed};
+          const task = {id, description, timeEstimateHrs, idAssignedUser, idSprintStory,
+            userConfirmed, isReady, isActive, assignedUser};
+          // const task = {id, description, timeEstimateHrs, idAssignedUser, idSprintStory};
           this.taskService.addTasksToStory(this.projektID, this.sprintID, this.zgodbaID, task).pipe(first()) // doda nalogo
           .subscribe(
             data => {
