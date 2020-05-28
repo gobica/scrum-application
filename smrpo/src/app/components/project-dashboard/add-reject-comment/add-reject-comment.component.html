@@ -1,0 +1,16 @@
+<h1 mat-dialog-title>Why do you want to reject this story?</h1>
+<div mat-dialog-content>
+
+<mat-form-field>
+    <mat-label>Comment on rejection</mat-label>
+    <input matInput [(ngModel)]="data.reviewComment">
+  </mat-form-field>
+</div>
+<div mat-dialog-actions>
+
+
+  <button mat-button [mat-dialog-close]='data.reviewComment' cdkFocusInitial>Save comment</button>
+  <button mat-button [mat-dialog-close]='false'>Cancel reject</button>
+</div>
+
+

@@ -28,6 +28,7 @@ import { DialogDeleteCommentComponent } from './dialog-delete-comment.component'
 import {DialogDeleteSprintComponent} from './dialog-delete-sprint/dialog-delete-sprint.component'
 import {DialogDeleteStoryComponent} from './dialog-delete-story/dialog-delete-story.component'
 
+import {AddRejectCommentComponent} from './add-reject-comment/add-reject-comment.component'
 
 
 @Component({
@@ -47,7 +48,7 @@ export class ProjectDashboardComponent implements OnInit {
   loading = false; 
   isSizeEnabled = [];
   remainingPtsSize = 0;
-  
+  reviewCommentValue;
   selectedStories = 'all';
 
   calendarPlugins = [dayGridPlugin, interactionPlugin];
@@ -524,15 +525,22 @@ public SubmitIsAccepted (story,  sprintID, valueIsAccepted) {
 }
 
 
-public SubmitRejectComment(sprintID,  storyID, isAcceptedValue, reviewCommentValue) {
-
-  this.alertService.clear();
-
-  reviewCommentValue =" poskusni comment "
+public SubmitRejectComment(sprintID,  storyID, isAcceptedValue) {
 
 
   
-  this.sprintService.updateStoryinSprint(this.projektID, sprintID, storyID, isAcceptedValue , reviewCommentValue)
+  this.alertService.clear();
+  const dialogRef = this.dialog.open(AddRejectCommentComponent, {
+    width: '50vw',
+    data: {name: this.reviewCommentValue}
+    // data: {userConfirmed: this.allTasks[i].userConfirmed}
+  });
+  dialogRef.afterClosed().subscribe(result => {
+    if (result !== false) {
+      var getreviewCommentValue = result;
+      console.log("to je result", result);
+  
+  this.sprintService.updateStoryinSprint(this.projektID, sprintID, storyID, isAcceptedValue , getreviewCommentValue)
       .pipe(first())
       .subscribe(
           (data:any) => {
@@ -540,6 +548,7 @@ public SubmitRejectComment(sprintID,  storyID, isAcceptedValue, reviewCommentVal
          //   if (valueIsAccepted == false) this.alertService.success('Story is "unfinished"!', true);
             this.loadAllStories();
             this.loadAllSprints();
+            
             this.alertService.success('Story is "Rejected"!', true);
             
           },
@@ -548,9 +557,14 @@ public SubmitRejectComment(sprintID,  storyID, isAcceptedValue, reviewCommentVal
               this.alertService.error(error);
           });
 }
+  });
+
+}
 
 
-//set story to read
+
+
+
 
 
 public SubmitIsReady (story, sprintID, valueIsReady ) {

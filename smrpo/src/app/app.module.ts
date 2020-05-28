@@ -56,6 +56,7 @@ import { DialogDeleteSprintComponent } from './components/project-dashboard/dial
 import { EditStoryDialogComponent } from './components/edit-story-dialog/edit-story-dialog.component';
 import { LogoutDialogComponent } from './components/edit-users/logout-dialog/logout-dialog.component';
 import { DialogDeleteStoryComponent } from './components/project-dashboard/dialog-delete-story/dialog-delete-story.component';
+import { AddRejectCommentComponent } from './components/project-dashboard/add-reject-comment/add-reject-comment.component';
 
 
 @NgModule({
@@ -92,6 +93,7 @@ import { DialogDeleteStoryComponent } from './components/project-dashboard/dialo
     EditStoryDialogComponent,
     LogoutDialogComponent,
     DialogDeleteStoryComponent,
+    AddRejectCommentComponent,
     
    // LoginComponent,
    //  AlertComponent

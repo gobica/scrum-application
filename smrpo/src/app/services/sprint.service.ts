@@ -58,7 +58,7 @@ export class SprintService {
      "reviewComment": reviewCommentValue
  
    }
-      return this.httpClient.put(this.projectUrl + `/${idProject}` + '/sprint'+ `/${idSprint}` + '/story' + `/${idSprint}`, object );
+      return this.httpClient.put(this.projectUrl + `/${idProject}` + '/sprint'+ `/${idSprint}` + '/story' + `/${idOfStory}`, object );
    }
 
    //project/<idProject>/sprint
