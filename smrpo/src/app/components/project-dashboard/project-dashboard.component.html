@@ -97,7 +97,7 @@
           <!-- UBASSIGNED STORIES -->
 
           <div *ngFor="let story of stories; let i = index">
-            <div *ngIf="story.isAccepted == false  && !isStoryInCurrentSprint(story)">
+            <div *ngIf="(story.isAccepted == false || story.isAccepted == null )  && !isStoryInCurrentSprint(story)">
               <div id="story {{i}}">
                 <mat-card>
                   <mat-card-header>
@@ -120,15 +120,15 @@
 
                       </button>
 
-                      
-                      
+
+
                       <button
                       *ngIf="authenticationService.currentUserValueFromToken.username == trenutniProjekt.productOwner.username || trenutniProjekt.scrumMaster.username === authenticationService.currentUserValueFromToken.username"
                       mat-stroked-button color="primary" (click)="openEditStoryDialog(story);">Edit Story
                       <mat-icon>edit</mat-icon>
                     </button>
 
-                            
+
                     <button
                     *ngIf="authenticationService.currentUserValueFromToken.username == trenutniProjekt.productOwner.username || trenutniProjekt.scrumMaster.username === authenticationService.currentUserValueFromToken.username"
                     mat-stroked-button color="primary" (click)="deleteStory(story.id);">Delete Story
@@ -233,13 +233,13 @@
                 <mat-icon>add</mat-icon>
               </button>
             </span>
-          -->  
+          -->
           </mat-toolbar>
 
           <!-- UBASSIGNED STORIES -->
-          
+
           <div *ngFor="let story of stories; let i = index">
-            <div *ngIf="story.isAccepted == false  && isStoryInCurrentSprint(story)">
+            <div *ngIf="(story.isAccepted == false || story.isAccepted == null )  && isStoryInCurrentSprint(story)">
               <div id="story {{i}}">
                 <mat-card>
                   <mat-card-header>
@@ -262,8 +262,8 @@
 
                       </button>
 
-                
-                      
+
+
                       <button
                       *ngIf="trenutniProjekt.scrumMaster.username === authenticationService.currentUserValueFromToken.username"
                       mat-stroked-button color="primary" (click)="openEditStoryDialog(story);">Edit Story
@@ -526,7 +526,7 @@
             </div>
       
           </span>
-        
+
           <br>
         </mat-toolbar>
         <mat-toolbar>
@@ -549,7 +549,7 @@
 
       <div *ngIf="showHideSprintStories === true">
         <div *ngIf="isCurrentSprint(sprint)" class="container-fluid">
-   
+
               <!--<ngx-loading [show]="loadTasksOfSprintStories(sprint.stories)"></ngx-loading>-->
               <div data-ng-controller="allTaskCtrl" data-ng-init="loadTasksOfSprintStories(sprint.stories)"></div>
 
@@ -623,14 +623,12 @@
                                   </div>
                                   <div *ngIf="element.userConfirmed == true">
                                     <!--TODO: work-->
-                                    <!--<div *ngIf="element.userWork == null">-->
-
-                                    Assigned
-
-                                    <!--</div>-->
-                                    <!--<div *ngIf="element.userWork != null">-->
-                                    <!--Active-->
-                                    <!--</div>-->
+                                    <div *ngIf="element.isActive === false">
+                                      Assigned
+                                    </div>
+                                    <div *ngIf="element.isActive === true">
+                                      Active
+                                    </div>
                                   </div>
                                 </div>
                               </td>
@@ -739,7 +737,7 @@
         <p class="h5">{{remainingPts(sprint)}}</p>
       </div>
 
-      
+
     </div>
     <br>
 
@@ -780,7 +778,7 @@
               <p class="h5">{{sprint.velocity}}</p>
             </div>
 
-    
+
             <div class="col-sm">
               <button
                 *ngIf="trenutniProjekt.scrumMaster.username === authenticationService.currentUserValueFromToken.username"
@@ -839,7 +837,7 @@
       </div>
 
     </div>
-  
+
     <div *ngIf="showHideCalendar === true" class="calendar">
       <full-calendar height="parent" defaultView="dayGridMonth" [firstDay]="1" [plugins]="calendarPlugins"
         [events]="sprintsInCalendar" selectable="true" (dateClick)="selectDate($event)"></full-calendar>

@@ -5,4 +5,7 @@ export class Task {
     idAssignedUser: number; //user
     idSprintStory: number;
     userConfirmed: boolean;
+    isReady: boolean;
+    isActive: boolean;
+    assignedUser: any;
   }

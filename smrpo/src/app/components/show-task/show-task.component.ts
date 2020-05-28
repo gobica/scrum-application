@@ -11,6 +11,7 @@ import { ProjectService } from '../../services/project.service';
 import {UserService} from '../../services/user.service';
 import {StoryService} from "../../services/story.service";
 import { TaskService } from '../../services/task.service';
+import { WorkService } from '../../services/work.service';
 
 import {Inject} from '@angular/core';
 import {MatDialog, MatDialogRef, MAT_DIALOG_DATA} from '@angular/material/dialog';
@@ -24,6 +25,7 @@ import { DialogTimeComponent } from './dialog-time.component';
 import {FormControl} from '@angular/forms';
 import {Observable} from 'rxjs';
 import {map, startWith} from 'rxjs/operators';
+import {DatePipe} from "@angular/common";
 
 
 @Component({
@@ -52,9 +54,11 @@ export class ShowTaskComponent implements OnInit {
   project;
   jeTeamMember;
 
-  allTime = [{date: "2020-05-16", hour: 7}, {date: "2020-05-16", hour: 7}, {date: "2020-05-16", hour: 7}, {date: "2020-05-16", hour: 7}, {date: "2020-05-15", hour: 5}, {date: "2020-05-16", hour: 7},
-    {date: "2020-05-16", hour: 7}, {date: "2020-05-16", hour: 7}, {date: "2020-05-16", hour: 7}, {date: "2020-05-16", hour: 7}, {date: "2020-05-15", hour: 5}, {date: "2020-05-16", hour: 7}];
-  // allTime = [];
+  // allTime = [{date: "2020-05-16", hour: 7}, {date: "2020-05-16", hour: 7}, {date: "2020-05-16", hour: 7}, {date: "2020-05-16", hour: 7}, {date: "2020-05-15", hour: 5}, {date: "2020-05-16", hour: 7},
+  //   {date: "2020-05-16", hour: 7}, {date: "2020-05-16", hour: 7}, {date: "2020-05-16", hour: 7}, {date: "2020-05-16", hour: 7}, {date: "2020-05-15", hour: 5}, {date: "2020-05-16", hour: 7}];
+  allTime = [];
+  izpis = "";
+  jeZeAktiven = null;
 
   userNameTeamMember: string[] = [];
   // filteredOptionsTeamMember: Observable<string[]>[] = [];
@@ -73,8 +77,10 @@ export class ShowTaskComponent implements OnInit {
     private projectService: ProjectService,
     private storyService: StoryService,
     private taskService: TaskService,
+    private workService: WorkService,
     public dialog: MatDialog,
     private route: ActivatedRoute,
+    private datePipe: DatePipe
 
   ) {
      // redirect to home if already logged in
@@ -86,14 +92,6 @@ export class ShowTaskComponent implements OnInit {
   }
 
   ngOnInit() {
-    // this.myForm = this._fb.group({
-    //   tasks: this._fb.array([
-    //   this.initTasks(),
-    //   ])
-    // });
-    // this.taskForm = this._fb.group({
-    //   task: this.myForm,
-    // });
     this.getAllUsers();
     this.getAllProjects();
 
@@ -110,12 +108,6 @@ export class ShowTaskComponent implements OnInit {
     this.getAllTasks();
 
   }
-
-  // private _filterTeamMember(value: string): string[] {
-  //   const filterValue = value.toLowerCase();
-  //
-  //   return this.userNameTeamMember.filter(userNameTeamMember => userNameTeamMember.toLowerCase().indexOf(filterValue) === 0);
-  // }
 
   getAllUsers() {
     // let users = [];
@@ -205,7 +197,7 @@ export class ShowTaskComponent implements OnInit {
 }
 
   async getAllTasks() {
-    // let projects = [];
+
     await this.taskService.getAllTasksOfStory(this.projektID, this.sprintID, this.zgodbaID).pipe(first()) // vrne vse naloge
     .subscribe(
       data => {
@@ -221,8 +213,6 @@ export class ShowTaskComponent implements OnInit {
                 t.user = u.username; // doda novo polje v task! POZOR!
               }
             });
-            // console.log(t);
-            t.userWork = false; //TODO: zbriši ko bo v bazi :)
           });
           // console.log(this.allProjects);
           const ime = this.allStories.find(x => {
@@ -257,6 +247,30 @@ export class ShowTaskComponent implements OnInit {
     );
   }
 
+  getAllWork(taskId) {
+    // let projects = [];
+    this.workService.getAllWorkOfTask(this.projektID, this.sprintID, this.zgodbaID, taskId).pipe(first())
+    .subscribe(
+      data => {
+          console.log(data);
+          // this.allWork = data;
+          this.allTime = [];
+          data.forEach( d => {
+            // {date: "2020-05-16", hour: 7}
+            const podatki = {date: d.date, hour: d.workDoneHrs};
+            this.allTime.push(podatki);
+          });
+
+          return data;
+      },
+      error => {
+          this.alertService.error(error);
+          this.loading = false;
+      }
+    );
+
+  }
+
   findTask(taskID) {
     let task = null;
     this.allTasks.forEach(t => {
@@ -271,13 +285,10 @@ export class ShowTaskComponent implements OnInit {
 
   taskDone(i, taskID): void {
     if(this.allTasks[i].userConfirmed === true) {
-      if(this.allTasks[i].userWork === false) {
+      if(this.allTasks[i].isActive === false) {
         this.alertService.clear();
         const dialogRef = this.dialog.open(DialogCompletedTaskComponent, {
           width: '50vw',
-          // data: {checked: this.name, animal: this.animal}
-          // data: {checked: this.allTasks[i].check},
-          // data: {checked: this.allTasks[i].isReady}
         });
 
         dialogRef.afterClosed().subscribe(result => {
@@ -297,7 +308,9 @@ export class ShowTaskComponent implements OnInit {
                 idAssignedUser: taskFull.idAssignedUser,
                 idSprintStory: taskFull.idSprintStory,
                 userConfirmed: taskFull.userConfirmed,
-                isReady: true
+                isReady: true,
+                isActive: taskFull.isActive,
+                assignedUser: taskFull.assignedUser,
               };
               this.taskService.updateTask(this.projektID, this.sprintID, this.zgodbaID, taskID, task).pipe(first()) // vrne vse naloge
                 .subscribe(
@@ -349,7 +362,9 @@ export class ShowTaskComponent implements OnInit {
         if(taskFull) {
           const task = {id: taskFull.id, description: taskFull.description, timeEstimateHrs: taskFull.timeEstimateHrs,
             idAssignedUser: taskFull.idAssignedUser, idSprintStory: taskFull.idSprintStory, userConfirmed: taskFull.userConfirmed,
-            isReady: false
+            isReady: false,
+            isActive: taskFull.isActive,
+            assignedUser: taskFull.assignedUser,
           };
           this.taskService.updateTask(this.projektID, this.sprintID, this.zgodbaID, taskID, task).pipe(first()) // vrne vse naloge
             .subscribe(
@@ -388,7 +403,9 @@ export class ShowTaskComponent implements OnInit {
           const task = {id: taskFull.id, description: taskFull.description, timeEstimateHrs: taskFull.timeEstimateHrs,
             idAssignedUser: taskFull.idAssignedUser, idSprintStory: taskFull.idSprintStory,
             userConfirmed: true,
-            isReady: taskFull.isReady
+            isReady: taskFull.isReady,
+            isActive: taskFull.isActive,
+            assignedUser: taskFull.assignedUser,
           };
           // console.log(task);
           this.taskService.updateTask(this.projektID, this.sprintID, this.zgodbaID, taskID, task).pipe(first()) // vrne vse naloge
@@ -416,7 +433,7 @@ export class ShowTaskComponent implements OnInit {
   giveUpTask(i, taskID) {
     if(this.allTasks[i].isReady === false) {
       this.alertService.clear();
-      if(this.allTasks[i].userWork === false) {
+      if(this.allTasks[i].isActive === false) {
         this.alertService.clear();
         const dialogRef = this.dialog.open(DialogGiveupTaskComponent, {
           width: '50vw',
@@ -436,7 +453,9 @@ export class ShowTaskComponent implements OnInit {
                 idAssignedUser: null,
                 idSprintStory: taskFull.idSprintStory,
                 userConfirmed: false,
-                isReady: taskFull.isReady
+                isReady: taskFull.isReady,
+                isActive: taskFull.isActive,
+                assignedUser: taskFull.assignedUser,
               };
               this.taskService.updateTask(this.projektID, this.sprintID, this.zgodbaID, taskID, task).pipe(first()) // vrne vse naloge
                 .subscribe(
@@ -465,60 +484,317 @@ export class ShowTaskComponent implements OnInit {
     }
   }
 
-  time(i){
-    
-    //TODO: klici getAllTime :)
+  async time(i){
+    // await this.getAllWork();
 
-    //sortedTime --> ce je vec ur v istem dnevu jih sesteje ter sortira po datumih
-    const sortedTime = [];
-    let jeZe = false;
-    this.allTime.forEach(t => {
-      jeZe = false;
-      sortedTime.forEach(s=> {
-        if(s && s.date) {
-          if (t.date === s.date) {
-            jeZe = true;
+    this.workService.getAllWorkOfTask(this.projektID, this.sprintID, this.zgodbaID, this.allTasks[i].id).pipe(first())
+    .subscribe(
+      data => {
+          console.log(data);
+          // this.allWork = data;
+          this.allTime = [];
+          data.forEach( d => {
+
+            const podatki = {date: d.date, hour: d.workDoneHrs};
+            this.allTime.push(podatki);
+          });
+
+
+          //sortedTime --> ce je vec ur v istem dnevu jih sesteje ter sortira po datumih
+          const sortedTime = [];
+          let jeZe = false;
+          this.allTime.forEach(t => {
+            jeZe = false;
+            sortedTime.forEach(s=> {
+              if(s && s.date) {
+                if (t.date === s.date) {
+                  jeZe = true;
+                }
+              }
+            });
+            if(!jeZe) {
+              sortedTime.push({date: t.date, hour: 0});
+            }
+          });
+          if(sortedTime.length>0) {
+            this.allTime.forEach(t => {
+              sortedTime.forEach(s => {
+                if (t.date === s.date) {
+                  s.hour = s.hour + t.hour;
+                }
+              });
+            });
+
+            sortedTime.forEach(s => {
+              let hours = ~~s.hour;
+              let dec = s.hour % 1;
+              if(dec >= 0.5 ) {
+                hours = hours + 0.5;
+              }
+              s.hour = hours;
+              let datum = new Date(s.date);
+              datum.setDate(datum.getDate());
+              s.date = this.datePipe.transform(datum,"yyyy-MM-dd");
+            });
+
+            sortedTime.sort((a, b) => (a.date > b.date) ? 1 : -1);
           }
-        }
-      });
-      if(!jeZe) {
-        sortedTime.push({date: t.date, hour: 0});
+          // console.log(sortedTime);
+
+          this.alertService.clear();
+
+          const dialogRef = this.dialog.open(DialogTimeComponent, {
+              width: '50vw',
+              data: {name: this.allTasks[i].description, time: sortedTime, closed: false}
+            });
+
+          dialogRef.afterClosed().subscribe(result => {
+
+            // console.log('The dialog was closed: '+ result);
+          });
+          return data;
+      },
+      error => {
+          this.alertService.error(error);
+          this.loading = false;
       }
-    });
-    if(sortedTime.length>0) {
-      this.allTime.forEach(t => {
-        sortedTime.forEach(s => {
-          if (t.date === s.date) {
-            s.hour = s.hour + t.hour;
-          }
-        });
-      });
-      sortedTime.sort((a, b) => (a.date > b.date) ? 1 : -1);
-    }
-    // console.log(sortedTime);
-    
-    this.alertService.clear();
-    // this.alertService.warning('Time logging is not yet implemented.');
-
-    const dialogRef = this.dialog.open(DialogTimeComponent, {
-        width: '50vw',
-        data: {name: this.allTasks[i].description, time: sortedTime, closed: false}
-      });
-
-    dialogRef.afterClosed().subscribe(result => {
-
-      // console.log('The dialog was closed: '+ result);
-    });
-
+    );
   }
 
-  startWork(i){ // TODO: popravi ko bo v bazi
-    // posli datum in uro v bazo
+  // async oneTaskAtATime () {
+  //
+  //   // let jeZeAktiven = null;
+  //
+  //   await this.allStories.forEach(async s => {
+  //     await this.taskService.getAllTasksOfStory(this.projektID, this.sprintID, s.id).pipe(first())
+  //       .subscribe(
+  //         async data => {
+  //           // console.log(data);
+  //           const naloge = data;
+  //
+  //           await naloge.forEach(async n => {
+  //
+  //             // console.log(n.assignedUser.id);
+  //             // console.log(this.trenutniUporabnikId);
+  //             // console.log(n.isActive);
+  //             if(n.assignedUser.id === this.trenutniUporabnikId && n.isActive === true){
+  //               console.log("--------------------");
+  //
+  //
+  //               this.izpis = "You are already active."; // in the task "+ n.description;
+  //               return true;
+  //             }
+  //           });
+  //           return data;
+  //         },
+  //         error => {
+  //           this.alertService.error(error);
+  //           this.loading = false;
+  //         }
+  //       );
+  //
+  //     // if(jeZeAktiven === true){
+  //     //   this.izpis += " in the story " + s.name+".";
+  //     // }
+  //   });
+  //
+  //   return false;
+  // }
+
+  async oneTask(i){
+    await this.delay(500);
+    console.log("+++++");
+
+    console.log("2"+this.jeZeAktiven);
+    if(!this.jeZeAktiven){
+      // console.log("notr");
+
+      const task = {
+        id: this.allTasks[i].id,
+        description: this.allTasks[i].description,
+        timeEstimateHrs: this.allTasks[i].timeEstimateHrs,
+        idAssignedUser: this.allTasks[i].idAssignedUser,
+        idSprintStory: this.allTasks[i].idSprintStory,
+        userConfirmed: this.allTasks[i].userConfirmed,
+        isReady: this.allTasks[i].isReady,
+        isActive: true,
+        assignedUser: this.allTasks[i].assignedUser,
+      };
+      const idTask = this.allTasks[i].id;
+      // console.log(idTask);
+      this.taskService.updateTask(this.projektID, this.sprintID, this.zgodbaID, idTask, task).pipe(first())
+        .subscribe(
+          data => {
+            // console.log(data);
+
+            const id = 0;
+            const idUser = 0;
+            // const idTask = 0;
+            const workDoneHrs = 1/3600000;
+            const workRemainingHrs = 0;
+            const date = "";
+            const comment = "";
+            const createdAt = "";
+            const updatedAt = "";
+            const work = {id, idUser, idTask, workDoneHrs, workRemainingHrs, date, comment, createdAt, updatedAt};
+
+            this.workService.addWorkToTask(this.projektID, this.sprintID, this.zgodbaID, idTask, work).pipe(first()) // doda delovne ure
+            .subscribe(
+              dataTime => {
+                  console.log(dataTime);
+                  return dataTime;
+              },
+              errorTime => {
+                  this.alertService.error(errorTime);
+                  this.loading = false;
+              }
+            );
+
+            this.alertService.clear();
+            this.alertService.warning('You started working :)');
+            this.allTasks[i].isActive = true;
+            return data;
+          },
+          error => {
+            this.alertService.error(error);
+            this.loading = false;
+          }
+        );
+
+    } else {
+      this.alertService.clear();
+      this.alertService.error(this.izpis);
+    }
+  }
+
+  delay(ms) {
+    return new Promise( resolve => setTimeout(resolve, ms) );
+  }
+
+  startWork(i){
     if(this.allTasks[i].isReady != true) {
-      this.alertService.clear();
-      this.allTasks[i].userWork = true;
-      this.alertService.clear();
-      this.alertService.warning('You started working :)');
+    // get all stories
+    // za vsako stori geta vse taske
+    // za vsaki task gleda ce je trenutni user isti dodeljenemu userju  in ce je isActive true
+    //    ce je  --> ne pusti
+
+      this.storyService.getAll(this.projektID)
+      .pipe(first())
+      .subscribe(stories => {
+        this.allStories = stories;
+
+        // let izpis = "";
+        this.jeZeAktiven = false;
+
+        let j = 1;
+        while(j<1000001) {
+          if (j === 1) {
+            this.allStories.forEach(s => {
+              this.taskService.getAllTasksOfStory(this.projektID, this.sprintID, s.id).pipe(first())
+                .subscribe(
+                  data => {
+                    // console.log(data);
+                    const naloge = data;
+
+                    naloge.forEach(n => {
+
+                      // console.log(n.assignedUser.id);
+                      // console.log(this.trenutniUporabnikId);
+                      // console.log(n.isActive);
+                      if (n.assignedUser.id === this.trenutniUporabnikId && n.isActive === true) {
+                        console.log("--------------------");
+
+                        this.jeZeAktiven = true;
+                        this.izpis = "You are already active." // in the task " + n.description;
+                      }
+                    });
+                    return data;
+                  },
+                  error => {
+                    this.alertService.error(error);
+                    this.loading = false;
+                  }
+                );
+              // this.delay(1500);
+              //
+              // if (jeZeAktiven === true) {
+              //   this.izpis += " in the story " + s.name + ".";
+              // }
+              // console.log("1"+jeZeAktiven);
+            });
+          }
+
+          if(j === 1000000) {
+            this.oneTask(i);
+          }
+          j = j+1;
+
+        }
+        // if(!jeZeAktiven){
+        //   // console.log("notr");
+        //
+        //   const task = {
+        //     id: this.allTasks[i].id,
+        //     description: this.allTasks[i].description,
+        //     timeEstimateHrs: this.allTasks[i].timeEstimateHrs,
+        //     idAssignedUser: this.allTasks[i].idAssignedUser,
+        //     idSprintStory: this.allTasks[i].idSprintStory,
+        //     userConfirmed: this.allTasks[i].userConfirmed,
+        //     isReady: this.allTasks[i].isReady,
+        //     isActive: true,
+        //     assignedUser: this.allTasks[i].assignedUser,
+        //   };
+        //   const idTask = this.allTasks[i].id;
+        //   // console.log(idTask);
+        //   await this.taskService.updateTask(this.projektID, this.sprintID, this.zgodbaID, idTask, task).pipe(first())
+        //     .subscribe(
+        //       data => {
+        //         // console.log(data);
+        //
+        //         const id = 0;
+        //         const idUser = 0;
+        //         // const idTask = 0;
+        //         const workDoneHrs = 1/3600000;
+        //         const workRemainingHrs = 0;
+        //         const date = "";
+        //         const comment = "";
+        //         const createdAt = "";
+        //         const updatedAt = "";
+        //         const work = {id, idUser, idTask, workDoneHrs, workRemainingHrs, date, comment, createdAt, updatedAt};
+        //
+        //         this.workService.addWorkToTask(this.projektID, this.sprintID, this.zgodbaID, idTask, work).pipe(first()) // doda delovne ure
+        //         .subscribe(
+        //           dataTime => {
+        //               console.log(dataTime);
+        //               return dataTime;
+        //           },
+        //           errorTime => {
+        //               this.alertService.error(errorTime);
+        //               this.loading = false;
+        //           }
+        //         );
+        //
+        //         this.alertService.clear();
+        //         this.alertService.warning('You started working :)');
+        //         this.allTasks[i].isActive = true;
+        //         return data;
+        //       },
+        //       error => {
+        //         this.alertService.error(error);
+        //         this.loading = false;
+        //       }
+        //     );
+        //
+        // } else {
+        //   this.alertService.clear();
+        //   this.alertService.error(this.izpis);
+        // }
+
+      }, error => {
+            this.alertService.error(error);
+            this.loading = false;
+      });
+
     } else {
       this.alertService.clear();
       this.alertService.error('First uncheck the task.');
@@ -526,12 +802,115 @@ export class ShowTaskComponent implements OnInit {
 
   }
 
-  stopWork(i){ // TODO: popravi ko bo v bazi
-    // vzemi datum in uro od zacetka in vrni delovne ure
-    this.alertService.clear();
-    this.allTasks[i].userWork = false;
-    this.alertService.clear();
-    this.alertService.warning('You finished working :)');
+  stopWork(i){
+
+    const task = {
+      id: this.allTasks[i].id,
+      description: this.allTasks[i].description,
+      timeEstimateHrs: this.allTasks[i].timeEstimateHrs,
+      idAssignedUser: this.allTasks[i].idAssignedUser,
+      idSprintStory: this.allTasks[i].idSprintStory,
+      userConfirmed: this.allTasks[i].userConfirmed,
+      isReady: this.allTasks[i].isReady,
+      isActive: false,
+      assignedUser: this.allTasks[i].assignedUser,
+    };
+    this.taskService.updateTask(this.projektID, this.sprintID, this.zgodbaID, this.allTasks[i].id, task).pipe(first())
+      .subscribe(
+        dataTask => {
+          // console.log(dataTask);
+
+         this.workService.getAllWorkOfTask(this.projektID, this.sprintID, this.zgodbaID, this.allTasks[i].id).pipe(first())
+          .subscribe(
+            data => {
+                // console.log(data);
+
+                this.allTime = [];
+                data.forEach( d => {
+                  // {date: "2020-05-16", hour: 7}
+                  const podatki = {date: d.date, hour: d.workDoneHrs};
+                  this.allTime.push(podatki);
+                });
+
+
+                let lastId = 0;
+                let lastWork = {updatedAt: ""};
+                data.forEach(t => {
+                  // console.log(t);
+                  if(t.id > lastId){
+                    lastId = t.id;
+                    lastWork = t;
+                  }
+                });
+
+                if(lastId != 0) {
+                  // console.log(lastWork);
+
+                  let start = lastWork.updatedAt;
+                  let startDate = new Date(start);
+                  startDate.setDate(startDate.getDate());
+                  // console.log(startDate);
+                  let endDate = new Date();
+                  // console.log(endDate);
+                  let diff = endDate.getTime() - startDate.getTime();
+                  diff = diff/(1000*60*60);
+                  // console.log(diff);
+
+                  let hours = ~~diff;
+                  let dec = diff % 1;
+                  if(dec >= 0.5 ) {
+                    hours = hours + 0.5;
+                  }
+                  if(hours === 0){
+                    hours = 1/3600000;
+                  }
+                  // console.log(hours);
+
+                  const id = 0;
+                  const idUser = 0;
+                  const idTask = 0;
+                  const workDoneHrs = hours;
+                  const workRemainingHrs = 0;
+                  const date = "";
+                  const comment = "";
+                  const createdAt = "";
+                  const updatedAt = "";
+                  const work = {id, idUser, idTask, workDoneHrs, workRemainingHrs, date, comment, createdAt, updatedAt};
+
+                  this.workService.addWorkToTask(this.projektID, this.sprintID, this.zgodbaID, this.allTasks[i].id, work).pipe(first()) // doda delovne ure
+                  .subscribe(
+                    dataTime => {
+                        console.log(dataTime);
+                        return dataTime;
+                    },
+                    errorTime => {
+                        this.alertService.error(errorTime);
+                        this.loading = false;
+                    }
+                  );
+
+                  this.alertService.clear();
+                  this.alertService.warning('You finished working :)');
+                  this.allTasks[i].isActive = false;
+                } else {
+                  console.log("Error - ni dobljenega dela");
+                }
+                return data;
+            },
+            error => {
+                // this.alertService.error(error);
+                this.loading = false;
+            }
+          );
+
+          return dataTask;
+        },
+        error => {
+          this.alertService.error(error);
+          this.loading = false;
+        }
+      );
+
   }
 
   redirectTask(i, taskID) {
@@ -549,7 +928,9 @@ export class ShowTaskComponent implements OnInit {
         if(taskFull) {
           const task = {id: taskFull.id, description: taskFull.description, timeEstimateHrs: taskFull.timeEstimateHrs,
             idAssignedUser: this.trenutniUporabnikId,
-            idSprintStory: taskFull.idSprintStory, userConfirmed: taskFull.userConfirmed, isReady: taskFull.isReady
+            idSprintStory: taskFull.idSprintStory, userConfirmed: taskFull.userConfirmed, isReady: taskFull.isReady,
+            isActive: taskFull.isActive,
+            assignedUser: taskFull.assignedUser,
           };
           this.taskService.updateTask(this.projektID, this.sprintID, this.zgodbaID, taskID, task).pipe(first()) // vrne vse naloge
             .subscribe(
