@@ -2,10 +2,6 @@
 
 <mat-tab-group mat-stretch-tabs class="example-stretched-tabs">
 
-  <!--vvvvvvv WALL vvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvv-->
-
-
-
 
   <!--vvvvvvv PRODUCT BACKLOG vvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvv-->
 
@@ -800,64 +796,74 @@
       </div>
     </div>
   </mat-tab>
+
+  <!--^^^^^^^ SPRINT BACKLOG ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^-->
+
+  <!--vvvvvvv WALL vvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvv-->
+
   <mat-tab>
     <ng-template mat-tab-label>
       <mat-icon class="example-tab-icon">message</mat-icon>
       <div (click)="print(sprints)">Wall</div>
     </ng-template>
 
-    <div id="allComments">
-      <div *ngFor="let comment of commentsOnWall; let i = index" class="commentsWall">
+    <div>
 
-        <div fxLayout="row" class="comment-inline margin-btn-delete">
-          <button *ngIf="comment.user.username === trenutniUporabnik" mat-stroked-button color="accent"
-            class="btn-right btn-delete-comment" (click)="deleteComment(comment.id)">
-            <span class=""> X </span>
-          </button>
-        </div>
+      <div id="allComments">
+        <div *ngFor="let comment of commentsOnWall; let i = index"
+             [ngClass]="(comment.user.username != trenutniUporabnik) ? 'commentsWallLeft': 'commentsWallRight'">
+
+          <div fxLayout="row" class="comment-inline margin-btn-delete">
+            <button *ngIf="comment.user.username === trenutniUporabnik" mat-stroked-button color="accent"
+              class="btn-right btn-delete-comment" (click)="deleteComment(comment.id)">
+              <span class=""> X </span>
+            </button>
+          </div>
 
 
-        <div id="comment {{i}}" fxLayout="row" class="comment-inline">
-          <div class="login-wrapper " fxLayout="row" flex
-            [ngClass]="(comment.user.username != trenutniUporabnik) ? 'show-comment-wrapper-left': 'show-comment-wrapper-right'">
-            <mat-card class="box-comment"
-              [ngClass]="(comment.user.username != trenutniUporabnik) ? 'box-comment-left': 'box-comment-right'">
-              <mat-card-header>
-                <mat-card-title class="comment-title">{{comment.user.username}}</mat-card-title>
-                {{comment.date}}
-              </mat-card-header>
+          <div id="comment {{i}}" fxLayout="row" class="comment-inline">
+            <div class="login-wrapper " fxLayout="row" flex
+              [ngClass]="(comment.user.username != trenutniUporabnik) ? 'show-comment-wrapper-left': 'show-comment-wrapper-right'">
+              <mat-card class="box-comment"
+                [ngClass]="(comment.user.username != trenutniUporabnik) ? 'box-comment-left': 'box-comment-right'">
+                <mat-card-header>
+                  <mat-card-title class="comment-title">{{comment.user.username}}</mat-card-title>
+                  {{comment.date}}
+                </mat-card-header>
 
-              <form class="example-form">
+                <form class="example-form">
 
-                <mat-card-content>
-                  <form class="example-form comment-text">
-                    <p class="text-break acceptance-tests">
-                      {{enterText(comment.comment)}}
-                    </p>
-                  </form>
-                </mat-card-content>
+                  <mat-card-content>
+                    <form class="example-form comment-text">
+                      <p class="text-break acceptance-tests">
+                        {{enterText(comment.comment)}}
+                      </p>
+                    </form>
+                  </mat-card-content>
 
-              </form>
-            </mat-card>
+                </form>
+              </mat-card>
+            </div>
+
           </div>
 
         </div>
 
+        {{scrollDown('allComments')}}
+
       </div>
 
-      {{scrollDown('allComments')}}
+      <div [formGroup]="commentForm" id="footer">
 
-    </div>
+        <mat-form-field class="commentArea">
+          <textarea class="cdk-textarea" matInput rows="1" formControlName="commentWall"></textarea>
+        </mat-form-field>
 
-    <div [formGroup]="commentForm" id="footer">
+        <button mat-stroked-button color="accent" class="btn-right btn-margin" (click)="addComment()">
+          <span class="mat-button-wrapper" class="glyphicon glyphicon-send"></span>
+        </button>
 
-      <mat-form-field class="commentArea">
-        <textarea class="cdk-textarea" matInput rows="1" formControlName="commentWall"></textarea>
-      </mat-form-field>
-
-      <button mat-stroked-button color="accent" class="btn-right btn-margin" (click)="addComment()">
-        <span class="mat-button-wrapper" class="glyphicon glyphicon-send"></span>
-      </button>
+      </div>
 
     </div>
 
