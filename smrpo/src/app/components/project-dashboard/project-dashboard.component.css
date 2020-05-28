@@ -155,7 +155,11 @@ table {
   padding-top: 8px;
 }
 
-.commentsWall{
+.commentsWallRight{
+  display: table;
+  float: right;
+}
+.commentsWallLeft{
   display: table;
 }
 
@@ -164,7 +168,8 @@ table {
 }
 
 .btn-delete-comment {
-  margin-left: 27vw;
+  /*margin-left: 27vw;*/
+  float: right;
   margin-top: 0px;
   display: inline-block;
 }
@@ -179,7 +184,14 @@ table {
   position: fixed;
   /*padding: 10px 10px 10px 10px;*/
   bottom: 10px;
-  width: 81vw;
+  /*width: 81%;*/
   /*height: 10px;*/
   background: lightgrey;
+
+  width: 80%;
+  max-width: 1140px;
+  padding-right: 15px;
+  padding-left: 15px;
+  margin-right: auto;
+  margin-left: auto;
 }

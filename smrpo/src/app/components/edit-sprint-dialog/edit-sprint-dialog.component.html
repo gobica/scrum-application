@@ -3,7 +3,7 @@
     <mat-dialog-content >
     
       
-        <mat-form-field>
+        <mat-form-field *ngIf="!isCurrentSprint">
             <mat-label>Choose Start date</mat-label>
             <input  [ngClass]="{ 'is-invalid': submitted && f.startDate.errors }"  
             matInput [min]="currentDate" [matDatepicker]="picker"  formControlName="startDate"  (click)="picker.open()"readonly
@@ -23,7 +23,7 @@
     
         <br>
     
-        <mat-form-field >
+        <mat-form-field *ngIf="!isCurrentSprint">
             <mat-label>Choose End date</mat-label> 
             <input         [ngClass]="{ 'is-invalid': submitted && f.endDate.errors }" 
             matInput [matDatepicker]="picker1"  formControlName="endDate"  (focus)="picker1.open()" and (click)="picker1.open()" 

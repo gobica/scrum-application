@@ -159,7 +159,8 @@ export class ProjectDashboardComponent implements OnInit {
     //passing data
     dialogConfigEditSprint.data = {
       projectId: this.projektID,
-      sprintOld: sprint
+      sprintOld: sprint,
+      isCurrentSprint: this.isCurrentSprint(sprint) 
   };
     //this.dialog.open(AddSprintDialogComponent, dialogConfig);
     const dialogRefSprint = this.dialogSprint.open(EditSprintDialogComponent, dialogConfigEditSprint);

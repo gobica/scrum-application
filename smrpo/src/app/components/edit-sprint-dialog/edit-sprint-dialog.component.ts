@@ -26,7 +26,7 @@ export class EditSprintDialogComponent implements OnInit {
   loading = false;
   idProject: number;
   public oldSprint: Sprint;
-
+  isCurrentSprint; 
   public projektID;
 
   currentDate  = new Date();
@@ -40,7 +40,7 @@ export class EditSprintDialogComponent implements OnInit {
     @Inject(MAT_DIALOG_DATA) data) {
     this.idProject = data.projectId;
     this.oldSprint = data.sprintOld;
-
+    this.isCurrentSprint = data.isCurrentSprint;
     }
     get f() { return this.form.controls; }
 
