@@ -1,16 +1,27 @@
 <h1 mat-dialog-title>Why do you want to reject this story?</h1>
 <div mat-dialog-content>
+  <form [formGroup]="formComment" (ngSubmit)="onSubmit()" class="example-form">
 
 <mat-form-field>
     <mat-label>Comment on rejection</mat-label>
-    <input matInput [(ngModel)]="data.reviewComment">
+    <input matInput required   type="text" formControlName="reviewComment" 
+    [ngClass]="{ 'is-invalid': submitted && f.reviewComment.errors }"
+    >
+    <div *ngIf=" submitted && f.reviewComment.errors" class="invalid-feedback">
+
+      <div *ngIf="f.reviewComment.errors.required">Comment is required</div>
+  </div>
   </mat-form-field>
-</div>
-<div mat-dialog-actions>
-
-
+<!--
   <button mat-button [mat-dialog-close]='data.reviewComment' cdkFocusInitial>Save comment</button>
   <button mat-button [mat-dialog-close]='false'>Cancel reject</button>
+-->
+  <button [disabled]="loading" mat-stroked-button color="accent">Save</button>
+  <button class="mat-raised-button"(click)="close()">Close</button>
+</form>
+
 </div>
+
+
 
 

@@ -538,7 +538,8 @@ public SubmitRejectComment(sprintID,  story, isAcceptedValue) {
   });
   dialogRef.afterClosed().subscribe(result => {
     if (result !== false) {
-      var getreviewCommentValue = result;
+      console.log ("to je result iz tam", result.data);
+      var getreviewCommentValue = result.data
     
 
       this.sprintService.updateStoryinSprint(this.projektID, sprintID, storyID, isAcceptedValue , getreviewCommentValue)
