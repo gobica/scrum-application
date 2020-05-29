@@ -555,51 +555,15 @@ export class ShowTaskComponent implements OnInit {
           return data;
       },
       error => {
-          this.alertService.error(error);
+           if (error === 'Not Found') {
+            this.alertService.warning('No work logged on this task yet :)');
+          } else {
+            this.alertService.error(error);
+          }
           this.loading = false;
       }
     );
   }
-
-  // async oneTaskAtATime () {
-  //
-  //   // let jeZeAktiven = null;
-  //
-  //   await this.allStories.forEach(async s => {
-  //     await this.taskService.getAllTasksOfStory(this.projektID, this.sprintID, s.id).pipe(first())
-  //       .subscribe(
-  //         async data => {
-  //           // console.log(data);
-  //           const naloge = data;
-  //
-  //           await naloge.forEach(async n => {
-  //
-  //             // console.log(n.assignedUser.id);
-  //             // console.log(this.trenutniUporabnikId);
-  //             // console.log(n.isActive);
-  //             if(n.assignedUser.id === this.trenutniUporabnikId && n.isActive === true){
-  //               console.log("--------------------");
-  //
-  //
-  //               this.izpis = "You are already active."; // in the task "+ n.description;
-  //               return true;
-  //             }
-  //           });
-  //           return data;
-  //         },
-  //         error => {
-  //           this.alertService.error(error);
-  //           this.loading = false;
-  //         }
-  //       );
-  //
-  //     // if(jeZeAktiven === true){
-  //     //   this.izpis += " in the story " + s.name+".";
-  //     // }
-  //   });
-  //
-  //   return false;
-  // }
 
   async oneTask(i){
     await this.delay(500);
@@ -673,10 +637,6 @@ export class ShowTaskComponent implements OnInit {
 
   startWork(i){
     if(this.allTasks[i].isReady != true) {
-    // get all stories
-    // za vsako stori geta vse taske
-    // za vsaki task gleda ce je trenutni user isti dodeljenemu userju  in ce je isActive true
-    //    ce je  --> ne pusti
 
       this.storyService.getAll(this.projektID)
       .pipe(first())
