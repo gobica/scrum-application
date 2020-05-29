@@ -566,69 +566,58 @@ export class ShowTaskComponent implements OnInit {
   }
 
   async oneTask(i){
-    await this.delay(500);
-    // console.log("+++++");
 
-    // console.log("2"+this.jeZeAktiven);
-    if(!this.jeZeAktiven){
-      // console.log("notr");
+    const task = {
+      id: this.allTasks[i].id,
+      description: this.allTasks[i].description,
+      timeEstimateHrs: this.allTasks[i].timeEstimateHrs,
+      idAssignedUser: this.allTasks[i].idAssignedUser,
+      idSprintStory: this.allTasks[i].idSprintStory,
+      userConfirmed: this.allTasks[i].userConfirmed,
+      isReady: this.allTasks[i].isReady,
+      isActive: true,
+      assignedUser: this.allTasks[i].assignedUser,
+    };
+    const idTask = this.allTasks[i].id;
+    // console.log(idTask);
+    this.taskService.updateTask(this.projektID, this.sprintID, this.zgodbaID, idTask, task).pipe(first())
+      .subscribe(
+        data => {
+          // console.log(data);
 
-      const task = {
-        id: this.allTasks[i].id,
-        description: this.allTasks[i].description,
-        timeEstimateHrs: this.allTasks[i].timeEstimateHrs,
-        idAssignedUser: this.allTasks[i].idAssignedUser,
-        idSprintStory: this.allTasks[i].idSprintStory,
-        userConfirmed: this.allTasks[i].userConfirmed,
-        isReady: this.allTasks[i].isReady,
-        isActive: true,
-        assignedUser: this.allTasks[i].assignedUser,
-      };
-      const idTask = this.allTasks[i].id;
-      // console.log(idTask);
-      this.taskService.updateTask(this.projektID, this.sprintID, this.zgodbaID, idTask, task).pipe(first())
-        .subscribe(
-          data => {
-            // console.log(data);
+          const id = 0;
+          const idUser = 0;
+          // const idTask = 0;
+          const workDoneHrs = 1/3600000;
+          const workRemainingHrs = 0;
+          const date = "";
+          const comment = "";
+          const createdAt = "";
+          const updatedAt = "";
+          const work = {id, idUser, idTask, workDoneHrs, workRemainingHrs, date, comment, createdAt, updatedAt};
+          console.log(idTask);
+          this.workService.addWorkToTask(this.projektID, this.sprintID, this.zgodbaID, idTask, work).pipe(first()) // doda delovne ure
+          .subscribe(
+            dataTime => {
+                console.log(dataTime);
+                return dataTime;
+            },
+            errorTime => {
+                this.alertService.error(errorTime);
+                this.loading = false;
+            }
+          );
 
-            const id = 0;
-            const idUser = 0;
-            // const idTask = 0;
-            const workDoneHrs = 1/3600000;
-            const workRemainingHrs = 0;
-            const date = "";
-            const comment = "";
-            const createdAt = "";
-            const updatedAt = "";
-            const work = {id, idUser, idTask, workDoneHrs, workRemainingHrs, date, comment, createdAt, updatedAt};
-            console.log(idTask);
-            this.workService.addWorkToTask(this.projektID, this.sprintID, this.zgodbaID, idTask, work).pipe(first()) // doda delovne ure
-            .subscribe(
-              dataTime => {
-                  console.log(dataTime);
-                  return dataTime;
-              },
-              errorTime => {
-                  this.alertService.error(errorTime);
-                  this.loading = false;
-              }
-            );
-
-            this.alertService.clear();
-            this.alertService.warning('You started working :)');
-            this.allTasks[i].isActive = true;
-            return data;
-          },
-          error => {
-            this.alertService.error(error);
-            this.loading = false;
-          }
-        );
-
-    } else {
-      this.alertService.clear();
-      this.alertService.error(this.izpis);
-    }
+          this.alertService.clear();
+          this.alertService.warning('You started working :)');
+          this.allTasks[i].isActive = true;
+          return data;
+        },
+        error => {
+          this.alertService.error(error);
+          this.loading = false;
+        }
+      );
   }
 
   delay(ms) {
@@ -642,49 +631,8 @@ export class ShowTaskComponent implements OnInit {
       .pipe(first())
       .subscribe(stories => {
         this.allStories = stories;
-
-        // let izpis = "";
         this.jeZeAktiven = false;
-
-        let j = 1;
-        while(j<1000001) {
-          if (j === 1) {
-            this.allStories.forEach(s => {
-              this.taskService.getAllTasksOfStory(this.projektID, this.sprintID, s.id).pipe(first())
-                .subscribe(
-                  data => {
-                    // console.log(data);
-                    const naloge = data;
-
-                    naloge.forEach(n => {
-
-                      // console.log(n.assignedUser.id);
-                      // console.log(this.trenutniUporabnikId);
-                      // console.log(n.isActive);
-                      if (n.assignedUser.id === this.trenutniUporabnikId && n.isActive === true) {
-                        // console.log("--------------------");
-
-                        this.jeZeAktiven = true;
-                        this.izpis = "You are already active." // in the task " + n.description;
-                      }
-                    });
-                    return data;
-                  },
-                  error => {
-                    this.alertService.error(error);
-                    this.loading = false;
-                  }
-                );
-
-            });
-          }
-
-          if(j === 1000000) {
-            this.oneTask(i);
-          }
-          j = j+1;
-
-        }
+        this.oneTask(i);
 
       }, error => {
             this.alertService.error(error);
