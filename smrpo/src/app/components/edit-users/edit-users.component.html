@@ -27,7 +27,6 @@
                 <th scope="col" class="header-cell">Last name</th>
                 <th scope="col" class="header-cell">E-mail address</th>
                 <th scope="col" class="header-cell">Password</th>
-                <th scope="col" class="header-cell">Global role</th>
                 <th scope="col" class="header-cell" colspan="2"></th>
               </tr>
             </thead>
@@ -51,9 +50,7 @@
                 <td >
                   <span class="mask" type="password" contenteditable="true"  (keyup)="changeValueOfCurrentUser($event)" (blur)="updateListCurrent( 'password', $event)">****</span>
                 </td>
-                <td >
-                  <span  contenteditable="true"  (keyup)="changeValueOfCurrentUser($event)" (blur)="updateListCurrent( 'globalRole', $event)">{{currentUserValue.globalRole}}</span>
-                </td>
+      
                 <td >
                   <span class="table-delete">
                     <button type="button" mdbBtn color="danger" rounded="true" class="my-0 btn btn-success btn-sm" (click)="changeCurrentUser(currentUserValue)" >Save</button>

@@ -149,6 +149,7 @@ export class ProjectDashboardComponent implements OnInit {
     );    
 }
 
+
   openEditSprintDialog(sprint) {
     this.alertService.clear();
     const dialogConfigEditSprint = new MatDialogConfig();
