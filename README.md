@@ -1,5 +1,5 @@
 
-## Intrudction 
+## Scrum application 
 In this project we created Scrum application using advanced software development methods. Scrum is a framework utilizing an agile mindset for developing, delivering, and sustaining products in a complex environment, with an initial emphasis on software development.
  
 
